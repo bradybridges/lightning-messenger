@@ -10,12 +10,6 @@ export default class Home extends Component {
     messages: [],
   };
 
-  componentDidMount = () => {
-    firebase.auth().onAuthStateChanged(user => {
-      this.props.navigation.navigate(user ? 'Home' : 'Login');
-    });
-  };
-
   getMessages = async () => {
     const snapshot = await firebase.firestore().collection('messages').get();
     const messages = snapshot.docs.map((doc) => doc.data());

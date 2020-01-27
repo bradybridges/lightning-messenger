@@ -41,6 +41,7 @@ export default class Login extends Component {
   }
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View>
         <Text>Email</Text>
@@ -55,6 +56,7 @@ export default class Login extends Component {
           onChangeText={this.handlePasswordChange}
         />
         <Button title="Login" onPress={this.handleLogin}/>
+        <Button title="Create Account" onPress={() => navigate('CreateAccount')} />
       </View>
     )
   }
