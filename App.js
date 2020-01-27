@@ -1,45 +1,15 @@
-import React, { Component } from 'react';
-import { Text, View } from 'react-native';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
-import ApiKeys from './ApiKeys';
-import Header from './Components/Header/Header';
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+import Home from './Screens/Home/Home';
+import Login from './Screens/Login/Login';
 
-export default class App extends Component {
-  state = {
-    messages: [],
-  }
-  componentDidMount = async () => {
-    if(!firebase.apps.length) {
-      await firebase.initializeApp(ApiKeys.FirebaseConfig);
-      this.getUsers();
-    } 
-  }
-  getUsers = async () => {
-    const snapshot = await firebase.firestore().collection('messages').get();
-    const messages = snapshot.docs.map((doc) => doc.data());
-    this.setState({ messages });
-  }
-  renderMessages = () => {
-    return this.state.messages.map((message) => {
-      return (
-        <View>
-          <Text>{message.to}</Text>
-          <Text>{message.from}</Text>
-          <Text>{message.contents}</Text>
-          <Text>{message.sent.seconds}</Text>
-        </View>
-      );  
-    });
-  }
-  render() {
-    return (
-      <View style={{paddingTop: 20}}>
-        <Header />
-        {this.state.messages.length !== 0 && this.renderMessages()}
-      </View>
-    )
-  }
-}
+const MainNavigator = createStackNavigator({
+  Login: {screen: Login},
+  Home: {screen: Home},
+});
+
+const App = createAppContainer(MainNavigator);
+
+export default App;
 
 
