@@ -34,7 +34,7 @@ export default class App extends Component {
   }
   render() {
     return (
-      <View style={{paddingTop: 20}}>
+      <View>
         <Header />
         {this.state.messages.length !== 0 && this.renderMessages()}
       </View>
