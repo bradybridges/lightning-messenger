@@ -1,16 +1,29 @@
 import React, { Component } from 'react';
-import { Text, View, Button } from 'react-native';
+import { Text, View, Button, StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
+import 'firebase/auth';
+
 
 export default class Home extends Component {
   state = {
     messages: [],
   };
+
+  componentDidMount = () => {
+    firebase.auth().onAuthStateChanged(user => {
+      this.props.navigation.navigate(user ? 'Home' : 'Login');
+    });
+  };
+
   getMessages = async () => {
     const snapshot = await firebase.firestore().collection('messages').get();
     const messages = snapshot.docs.map((doc) => doc.data());
     this.setState({ messages });
+  };
+
+  signOut = () => {
+    const response = firebase.auth().signOut();
   }
 
   renderMessages = () => {
@@ -25,17 +38,24 @@ export default class Home extends Component {
       );  
     });
   }
-
   render() {
     if(!this.state.messages.length) {
       this.getMessages();
     }
     const { navigate } = this.props.navigation;
     return (
-      <View>
+      <View style={styles.container}>
         {(this.state.messages.length) ? this.renderMessages(): <Text>Loading...</Text>}
-        <Button title="click me" onPress={() => navigate('Login')}/>
+        <Button title="LogOut" onPress={this.signOut}/>
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "space-between",
+  }
+})
+
