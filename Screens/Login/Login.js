@@ -9,7 +9,6 @@ export default class Login extends Component {
   state = {
     email: '',
     password: '',
-    user: null,
   }
 
   componentDidMount = () => {
@@ -17,9 +16,10 @@ export default class Login extends Component {
       firebase.initializeApp(ApiKeys.FirebaseConfig);
     } 
     firebase.auth().onAuthStateChanged(user => {
-      this.props.navigation.navigate(user ? 'Home' : 'Login')
-      this.setState({ user });
-    })
+      if(user) {
+        this.props.navigation.navigate('Home');
+      }
+    });
   }
 
   handleEmailChange = (email) => {
@@ -37,10 +37,12 @@ export default class Login extends Component {
         this.setState({ error });
         alert(error.message);
         alert(error.code);
-      })
+      });
+    this.setState({ email: '', password: '' });
   }
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View>
         <Text>Email</Text>
@@ -55,20 +57,8 @@ export default class Login extends Component {
           onChangeText={this.handlePasswordChange}
         />
         <Button title="Login" onPress={this.handleLogin}/>
+        <Button title="Create Account" onPress={() => navigate('CreateAccount')} />
       </View>
     )
   }
 }
-
-// firebase.auth().signInWithEmailAndPassword(email, password)
-//     .catch(function(error) {
-//   // Handle Errors here.
-//   var errorCode = error.code;
-//   var errorMessage = error.message;
-//   if (errorCode === 'auth/wrong-password') {
-//     alert('Wrong password.');
-//   } else {
-//     alert(errorMessage);
-//   }
-//   console.log(error);
-// });
