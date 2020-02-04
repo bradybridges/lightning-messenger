@@ -8,12 +8,25 @@ import 'firebase/auth';
 export default class Home extends Component {
   state = {
     messages: [],
+    user: null,
   };
 
-  getMessages = async () => {
-    const snapshot = await firebase.firestore().collection('messages').get();
+  componentDidMount = () => {
+    firebase.auth().onAuthStateChanged(user => {
+      if(user) {
+        this.setState({ user });
+        this.getMessages(user);
+      } else {
+        const { navigate } = this.props.navigation;
+        navigate('Login');
+      }
+    });
+  }
+  
+  getMessages = async (user) => {  
+    const snapshot = await firebase.firestore().collection('messages').where( 'to', '==', user.email).get();
     const messages = snapshot.docs.map((doc) => doc.data());
-    this.setState({ messages });
+    this.setState({ messages });    
   };
 
   signOut = () => {
@@ -33,13 +46,10 @@ export default class Home extends Component {
     });
   }
   render() {
-    if(!this.state.messages.length) {
-      this.getMessages();
-    }
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        {(this.state.messages.length) ? this.renderMessages(): <Text>Loading...</Text>}
+        {(this.state.messages.length) ? this.renderMessages(): <Text>No Messages :/</Text>}
         <Button title="LogOut" onPress={this.signOut}/>
       </View>
     )
