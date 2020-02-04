@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Text, View, Button, StyleSheet } from 'react-native';
+import Message from '../../Components/Message/Message';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import 'firebase/auth';
-
 
 export default class Home extends Component {
   state = {
@@ -36,12 +36,7 @@ export default class Home extends Component {
   renderMessages = () => {
     return this.state.messages.map((message) => {
       return (
-        <View key={message.contents}>
-          <Text>{message.to}</Text>
-          <Text>{message.from}</Text>
-          <Text>{message.contents}</Text>
-          <Text>{message.sent.seconds}</Text>
-        </View>
+        <Message message={message.contents} timestamp={message.sent} />
       );  
     });
   }
