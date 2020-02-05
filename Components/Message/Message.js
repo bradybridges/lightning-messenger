@@ -16,11 +16,11 @@ export default class Message extends Component {
     return `${hours}:${minutes} ${label}`;
   }
   render() {
-    const { message, timestamp } = this.props;
+    const { content, timestamp } = this.props;
     const time = this.formatTimestamp(timestamp);
     return (
       <View>
-        <Text>{message}</Text>
+        <Text>{content}</Text>
         <Text>{time}</Text>
       </View>
     );
