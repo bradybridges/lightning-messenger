@@ -25,18 +25,37 @@ export default class Home extends Component {
   
   getMessages = async (user) => {  
     const snapshot = await firebase.firestore().collection('messages').where( 'to', '==', user.email).get();
-    const messages = snapshot.docs.map((doc) => doc.data());
-    this.setState({ messages });    
+    const messages = await snapshot.docs.map((doc) => doc.data());
+    this.setState({ messages });  
+    console.log('SORTED MESSAGES: ', this.sortMessages(messages));
   };
 
+  sortMessages = (messages) => {
+    const sortedMessages = messages.reduce((conversations, curMessage) => {
+      const existingConvo = conversations.findIndex((convo) => convo.from == curMessage.from);
+      if(existingConvo > -1) {
+        const newMessage = curMessage.contents;
+        conversations[existingConvo].messages.push(newMessage);
+      } else {
+        const newConvo = {
+          from: curMessage.from,
+          messages: [curMessage.contents],
+        };
+        conversations.push(newConvo);
+      }
+      return conversations;
+    }, []);
+    return sortedMessages;
+  }
+
   signOut = () => {
-    const response = firebase.auth().signOut();
+    firebase.auth().signOut();
   }
 
   renderMessages = () => {
-    return this.state.messages.map((message) => {
+    return this.state.messages.map((message, i) => {
       return (
-        <Message message={message.contents} timestamp={message.sent} />
+        <Message key={i} message={message.contents} timestamp={message.sent} />
       );  
     });
   }
