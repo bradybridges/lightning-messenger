@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, Button, StyleSheet } from 'react-native';
 import Message from '../../Components/Message/Message';
+import Conversation from '../../Components/Conversation/Conversation';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import 'firebase/auth';
@@ -27,19 +28,19 @@ export default class Home extends Component {
     const snapshot = await firebase.firestore().collection('messages').where( 'to', '==', user.email).get();
     const messages = await snapshot.docs.map((doc) => doc.data());
     this.setState({ messages });  
-    console.log('SORTED MESSAGES: ', this.sortMessages(messages));
   };
 
   sortMessages = (messages) => {
     const sortedMessages = messages.reduce((conversations, curMessage) => {
       const existingConvo = conversations.findIndex((convo) => convo.from == curMessage.from);
       if(existingConvo > -1) {
-        const newMessage = curMessage.contents;
+        const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent };
         conversations[existingConvo].messages.push(newMessage);
       } else {
+        const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent };
         const newConvo = {
           from: curMessage.from,
-          messages: [curMessage.contents],
+          messages: [newMessage],
         };
         conversations.push(newConvo);
       }
@@ -59,11 +60,20 @@ export default class Home extends Component {
       );  
     });
   }
+
+  renderConversations = () => {
+    const { messages } = this.state;
+    const conversations = this.sortMessages(messages);
+    return conversations.map((conversation) => {
+      return <Conversation key={conversation.from} from={conversation.from} messages={conversation.messages} />;
+    });
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        {(this.state.messages.length) ? this.renderMessages(): <Text>No Messages :/</Text>}
+        {this.renderConversations()}
         <Button title="LogOut" onPress={this.signOut}/>
       </View>
     )
