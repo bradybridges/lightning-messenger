@@ -35,9 +35,9 @@ export default class ComposeMessageForm extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TextInput style={styles.input} onChangeText={this.handleChange} value={this.state.message}/>
+        <TextInput style={styles.input} onChangeText={this.handleChange} value={this.state.message} placeholder="Send a message..."/>
         <TouchableOpacity style={styles.sendBtnContainer} onPress={this.sendMessage}>
-          <Image source={sendImg} />
+          <Image source={sendImg} style={{width: 50, height: 50}}/>
         </TouchableOpacity>
       </View>
     )
@@ -47,15 +47,31 @@ export default class ComposeMessageForm extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    width: Dimensions.get('window').width * .8,
+    width: Dimensions.get('window').width * .9,
     display: 'flex',
     flexDirection: 'row',
+    position: 'absolute',
+    height: 60,
+    top: Dimensions.get('window').height - 30,
+    marginTop: -120,
+    zIndex: 5,
+    borderRadius: 6,
+    justifyContent: 'space-between',
   },
   input: {
-    width: '70%',
+    width: '80%',
+    textAlign: 'center',
+    fontSize: 18,
   },
   sendBtnContainer: {
     backgroundColor: 'black',
+    borderColor: 'white',
+    borderWidth: 2,
+    borderRadius: 6,
+    width: '20%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
