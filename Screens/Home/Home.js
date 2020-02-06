@@ -10,6 +10,7 @@ export default class Home extends Component {
   state = {
     messages: [],
     user: null,
+    selectedConversation: null,
   };
 
   componentDidMount = () => {

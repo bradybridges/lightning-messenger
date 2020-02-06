@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet, Dimensions } from 'react-native';
 
 export default class Message extends Component {
   formatTimestamp = (timestamp) => {
@@ -19,10 +19,29 @@ export default class Message extends Component {
     const { content, timestamp } = this.props;
     const time = this.formatTimestamp(timestamp);
     return (
-      <View>
-        <Text>{content}</Text>
-        <Text>{time}</Text>
+      <View style={styles.container}>
+        <Text style={styles.content}>{content}</Text>
+        <Text style={styles.timestamp}>{time}</Text>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: 'red',
+    borderRadius: 100,
+    marginVertical: 20,
+  },
+  content: {
+    padding: 10,
+    fontSize: 18,
+  },
+  timestamp: {
+    alignSelf: 'flex-end',
+    marginRight: 20,
+  }
+});
+
