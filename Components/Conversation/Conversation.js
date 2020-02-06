@@ -17,7 +17,7 @@ export default class Conversation extends Component {
     });
   }
   render() {
-    const { from, messages } = this.props;
+    const { from, messages, updateConversation } = this.props;
     const { email } = this.props.user;
     return (
       <View style={styles.container}>
@@ -27,7 +27,7 @@ export default class Conversation extends Component {
         <ScrollView style={styles.messagesContainer}>
           { this.renderMessages() }
         </ScrollView>
-        <ComposeMessageForm from={email} to={from}/>
+        <ComposeMessageForm from={email} to={from} updateConversation={updateConversation}/>
       </View>
     );
   }

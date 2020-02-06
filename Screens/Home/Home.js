@@ -68,6 +68,14 @@ export default class Home extends Component {
     return sortedMessages;
   }
 
+  updateConversation = (from, newMessage) => {
+    const conversations = this.state.conversations.map((convo) => convo);
+    const conversation = conversations.find((convo) => convo.from === from);
+    conversation.messages.push(newMessage);
+    this.setState({ conversations });
+    console.log('UPDATE CALLED')
+  }
+
   signOut = () => {
     firebase.auth().signOut();
   }
@@ -84,7 +92,7 @@ export default class Home extends Component {
     const { messages, user } = this.state;
     const conversations = this.state.conversations;
     return conversations.map((conversation) => {
-    return <Conversation key={conversation.from} from={conversation.from} messages={conversation.messages} user={user}/>;
+    return <Conversation key={conversation.from} from={conversation.from} messages={conversation.messages} user={user} updateConversation={this.updateConversation}/>;
     });
   }
 

@@ -12,7 +12,7 @@ export default class ComposeMessageForm extends Component {
     this.setState({ message });
   }
   sendMessage = () => {
-    const { from, to } = this.props;
+    const { from, to, updateConversation } = this.props;
     const { message } = this.state;
     const sent = new Date();
     if(!message) return;
@@ -26,6 +26,7 @@ export default class ComposeMessageForm extends Component {
       .then((data) => {
         console.log('Successfully created...ID: ', data.id);
         this.setState({ message: '' });
+        updateConversation(to, { contents: message, timestamp: { seconds: sent }});
         return data;
       }) 
       .catch((err) => console.error('Error sending message...'));
