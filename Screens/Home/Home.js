@@ -26,14 +26,28 @@ export default class Home extends Component {
   }
   
   getMessages = async (user) => {  
-    const snapshot = await firebase.firestore().collection('messages').where( 'to', '==', user.email).get();
-    const messages = await snapshot.docs.map((doc) => doc.data());
-    this.setState({ messages });  
+    // const snapshot = await firebase.firestore().collection('messages').where( 'to', '==', user.email).get();
+    // let messages = await snapshot.docs.map((doc) => doc.data());
+    // const sentSnapshot = await firebase.firestore().collection('messages').where('from', '==', user.email).get();
+    // const sent = sentSnapshot.docs.map((doc) => doc.data());
+    // messages = [...messages, ...sent];
+    // this.setState({ messages });
+    const recievedSnap = await firebase.firestore().collection('messages').where('to', '==', user.email).get();
+    const sentSnap = await firebase.firestore().collection('messages').where('from', '==', user.email).get();
+    const recieved = recievedSnap.docs.map((doc) => doc.data());
+    const sent = sentSnap.docs.map((doc) => doc.data());
+    const messages = [...recieved, ...sent];
+    this.setState({ messages });
   };
 
   sortMessages = (messages) => {
+    const { email } = this.state.user;
     const sortedMessages = messages.reduce((conversations, curMessage) => {
-      const existingConvo = conversations.findIndex((convo) => convo.from == curMessage.from);
+      const existingConvo = conversations.findIndex((convo) => {
+        if((convo.from == curMessage.from) || (email == curMessage.from)) {
+          return true;
+        }
+      });
       if(existingConvo > -1) {
         const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent };
         conversations[existingConvo].messages.push(newMessage);
@@ -63,10 +77,10 @@ export default class Home extends Component {
   }
 
   renderConversations = () => {
-    const { messages } = this.state;
+    const { messages, user } = this.state;
     const conversations = this.sortMessages(messages);
     return conversations.map((conversation) => {
-      return <Conversation key={conversation.from} from={conversation.from} messages={conversation.messages} />;
+    return <Conversation key={conversation.from} from={conversation.from} messages={conversation.messages} user={user}/>;
     });
   }
 
@@ -74,7 +88,7 @@ export default class Home extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        {this.renderConversations()}
+        {this.state.user && this.renderConversations()}
         <Button title="LogOut" onPress={this.signOut}/>
       </View>
     )
@@ -85,6 +99,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
-  }
+  },
 })
 
