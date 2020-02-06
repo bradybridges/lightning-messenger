@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox } from 'react-native';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import 'firebase/auth';
+import _ from 'lodash';
+
+YellowBox.ignoreWarnings(['Setting a timer']);
+const _console = _.clone(console);
+console.warn = message => {
+  if (message.indexOf('Setting a timer') <= -1) {
+    _console.warn(message);
+  }
+};
 
 export default class Home extends Component {
   state = {
-    messages: [],
+    conversations: [],
     user: null,
     selectedConversation: null,
   };
@@ -26,18 +35,13 @@ export default class Home extends Component {
   }
   
   getMessages = async (user) => {  
-    // const snapshot = await firebase.firestore().collection('messages').where( 'to', '==', user.email).get();
-    // let messages = await snapshot.docs.map((doc) => doc.data());
-    // const sentSnapshot = await firebase.firestore().collection('messages').where('from', '==', user.email).get();
-    // const sent = sentSnapshot.docs.map((doc) => doc.data());
-    // messages = [...messages, ...sent];
-    // this.setState({ messages });
     const recievedSnap = await firebase.firestore().collection('messages').where('to', '==', user.email).get();
     const sentSnap = await firebase.firestore().collection('messages').where('from', '==', user.email).get();
     const recieved = recievedSnap.docs.map((doc) => doc.data());
     const sent = sentSnap.docs.map((doc) => doc.data());
     const messages = [...recieved, ...sent];
-    this.setState({ messages });
+    const conversations = this.sortMessages(messages);
+    this.setState({ conversations });
   };
 
   sortMessages = (messages) => {
@@ -78,7 +82,7 @@ export default class Home extends Component {
 
   renderConversations = () => {
     const { messages, user } = this.state;
-    const conversations = this.sortMessages(messages);
+    const conversations = this.state.conversations;
     return conversations.map((conversation) => {
     return <Conversation key={conversation.from} from={conversation.from} messages={conversation.messages} user={user}/>;
     });
