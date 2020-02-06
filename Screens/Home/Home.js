@@ -97,6 +97,10 @@ export default class Home extends Component {
   }
 
   render() {
+    // setTimeout(() => {
+    //   const user = this.state.user;
+    //   this.getMessages(user);
+    // }, 60000);
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
