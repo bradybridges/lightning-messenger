@@ -24,9 +24,11 @@ export default class Conversation extends Component {
         <View style={styles.headerContainer}>
           <Text style={styles.header}>{from}</Text>
         </View>
-        <ScrollView style={styles.messagesContainer}>
-          { this.renderMessages() }
-        </ScrollView>
+        <View style={styles.messagesContainer}>
+          <ScrollView>
+            { this.renderMessages() }
+          </ScrollView>
+        </View>
         <ComposeMessageForm from={email} to={from} updateConversation={updateConversation}/>
       </View>
     );
@@ -35,26 +37,30 @@ export default class Conversation extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: Dimensions.get('window').height * .8,
-    display: 'flex',
+    flex: 1,
     alignItems: 'center',
     backgroundColor: 'black',
+    justifyContent: 'flex-start',
+    
   },
   headerContainer: {
     display: 'flex',
     alignItems: 'center',
-    height: Dimensions.get('window').height * .2,
+    height: Dimensions.get('window').height * .1,
     backgroundColor: '#00000069',
-    padding: 20,
+    padding: 10,
+    position: 'absolute',
+    zIndex: 5,
+    width: '100%',
+    justifyContent: 'center',
   },
   header: {
     color: 'white',
     fontSize: 24,
   },
   messagesContainer: {
-    width: Dimensions.get('window').width * .9,
-    borderColor: 'white',
-    borderWidth: 1,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height * .8,
   }
 })
 

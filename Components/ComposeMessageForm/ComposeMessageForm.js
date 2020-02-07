@@ -52,11 +52,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     height: 60,
-    top: Dimensions.get('window').height - 30,
-    marginTop: -120,
+    top: Dimensions.get('window').height - 140,
     zIndex: 5,
     borderRadius: 6,
-    justifyContent: 'space-between',
   },
   input: {
     width: '80%',
