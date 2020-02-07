@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, Button } from 'react-native';
+import { Text,  
+  View, 
+  TextInput, 
+  Button, 
+  StyleSheet, 
+  Dimensions, 
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/auth';
 import ApiKeys from '../../ApiKeys';
+const lightningImg = require('../../assets/lightning.jpg');
 
 
 export default class Login extends Component {
@@ -44,21 +54,79 @@ export default class Login extends Component {
   render() {
     const { navigate } = this.props.navigation;
     return (
-      <View>
-        <Text>Email</Text>
-        <TextInput
-          value={this.state.email}
-          onChangeText={this.handleEmailChange}
-        />
-        <Text>Password</Text>
-        <TextInput
-          secureTextEntry={true}
-          value={this.state.password}
-          onChangeText={this.handlePasswordChange}
-        />
-        <Button title="Login" onPress={this.handleLogin}/>
-        <Button title="Create Account" onPress={() => navigate('CreateAccount')} />
-      </View>
-    )
+      <ImageBackground source={lightningImg} style={styles.container} imageStyle={{ resizeMode: "stretch" }}>
+        <Text style={styles.header}>Lightning Messenger</Text>
+        <KeyboardAvoidingView style={styles.loginContainer}>
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            value={this.state.email}
+            onChangeText={this.handleEmailChange}
+          />
+          <Text style={styles.label}>Password</Text>
+          <TextInput
+            style={styles.input}
+            secureTextEntry={true}
+            value={this.state.password}
+            onChangeText={this.handlePasswordChange}
+          />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={this.handleLogin}><Text style={styles.buttonText}>Login</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => navigate('CreateAccount')}><Text style={styles.buttonText}>Create Account</Text></TouchableOpacity>
+          </View>
+
+          </KeyboardAvoidingView>
+      </ImageBackground>
+    );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'black',
+    flex: 1,
+    alignItems: 'center',
+    
+  },
+  input: {
+    width: Dimensions.get('window').width * .9,
+    maxWidth: 400,
+    height: 60,
+    backgroundColor: 'white',
+    borderRadius: 4,
+    fontSize: 24,
+    textAlign: 'center',
+  },
+  label: {
+    color: 'white',
+    fontSize: 24,
+  },
+  loginContainer: {
+    height: 400,
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    width: Dimensions.get('window').width * .8,
+    height: 140,
+    display: 'flex',
+    justifyContent: 'space-evenly',
+  },  
+  header: {
+    color: 'white',
+    fontSize: 32,
+  },
+  button: { 
+    backgroundColor: 'white', 
+    height: 50, 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    borderRadius: 4,
+  },
+  buttonText: {
+    fontSize: 24,
+  }
+});
+
