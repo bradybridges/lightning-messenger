@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, Button, StyleSheet, YellowBox } from 'react-native';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
+import ConversationTab from '../../Components/ConversationTab/ConversationTab';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import 'firebase/auth';
@@ -76,6 +77,13 @@ export default class Home extends Component {
     console.log('UPDATE CALLED')
   }
 
+  renderConversationTabs = () => {
+    const { conversations } = this.state;
+    return conversations.map((convo) => {
+      return <ConversationTab from={convo.from} time="test" key={convo.from} updateSelectedConversation={this.updateSelectedConversation}/>;
+    });
+  }
+
   signOut = () => {
     firebase.auth().signOut();
   }
@@ -96,6 +104,12 @@ export default class Home extends Component {
     });
   }
 
+  updateSelectedConversation = (from) => {
+    const {conversations} = this.state;
+    const conversation = conversations.find((convo) => convo.from === from);
+    this.setState({ selectedConversation: conversation });
+  }
+
   render() {
     // setTimeout(() => {
     //   const user = this.state.user;
@@ -104,7 +118,7 @@ export default class Home extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        {this.state.user && this.renderConversations()}
+        {this.state.user && this.renderConversationTabs()}
         <Button title="LogOut" onPress={this.signOut}/>
       </View>
     )
