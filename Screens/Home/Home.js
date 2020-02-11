@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox, Modal } from 'react-native';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
@@ -21,6 +21,7 @@ export default class Home extends Component {
     conversations: [],
     user: null,
     selectedConversation: null,
+    showConversation: false,
   };
 
   componentDidMount = () => {
@@ -96,18 +97,30 @@ export default class Home extends Component {
     });
   }
 
-  renderConversations = () => {
-    const { messages, user } = this.state;
-    const conversations = this.state.conversations;
-    return conversations.map((conversation) => {
-    return <Conversation key={conversation.from} from={conversation.from} messages={conversation.messages} user={user} updateConversation={this.updateConversation}/>;
-    });
+  // renderConversations = () => {
+  //   const { messages, user } = this.state;
+  //   const conversations = this.state.conversations;
+  //   return conversations.map((conversation) => {
+  //   return <Conversation key={conversation.from} from={conversation.from} messages={conversation.messages} user={user} updateConversation={this.updateConversation}/>;
+  //   });
+  // }
+
+  renderConversation = () => {
+    const { selectedConversation, user } = this.state;
+    return (
+      <Conversation
+        from={selectedConversation.from}
+        messages={selectedConversation.messages}
+        user={user}
+        updateConversation={this.updateConversation}
+      />
+    );
   }
 
   updateSelectedConversation = (from) => {
     const {conversations} = this.state;
     const conversation = conversations.find((convo) => convo.from === from);
-    this.setState({ selectedConversation: conversation });
+    this.setState({ selectedConversation: conversation, showConversation: true });
   }
 
   render() {
@@ -120,6 +133,17 @@ export default class Home extends Component {
       <View style={styles.container}>
         {this.state.user && this.renderConversationTabs()}
         <Button title="LogOut" onPress={this.signOut}/>
+        <Modal
+        animationType="slide"
+        transparent={false}
+        visible={this.state.showConversation}
+        onRequestClose={() => {
+          this.setState({ showConversation: false });
+          alert('request to close modal fired');
+        }}
+        >
+          {this.state.selectedConversation && this.renderConversation()}
+        </Modal>
       </View>
     )
   }
