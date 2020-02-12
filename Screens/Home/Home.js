@@ -67,6 +67,10 @@ export default class Home extends Component {
       }
       return conversations;
     }, []);
+    sortedMessages.forEach((conversation) => {
+      conversation.messages.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
+      console.log(conversation.messages);
+    });
     return sortedMessages;
   }
 
@@ -139,7 +143,6 @@ export default class Home extends Component {
         visible={this.state.showConversation}
         onRequestClose={() => {
           this.setState({ showConversation: false });
-          alert('request to close modal fired');
         }}
         >
           {this.state.selectedConversation && this.renderConversation()}
@@ -153,6 +156,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
+    backgroundColor: '#000000d6',
   },
-})
-
+});
