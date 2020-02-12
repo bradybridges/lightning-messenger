@@ -68,7 +68,7 @@ export default class Home extends Component {
       return conversations;
     }, []);
     sortedMessages.forEach((conversation) => {
-      conversation.messages.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
+      conversation.messages.sort((a, b) => a.timestamp.seconds - b.timestamp.seconds);
       console.log(conversation.messages);
     });
     return sortedMessages;
