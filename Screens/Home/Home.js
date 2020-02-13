@@ -4,6 +4,7 @@ import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
 import * as firebase from 'firebase';
+import * as constants from '../../Constants/Constants';
 import 'firebase/firestore';
 import 'firebase/auth';
 import _ from 'lodash';
@@ -156,6 +157,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
-    backgroundColor: '#000000d6',
+    backgroundColor: constants.primaryBgColor,
   },
 });
