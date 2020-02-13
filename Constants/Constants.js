@@ -1,0 +1,1 @@
+export const primaryBgColor = '#000000d6';
