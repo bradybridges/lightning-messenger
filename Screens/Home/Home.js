@@ -32,8 +32,8 @@ export default class Home extends Component {
         this.setState({ user });
         this.getMessages(user);
       } else {
-        const { navigate } = this.props.navigation;
-        navigate('Login');
+        const { replace } = this.props.navigation;
+        replace('Login');
       }
     });
   }
@@ -105,10 +105,6 @@ export default class Home extends Component {
     });
   }
 
-  signOut = () => {
-    firebase.auth().signOut();
-  }
-
   renderMessages = () => {
     return this.state.messages.map((message, i) => {
       return (
@@ -116,14 +112,6 @@ export default class Home extends Component {
       );  
     });
   }
-
-  // renderConversations = () => {
-  //   const { messages, user } = this.state;
-  //   const conversations = this.state.conversations;
-  //   return conversations.map((conversation) => {
-  //   return <Conversation key={conversation.from} from={conversation.from} messages={conversation.messages} user={user} updateConversation={this.updateConversation}/>;
-  //   });
-  // }
 
   renderConversation = () => {
     const { selectedConversation, user } = this.state;
@@ -152,7 +140,6 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         {this.state.user && this.renderConversationTabs()}
-        <Button title="LogOut" onPress={this.signOut}/>
         <Modal
         animationType="slide"
         transparent={false}
