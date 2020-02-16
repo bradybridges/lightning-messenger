@@ -13,10 +13,10 @@ export default class ComposeMessageForm extends Component {
     this.setState({ message });
   }
   sendMessage = () => {
+    if(!message) return;
     const { from, to, updateConversation } = this.props;
     const { message } = this.state;
     const sent = new Date();
-    if(!message) return;
     const newMessage = {
       to,
       from,
@@ -30,8 +30,8 @@ export default class ComposeMessageForm extends Component {
         return data;
       }) 
       .catch((err) => console.error('Error sending message...'));
-      
   }
+  
   render() {
     return (
       <View style={styles.container}>
