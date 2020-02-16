@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConversationTab should match snapshot 1`] = `
+<TouchableOpacity
+  activeOpacity={0.2}
+  onPress={[Function]}
+  style={
+    Object {
+      "alignItems": "center",
+      "borderBottomColor": "white",
+      "borderBottomWidth": 1,
+      "display": "flex",
+      "flexDirection": "row",
+      "height": 200.1,
+      "justifyContent": "space-evenly",
+    }
+  }
+>
+  <Text
+    style={
+      Object {
+        "color": "white",
+        "fontSize": 18,
+      }
+    }
+  >
+    sender
+  </Text>
+  <Text
+    style={
+      Object {
+        "color": "white",
+        "fontSize": 18,
+      }
+    }
+  >
+    12:00 PM
+  </Text>
+</TouchableOpacity>
+`;
