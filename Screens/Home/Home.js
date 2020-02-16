@@ -70,7 +70,6 @@ export default class Home extends Component {
     }, []);
     sortedMessages.forEach((conversation) => {
       conversation.messages.sort((a, b) => a.timestamp.seconds - b.timestamp.seconds);
-      console.log(conversation.messages);
     });
     return sortedMessages;
   }
@@ -80,13 +79,29 @@ export default class Home extends Component {
     const conversation = conversations.find((convo) => convo.from === from);
     conversation.messages.push(newMessage);
     this.setState({ conversations });
-    console.log('UPDATE CALLED')
+  }
+
+  formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp.seconds * 1000);
+    let hours = Number(date.getHours());
+    const label = (hours >= 12) ? 'PM': 'AM';
+    let minutes = Number(date.getMinutes());
+    if(hours > 12) {
+      hours = hours - 12;
+    }
+    if(minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+    return `${hours}:${minutes} ${label}`;
   }
 
   renderConversationTabs = () => {
     const { conversations } = this.state;
     return conversations.map((convo) => {
-      return <ConversationTab from={convo.from} time="test" key={convo.from} updateSelectedConversation={this.updateSelectedConversation}/>;
+      const timestamp = convo.messages[convo.messages.length - 1].timestamp;
+      const time = this.formatTimestamp(timestamp);
+      console.log(time);
+      return <ConversationTab from={convo.from} time={time} key={convo.from} updateSelectedConversation={this.updateSelectedConversation}/>;
     });
   }
 

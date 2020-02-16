@@ -25,7 +25,6 @@ export default class ComposeMessageForm extends Component {
     }
     const setDoc = firebase.firestore().collection('messages').add(newMessage)
       .then((data) => {
-        console.log('Successfully created...ID: ', data.id);
         this.setState({ message: '' });
         updateConversation(to, { contents: message, timestamp: { seconds: sent }});
         return data;
