@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateAccount should match snapshot 1`] = `
+<View>
+  <Text>
+    Email
+  </Text>
+  <TextInput
+    allowFontScaling={true}
+    onChangeText={[Function]}
+    rejectResponderTermination={true}
+    underlineColorAndroid="transparent"
+  />
+  <Text>
+    Password
+  </Text>
+  <TextInput
+    allowFontScaling={true}
+    onChangeText={[Function]}
+    rejectResponderTermination={true}
+    underlineColorAndroid="transparent"
+  />
+  <Text>
+    Confirm Password
+  </Text>
+  <TextInput
+    allowFontScaling={true}
+    onChangeText={[Function]}
+    rejectResponderTermination={true}
+    underlineColorAndroid="transparent"
+  />
+  <Button
+    onPress={[Function]}
+    title="Create Account"
+  />
+  <Button
+    onPress={[Function]}
+    title="Cancel"
+  />
+</View>
+`;

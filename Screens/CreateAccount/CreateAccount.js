@@ -10,8 +10,6 @@ export default class CreateAccount extends Component {
     passwordConfirm: "",
   }
 
-  
-
   handleChange = (field, value) => {
     this.setState({ [field]: value });
   }
