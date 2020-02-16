@@ -3,6 +3,7 @@ import { Text, TextInput, View, Image, TouchableOpacity, StyleSheet, Dimensions 
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 const sendImg = require('../../assets/send.png');
+import * as constants from '../../Constants/Constants';
 
 export default class ComposeMessageForm extends Component {
   state = {
@@ -24,7 +25,6 @@ export default class ComposeMessageForm extends Component {
     }
     const setDoc = firebase.firestore().collection('messages').add(newMessage)
       .then((data) => {
-        console.log('Successfully created...ID: ', data.id);
         this.setState({ message: '' });
         updateConversation(to, { contents: message, timestamp: { seconds: sent }});
         return data;
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     height: 60,
-    top: Dimensions.get('window').height - 140,
+    top: Dimensions.get('window').height - 90,
     zIndex: 5,
     borderRadius: 6,
   },
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   sendBtnContainer: {
-    backgroundColor: 'black',
+    backgroundColor: constants.primaryBgColor,
     borderColor: 'white',
     borderWidth: 2,
     borderRadius: 6,

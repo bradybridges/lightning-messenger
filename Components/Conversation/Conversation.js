@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import Message from '../Message/Message';
 import ComposeMessageForm from '../ComposeMessageForm/ComposeMessageForm';
+import * as constants from '../../Constants/Constants';
 
 export default class Conversation extends Component {
   renderMessages = () => {
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: constants.primaryBgColor,
     justifyContent: 'flex-start',
     
   },
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
   },
   messagesContainer: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * .8,
+    height: Dimensions.get('window').height * .9,
   }
 })
 

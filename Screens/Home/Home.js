@@ -4,6 +4,7 @@ import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
 import * as firebase from 'firebase';
+import * as constants from '../../Constants/Constants';
 import 'firebase/firestore';
 import 'firebase/auth';
 import _ from 'lodash';
@@ -24,14 +25,15 @@ export default class Home extends Component {
     showConversation: false,
   };
 
+
   componentDidMount = () => {
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
         this.setState({ user });
         this.getMessages(user);
       } else {
-        const { navigate } = this.props.navigation;
-        navigate('Login');
+        const { replace } = this.props.navigation;
+        replace('Login');
       }
     });
   }
@@ -69,7 +71,6 @@ export default class Home extends Component {
     }, []);
     sortedMessages.forEach((conversation) => {
       conversation.messages.sort((a, b) => a.timestamp.seconds - b.timestamp.seconds);
-      console.log(conversation.messages);
     });
     return sortedMessages;
   }
@@ -79,18 +80,29 @@ export default class Home extends Component {
     const conversation = conversations.find((convo) => convo.from === from);
     conversation.messages.push(newMessage);
     this.setState({ conversations });
-    console.log('UPDATE CALLED')
+  }
+
+  formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp.seconds * 1000);
+    let hours = Number(date.getHours());
+    const label = (hours >= 12) ? 'PM': 'AM';
+    let minutes = Number(date.getMinutes());
+    if(hours > 12) {
+      hours = hours - 12;
+    }
+    if(minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+    return `${hours}:${minutes} ${label}`;
   }
 
   renderConversationTabs = () => {
     const { conversations } = this.state;
     return conversations.map((convo) => {
-      return <ConversationTab from={convo.from} time="test" key={convo.from} updateSelectedConversation={this.updateSelectedConversation}/>;
+      const timestamp = convo.messages[convo.messages.length - 1].timestamp;
+      const time = this.formatTimestamp(timestamp);
+      return <ConversationTab from={convo.from} time={time} key={convo.from} updateSelectedConversation={this.updateSelectedConversation}/>;
     });
-  }
-
-  signOut = () => {
-    firebase.auth().signOut();
   }
 
   renderMessages = () => {
@@ -100,14 +112,6 @@ export default class Home extends Component {
       );  
     });
   }
-
-  // renderConversations = () => {
-  //   const { messages, user } = this.state;
-  //   const conversations = this.state.conversations;
-  //   return conversations.map((conversation) => {
-  //   return <Conversation key={conversation.from} from={conversation.from} messages={conversation.messages} user={user} updateConversation={this.updateConversation}/>;
-  //   });
-  // }
 
   renderConversation = () => {
     const { selectedConversation, user } = this.state;
@@ -136,7 +140,6 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         {this.state.user && this.renderConversationTabs()}
-        <Button title="LogOut" onPress={this.signOut}/>
         <Modal
         animationType="slide"
         transparent={false}
@@ -156,6 +159,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
-    backgroundColor: '#000000d6',
+    backgroundColor: constants.primaryBgColor,
   },
 });
