@@ -27,7 +27,7 @@ export default class Login extends Component {
     } 
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
-        this.props.navigation.navigate('Home');
+        this.props.navigation.replace('Home');
       }
     });
   }
