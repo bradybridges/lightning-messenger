@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import * as Constants from '../../Constants/Constants';
 
 export default class Message extends Component {
   formatTimestamp = (timestamp) => {
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#0000ffc7',
+    backgroundColor: Constants.secondaryBgColor,
     borderRadius: 100,
     marginVertical: 30,
   },
