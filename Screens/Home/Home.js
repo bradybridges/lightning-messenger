@@ -25,6 +25,7 @@ export default class Home extends Component {
     showConversation: false,
   };
 
+
   componentDidMount = () => {
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
@@ -100,7 +101,6 @@ export default class Home extends Component {
     return conversations.map((convo) => {
       const timestamp = convo.messages[convo.messages.length - 1].timestamp;
       const time = this.formatTimestamp(timestamp);
-      console.log(time);
       return <ConversationTab from={convo.from} time={time} key={convo.from} updateSelectedConversation={this.updateSelectedConversation}/>;
     });
   }
