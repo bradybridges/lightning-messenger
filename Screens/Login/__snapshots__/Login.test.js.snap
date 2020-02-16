@@ -1,0 +1,159 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login should match snapshot 1`] = `
+<ImageBackground
+  imageStyle={
+    Object {
+      "resizeMode": "stretch",
+    }
+  }
+  source={1}
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "black",
+      "flex": 1,
+    }
+  }
+>
+  <Text
+    style={
+      Object {
+        "color": "white",
+        "fontSize": 32,
+      }
+    }
+  >
+    Lightning Messenger
+  </Text>
+  <KeyboardAvoidingView
+    enabled={true}
+    keyboardVerticalOffset={0}
+    style={
+      Object {
+        "alignItems": "center",
+        "display": "flex",
+        "height": 400,
+        "justifyContent": "space-evenly",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "color": "white",
+          "fontSize": 24,
+        }
+      }
+    >
+      Email
+    </Text>
+    <TextInput
+      allowFontScaling={true}
+      onChangeText={[Function]}
+      rejectResponderTermination={true}
+      style={
+        Object {
+          "backgroundColor": "white",
+          "borderRadius": 4,
+          "fontSize": 24,
+          "height": 60,
+          "maxWidth": 400,
+          "textAlign": "center",
+          "width": 675,
+        }
+      }
+      underlineColorAndroid="transparent"
+      value=""
+    />
+    <Text
+      style={
+        Object {
+          "color": "white",
+          "fontSize": 24,
+        }
+      }
+    >
+      Password
+    </Text>
+    <TextInput
+      allowFontScaling={true}
+      onChangeText={[Function]}
+      rejectResponderTermination={true}
+      secureTextEntry={true}
+      style={
+        Object {
+          "backgroundColor": "white",
+          "borderRadius": 4,
+          "fontSize": 24,
+          "height": 60,
+          "maxWidth": 400,
+          "textAlign": "center",
+          "width": 675,
+        }
+      }
+      underlineColorAndroid="transparent"
+      value=""
+    />
+    <View
+      style={
+        Object {
+          "display": "flex",
+          "height": 140,
+          "justifyContent": "space-evenly",
+          "width": 600,
+        }
+      }
+    >
+      <TouchableOpacity
+        activeOpacity={0.2}
+        onPress={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "white",
+            "borderRadius": 4,
+            "display": "flex",
+            "height": 50,
+            "justifyContent": "center",
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 24,
+            }
+          }
+        >
+          Login
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={0.2}
+        onPress={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "white",
+            "borderRadius": 4,
+            "display": "flex",
+            "height": 50,
+            "justifyContent": "center",
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "fontSize": 24,
+            }
+          }
+        >
+          Create Account
+        </Text>
+      </TouchableOpacity>
+    </View>
+  </KeyboardAvoidingView>
+</ImageBackground>
+`;
