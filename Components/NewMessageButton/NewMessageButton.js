@@ -2,9 +2,9 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import * as Constants from '../../Constants/Constants';
 
-const NewMessageButton = ({ handleNewConversation }) => {
+const NewMessageButton = ({ showNewConversation }) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={() => handleNewConversation('test@test.com')}>
+    <TouchableOpacity style={styles.container} onPress={() => showNewConversation()}>
       <Text style={styles.text}>+</Text>
     </TouchableOpacity>
   );

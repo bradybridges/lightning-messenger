@@ -24,6 +24,7 @@ export default class Home extends Component {
     user: null,
     selectedConversation: null,
     showConversation: false,
+    showNewConversation: false,
   };
 
 
@@ -111,6 +112,10 @@ export default class Home extends Component {
     });
   }
 
+  showNewConversation = () => {
+    this.setState({ showNewConversation: true });
+  }
+
   renderMessages = () => {
     return this.state.messages.map((message, i) => {
       return (
@@ -158,16 +163,26 @@ export default class Home extends Component {
         <ScrollView>
           {this.state.user && this.renderConversationTabs()}
         </ScrollView>
-        <NewMessageButton handleNewConversation={this.handleNewConversation} />
+        <NewMessageButton showNewConversation={this.showNewConversation}/>
         <Modal
-        animationType="slide"
-        transparent={false}
-        visible={this.state.showConversation}
-        onRequestClose={() => {
-          this.setState({ showConversation: false });
-        }}
+          animationType="slide"
+          transparent={false}
+          visible={this.state.showConversation}
+          onRequestClose={() => {
+            this.setState({ showConversation: false });
+          }}
         >
           {this.state.selectedConversation && this.renderConversation()}
+        </Modal>
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={this.state.showNewConversation}
+          onRequestClose={() => {
+            this.setState({ showNewConversation: false });
+          }}
+        >
+          <Text>New Message Modal</Text>
         </Modal>
       </View>
     )
