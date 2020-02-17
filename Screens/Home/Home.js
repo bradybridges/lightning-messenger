@@ -3,6 +3,7 @@ import { Text, View, Button, StyleSheet, YellowBox, Modal } from 'react-native';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
+import NewMessageButton from '../../Components/NewMessageButton/NewMessageButton';
 import * as firebase from 'firebase';
 import * as constants from '../../Constants/Constants';
 import 'firebase/firestore';
@@ -99,8 +100,13 @@ export default class Home extends Component {
   renderConversationTabs = () => {
     const { conversations } = this.state;
     return conversations.map((convo) => {
-      const timestamp = convo.messages[convo.messages.length - 1].timestamp;
-      const time = this.formatTimestamp(timestamp);
+      let time;
+      if(convo.messages.length) {
+        const timestamp = convo.messages[convo.messages.length - 1].timestamp;
+        time = this.formatTimestamp(timestamp);
+      } else {
+        time = 'New';
+      }
       return <ConversationTab from={convo.from} time={time} key={convo.from} updateSelectedConversation={this.updateSelectedConversation}/>;
     });
   }
@@ -131,6 +137,16 @@ export default class Home extends Component {
     this.setState({ selectedConversation: conversation, showConversation: true });
   }
 
+  handleNewConversation = (receiver) => {
+    let conversations = this.state.conversations.map((convo) => convo);
+    const newConversation = {
+      from: receiver,
+      messages: [],
+    }
+    conversations.push(newConversation);
+    this.setState({ conversations, selectedConversation: newConversation, showConversation: true });
+  }
+
   render() {
     // setTimeout(() => {
     //   const user = this.state.user;
@@ -140,6 +156,7 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         {this.state.user && this.renderConversationTabs()}
+        <NewMessageButton handleNewConversation={this.handleNewConversation} />
         <Modal
         animationType="slide"
         transparent={false}
