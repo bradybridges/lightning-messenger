@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView } from 'react-native';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
@@ -155,7 +155,9 @@ export default class Home extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        {this.state.user && this.renderConversationTabs()}
+        <ScrollView>
+          {this.state.user && this.renderConversationTabs()}
+        </ScrollView>
         <NewMessageButton handleNewConversation={this.handleNewConversation} />
         <Modal
         animationType="slide"
