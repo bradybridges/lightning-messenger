@@ -23,8 +23,8 @@ export default class CreateAccount extends Component {
     }
     firebase.auth().createUserWithEmailAndPassword(email, password) 
       .then((user) => {
-        firebase.firestore().collection('users').doc(user.uid).set({ test: 'testing' })
-        this.props.navigation.goBack();
+        firebase.firestore().collection('users').doc(user.user.uid).set({ test: 'testing' })
+        .then(() => this.props.navigation.goBack());
       })
       .catch((error) => alert(error));
   }
