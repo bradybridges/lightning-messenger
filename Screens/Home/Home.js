@@ -4,6 +4,7 @@ import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
 import NewMessageButton from '../../Components/NewMessageButton/NewMessageButton';
+import NewConversation from '../../Components/NewConversation/NewConversation';
 import * as firebase from 'firebase';
 import * as constants from '../../Constants/Constants';
 import 'firebase/firestore';
@@ -182,7 +183,7 @@ export default class Home extends Component {
             this.setState({ showNewConversation: false });
           }}
         >
-          <Text>New Message Modal</Text>
+          <NewConversation handleNewConversation={this.handleNewConversation} />
         </Modal>
       </View>
     )
