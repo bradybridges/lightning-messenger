@@ -109,12 +109,19 @@ export default class Home extends Component {
       } else {
         time = 'New';
       }
-      return <ConversationTab from={convo.from} time={time} key={convo.from} updateSelectedConversation={this.updateSelectedConversation}/>;
+      return (
+        <ConversationTab 
+          from={convo.from} 
+          time={time} 
+          key={convo.from} 
+          updateSelectedConversation={this.updateSelectedConversation} 
+        />
+      );
     });
   }
 
-  showNewConversation = () => {
-    this.setState({ showNewConversation: true });
+  toggleNewConversation = () => {
+    this.setState({ showNewConversation: !this.state.showNewConversation });
   }
 
   renderMessages = () => {
@@ -133,6 +140,7 @@ export default class Home extends Component {
         messages={selectedConversation.messages}
         user={user}
         updateConversation={this.updateConversation}
+        closeSelectedConversation={this.closeSelectedConversation}
       />
     );
   }
@@ -160,6 +168,10 @@ export default class Home extends Component {
     );
   }
 
+  closeSelectedConversation = () => {
+    this.setState({ selectedConversation: null, showConversation: false });
+  }
+
   render() {
     // setTimeout(() => {
     //   const user = this.state.user;
@@ -171,7 +183,7 @@ export default class Home extends Component {
         <ScrollView>
           {this.state.user && this.renderConversationTabs()}
         </ScrollView>
-        <NewMessageButton showNewConversation={this.showNewConversation}/>
+        <NewMessageButton toggleNewConversation={this.toggleNewConversation}/>
         <Modal
           animationType="slide"
           transparent={false}
@@ -190,7 +202,7 @@ export default class Home extends Component {
             this.setState({ showNewConversation: false });
           }}
         >
-          <NewConversation handleNewConversation={this.handleNewConversation} />
+          <NewConversation handleNewConversation={this.handleNewConversation} toggleNewConversation={this.toggleNewConversation}/>
         </Modal>
       </View>
     )
