@@ -150,7 +150,14 @@ export default class Home extends Component {
       messages: [],
     }
     conversations.push(newConversation);
-    this.setState({ conversations, selectedConversation: newConversation, showConversation: true });
+    this.setState(
+      { 
+        conversations, 
+        selectedConversation: newConversation, 
+        showConversation: true, 
+        showNewConversation: false,
+      }
+    );
   }
 
   render() {
