@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, TextInput, Dimensions, Button } from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
+import BackButton from '../BackButton/BackButton';
 
 
 export default class NewConversation extends Component {
@@ -28,9 +29,15 @@ export default class NewConversation extends Component {
     handleNewConversation(to);
   }
 
+  closeNewConversation = () => {
+    const { toggleNewConversation } = this.props;
+    toggleNewConversation();
+  }
+
   render() {
     return (
-      <View>
+      <View style={styles.container}>
+        <BackButton close={this.closeNewConversation} />
         <Text>To</Text>
         <TextInput value={this.state.to} onChangeText={(value) => this.setState({to: value})}/>
         <Button title="Start Conversation" onPress={this.handleNewConversation}/>
@@ -38,3 +45,12 @@ export default class NewConversation extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import Message from '../Message/Message';
 import ComposeMessageForm from '../ComposeMessageForm/ComposeMessageForm';
+import BackButton from '../BackButton/BackButton';
 import * as constants from '../../Constants/Constants';
 
 export default class Conversation extends Component {
@@ -18,10 +19,11 @@ export default class Conversation extends Component {
     });
   }
   render() {
-    const { from, messages, updateConversation } = this.props;
+    const { from, messages, updateConversation, closeSelectedConversation } = this.props;
     const { email } = this.props.user;
     return (
       <View style={styles.container}>
+        <BackButton close={closeSelectedConversation} />
         <View style={styles.headerContainer}>
           <Text style={styles.header}>{from}</Text>
         </View>
