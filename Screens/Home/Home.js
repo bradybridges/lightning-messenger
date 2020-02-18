@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView } from 'react-native';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
+import NewMessageButton from '../../Components/NewMessageButton/NewMessageButton';
+import NewConversation from '../../Components/NewConversation/NewConversation';
 import * as firebase from 'firebase';
 import * as constants from '../../Constants/Constants';
 import 'firebase/firestore';
@@ -23,6 +25,7 @@ export default class Home extends Component {
     user: null,
     selectedConversation: null,
     showConversation: false,
+    showNewConversation: false,
   };
 
 
@@ -99,10 +102,19 @@ export default class Home extends Component {
   renderConversationTabs = () => {
     const { conversations } = this.state;
     return conversations.map((convo) => {
-      const timestamp = convo.messages[convo.messages.length - 1].timestamp;
-      const time = this.formatTimestamp(timestamp);
+      let time;
+      if(convo.messages.length) {
+        const timestamp = convo.messages[convo.messages.length - 1].timestamp;
+        time = this.formatTimestamp(timestamp);
+      } else {
+        time = 'New';
+      }
       return <ConversationTab from={convo.from} time={time} key={convo.from} updateSelectedConversation={this.updateSelectedConversation}/>;
     });
+  }
+
+  showNewConversation = () => {
+    this.setState({ showNewConversation: true });
   }
 
   renderMessages = () => {
@@ -131,6 +143,23 @@ export default class Home extends Component {
     this.setState({ selectedConversation: conversation, showConversation: true });
   }
 
+  handleNewConversation = (receiver) => {
+    let conversations = this.state.conversations.map((convo) => convo);
+    const newConversation = {
+      from: receiver,
+      messages: [],
+    }
+    conversations.push(newConversation);
+    this.setState(
+      { 
+        conversations, 
+        selectedConversation: newConversation, 
+        showConversation: true, 
+        showNewConversation: false,
+      }
+    );
+  }
+
   render() {
     // setTimeout(() => {
     //   const user = this.state.user;
@@ -139,16 +168,29 @@ export default class Home extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        {this.state.user && this.renderConversationTabs()}
+        <ScrollView>
+          {this.state.user && this.renderConversationTabs()}
+        </ScrollView>
+        <NewMessageButton showNewConversation={this.showNewConversation}/>
         <Modal
-        animationType="slide"
-        transparent={false}
-        visible={this.state.showConversation}
-        onRequestClose={() => {
-          this.setState({ showConversation: false });
-        }}
+          animationType="slide"
+          transparent={false}
+          visible={this.state.showConversation}
+          onRequestClose={() => {
+            this.setState({ showConversation: false });
+          }}
         >
           {this.state.selectedConversation && this.renderConversation()}
+        </Modal>
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={this.state.showNewConversation}
+          onRequestClose={() => {
+            this.setState({ showNewConversation: false });
+          }}
+        >
+          <NewConversation handleNewConversation={this.handleNewConversation} />
         </Modal>
       </View>
     )

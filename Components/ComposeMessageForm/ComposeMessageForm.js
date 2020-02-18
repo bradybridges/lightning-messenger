@@ -13,9 +13,9 @@ export default class ComposeMessageForm extends Component {
     this.setState({ message });
   }
   sendMessage = () => {
+    const { message } = this.state;
     if(!message) return;
     const { from, to, updateConversation } = this.props;
-    const { message } = this.state;
     const sent = new Date();
     const newMessage = {
       to,
