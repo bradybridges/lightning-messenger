@@ -12,7 +12,6 @@ const BackButton = ({ close }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black',
     width: 40,
     height: 40,
     position: 'absolute',
