@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TextInput, Dimensions, Button } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Dimensions, TouchableOpacity } from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import BackButton from '../BackButton/BackButton';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import * as Constants from '../../Constants/Constants';
 
 
 export default class NewConversation extends Component {
@@ -38,9 +40,11 @@ export default class NewConversation extends Component {
     return (
       <View style={styles.container}>
         <BackButton close={this.closeNewConversation} />
-        <Text>To</Text>
-        <TextInput value={this.state.to} onChangeText={(value) => this.setState({to: value})}/>
-        <Button title="Start Conversation" onPress={this.handleNewConversation}/>
+        <Text style={styles.headerText}>To</Text>
+        <TextInput style={styles.input} value={this.state.to} onChangeText={(value) => this.setState({to: value})}/>
+        <TouchableOpacity style={styles.button} onPress={this.handleNewConversation}>
+          <Text style={styles.text}>Start Conversation</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -49,8 +53,36 @@ export default class NewConversation extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Constants.primaryBgColor,
   },
+  headerText: {
+    color: 'white',
+    fontSize: 36,
+    marginTop: getStatusBarHeight() + 20,
+  },
+  text: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: "700"
+  },
+  input: {
+    backgroundColor: 'white',
+    width: Dimensions.get('window').width * .8,
+    height: 50,
+    fontSize: 20,
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  button: {
+    width: Dimensions.get('window').width * .5,
+    backgroundColor: Constants.secondaryBgColor,
+    display: 'flex',
+    alignItems: 'center',
+    height: 50,
+    justifyContent: 'center',
+    borderRadius: 6,
+  }
 });
 
