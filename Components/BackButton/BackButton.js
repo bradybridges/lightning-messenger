@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     height: 40,
     position: 'absolute',
     zIndex: 10,
-    left: 5,
+    left: 10,
     top: Dimensions.get('window').height * .05,
     marginTop: -20,
   },
