@@ -33,16 +33,20 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     backgroundColor: Constants.secondaryBgColor,
-    borderRadius: 100,
+    borderRadius: 25,
     marginVertical: 30,
+    width: Dimensions.get('window').width * .9,
+    paddingBottom: 5,
   },
   content: {
     padding: 10,
     fontSize: 18,
+    color: 'white',
   },
   timestamp: {
     alignSelf: 'flex-end',
     marginRight: 20,
+    color: 'white',
   }
 });
 
