@@ -10,9 +10,9 @@ import { Text,
   ImageBackground,
 } from 'react-native';
 import * as firebase from 'firebase';
+import * as Constants from '../../Constants/Constants';
 import 'firebase/auth';
 import ApiKeys from '../../ApiKeys';
-const lightningImg = require('../../assets/lightning.jpg');
 
 
 export default class Login extends Component {
@@ -54,7 +54,7 @@ export default class Login extends Component {
   render() {
     const { navigate } = this.props.navigation;
     return (
-      <ImageBackground source={lightningImg} style={styles.container} imageStyle={{ resizeMode: "stretch" }}>
+      <View style={styles.container}>
         <Text style={styles.header}>Lightning Messenger</Text>
         <KeyboardAvoidingView style={styles.loginContainer}>
           <Text style={styles.label}>Email</Text>
@@ -76,17 +76,17 @@ export default class Login extends Component {
           </View>
 
           </KeyboardAvoidingView>
-      </ImageBackground>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black',
+    backgroundColor: Constants.primaryBgColor,
     flex: 1,
     alignItems: 'center',
-    
+    paddingTop: Dimensions.get('window').height * .1,
   },
   input: {
     width: Dimensions.get('window').width * .9,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },  
   header: {
     color: 'white',
-    fontSize: 32,
+    fontSize: 40,
   },
   button: { 
     backgroundColor: 'white', 

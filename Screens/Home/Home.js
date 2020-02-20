@@ -55,7 +55,10 @@ export default class Home extends Component {
     const { email } = this.state.user;
     const sortedMessages = messages.reduce((conversations, curMessage) => {
       const existingConvo = conversations.findIndex((convo) => {
-        if((convo.from == curMessage.from) || (email == curMessage.from)) {
+        if(convo.from == curMessage.from) {
+          return true;
+        }
+        if(email === curMessage.from && convo.from === curMessage.to) {
           return true;
         }
       });
@@ -176,7 +179,7 @@ export default class Home extends Component {
     // setTimeout(() => {
     //   const user = this.state.user;
     //   this.getMessages(user);
-    // }, 60000);
+    // }, 10000);
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>

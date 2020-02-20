@@ -14,17 +14,17 @@ const styles = StyleSheet.create({
   container: {
     height: Dimensions.get('window').height * .15,
     display: 'flex',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
     borderBottomColor: 'white',
     borderBottomWidth: 1,
+    paddingHorizontal: 20,
   },
   text: {
     fontSize: 18,
     color: 'white',
   },
 });
-
 
 export default ConversationTab;

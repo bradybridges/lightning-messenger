@@ -28,7 +28,7 @@ export default class Conversation extends Component {
           <Text style={styles.header}>{from}</Text>
         </View>
         <View style={styles.messagesContainer}>
-          <ScrollView>
+          <ScrollView contentContainerStyle={{ display: 'flex', alignItems: 'center'}}>
             { this.renderMessages() }
           </ScrollView>
         </View>
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: constants.primaryBgColor,
     justifyContent: 'flex-start',
-    
+    paddingTop: Dimensions.get('window').height * .1,
   },
   headerContainer: {
     display: 'flex',
