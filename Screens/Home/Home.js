@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage } from 'react-native';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
@@ -42,13 +42,12 @@ export default class Home extends Component {
   }
   
   getMessages = async (user) => {  
-    const recievedSnap = await firebase.firestore().collection('messages').where('to', '==', user.email).get();
-    const sentSnap = await firebase.firestore().collection('messages').where('from', '==', user.email).get();
-    const recieved = recievedSnap.docs.map((doc) => doc.data());
-    const sent = sentSnap.docs.map((doc) => doc.data());
-    const messages = [...recieved, ...sent];
-    const conversations = this.sortMessages(messages);
-    this.setState({ conversations });
+    try{
+      const inboxSnap = await firebase.firestore().collection('users').doc(user.email).collection('inbox').get();
+      const inbox = await inboxSnap.docs.map((doc) => doc.data());
+      const conversations = this.sortMessages(inbox);
+      this.setState({ conversations });
+    } catch(error) {console.log({error});}
   };
 
   sortMessages = (messages) => {
@@ -75,15 +74,16 @@ export default class Home extends Component {
       }
       return conversations;
     }, []);
-    sortedMessages.forEach((conversation) => {
-      conversation.messages.sort((a, b) => a.timestamp.seconds - b.timestamp.seconds);
-    });
+ 
     return sortedMessages;
-  }
+  } 
 
   updateConversation = (from, newMessage) => {
     const conversations = this.state.conversations.map((convo) => convo);
     const conversation = conversations.find((convo) => convo.from === from);
+    if(!conversation) {
+      return;
+    }
     conversation.messages.push(newMessage);
     this.setState({ conversations });
   }
@@ -183,6 +183,7 @@ export default class Home extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
+        {/* <Text style={{ color: 'white', fontSize: 64 }}>Testing!!!</Text> */}
         <ScrollView>
           {this.state.user && this.renderConversationTabs()}
         </ScrollView>
