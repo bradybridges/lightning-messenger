@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { Text, TextInput, View, Image, TouchableOpacity, StyleSheet, Dimensions, AsyncStorage } from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 const sendImg = require('../../assets/send.png');
@@ -12,24 +12,27 @@ export default class ComposeMessageForm extends Component {
   handleChange = (message) => {
     this.setState({ message });
   }
-  sendMessage = () => {
+  sendMessage = async () => {
     const { message } = this.state;
     if(!message) return;
     const { from, to, updateConversation } = this.props;
     const sent = new Date();
+    const sentSeconds = Math.floor(sent.getTime() / 1000);
     const newMessage = {
-      to,
       from,
       contents: message,
-      sent,
-    }
-    const setDoc = firebase.firestore().collection('messages').add(newMessage)
-      .then((data) => {
-        this.setState({ message: '' });
-        updateConversation(to, { contents: message, timestamp: { seconds: sent }});
-        return data;
-      }) 
-      .catch((err) => console.error('Error sending message...'));
+      sent, //possible issue with incorrect time here
+    };
+    const sentMessage = {
+      to,
+      contents: message,
+      sent: { seconds: sentSeconds },
+    };
+    try {
+      await firebase.firestore().collection('users').doc(to).collection('inbox').add(newMessage);
+      this.setState({message: '' });
+      updateConversation(to, { contents: message, timestamp: { seconds: sentSeconds }});
+    } catch(error) { console.log(error); }
   }
   
   render() {
