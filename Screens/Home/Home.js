@@ -45,10 +45,53 @@ export default class Home extends Component {
     try{
       const inboxSnap = await firebase.firestore().collection('users').doc(user.email).collection('inbox').get();
       const inbox = await inboxSnap.docs.map((doc) => doc.data());
-      const conversations = this.sortMessages(inbox);
+      // const conversations = this.sortMessages(inbox);
+      if(inbox.length) {
+        await this.saveNewMessages(inbox);
+      }
+      const messages = await this.buildMessages();
+      const conversations = this.sortMessages(messages);
       this.setState({ conversations });
     } catch(error) {console.log({error});}
   };
+
+  buildMessages = async () => {
+    const sentStringy = await AsyncStorage.getItem('sent');
+    const inboxStringy = await AsyncStorage.getItem('inbox');
+    if(sentStringy === null && inboxStringy === null) {
+      const date = new Date();
+      return [{ from: 'Tom', contents: 'Welcome to lightning messenger', timestamp: { seconds: date.getTime() / 1000 }}];
+    } else if( sentStringy === null) {
+      const inbox = await JSON.parse(inboxStringy);
+      console.log('inbox');
+      return inbox;
+    } else if(inboxStringy === null) {
+      const sent = await JSON.parse(sentStringy);
+      console.log('sent');
+      return sent;
+    } else {
+      const inbox = await JSON.parse(inboxStringy);
+      const sent = await JSON.parse(sentStringy);
+      console.log('inbox/sent');
+      return [...inbox, ...sent];
+    }
+  }
+
+  saveNewMessage = async (message) => {
+
+  }
+
+  saveNewMessages = async (messages) => {
+    const stringyInbox = await AsyncStorage.getItem('inbox');
+    if(stringyInbox !== null) {
+      const inbox = await JSON.parse(stringyInbox);
+      // await AsyncStorage.setItem('inbox', JSON.stringify([...inbox, ...messages]));
+    } else if(stringInbox === null && messages.length === 0) {
+      // await AsyncStorage.setItem('inbox', JSON.stringify([]));
+    } else {
+      // await AsyncStorage.setItem('inbox', JSON.stringify(messages));
+    }
+  }
 
   sortMessages = (messages) => {
     const { email } = this.state.user;
@@ -57,7 +100,7 @@ export default class Home extends Component {
         if(convo.from == curMessage.from) {
           return true;
         }
-        if(email === curMessage.from && convo.from === curMessage.to) {
+        if(convo.from === curMessage.to) {
           return true;
         }
       });
