@@ -9,9 +9,11 @@ export default class ComposeMessageForm extends Component {
   state = {
     message: '',
   }
+
   handleChange = (message) => {
     this.setState({ message });
   }
+
   sendMessage = async () => {
     const { message } = this.state;
     if(!message) return;
@@ -32,7 +34,18 @@ export default class ComposeMessageForm extends Component {
       await firebase.firestore().collection('users').doc(to).collection('inbox').add(newMessage);
       this.setState({message: '' });
       updateConversation(to, { contents: message, timestamp: { seconds: sentSeconds }});
+      await this.saveSentMessage(sentMessage);
     } catch(error) { console.log(error); }
+  }
+
+  saveSentMessage = async (newMessage) => {
+    const { from } = this.props;
+    try{
+      const stringySavedMessages = await AsyncStorage.getItem(from);
+      const savedMessages = JSON.parse(stringySavedMessages);
+      savedMessages.sent.push(newMessage);
+      await AsyncStorage.setItem(from, JSON.stringify(savedMessages));
+    } catch(err) {console.error({ err })}   
   }
   
   render() {
