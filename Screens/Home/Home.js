@@ -47,6 +47,7 @@ export default class Home extends Component {
       const inbox = await inboxSnap.docs.map((doc) => doc.data());
       if(inbox.length) {
         await this.saveNewMessages(inbox);
+        await this.deleteInbox(inboxSnap);
       }
       const messages = await this.buildMessages();
       const conversations = this.sortMessages(messages);
@@ -73,10 +74,6 @@ export default class Home extends Component {
     } catch(err) {console.log({ err })}
   }
 
-  saveNewMessage = async (message) => {
-
-  }
-
   saveNewMessages = async (messages) => {
     const { user } = this.state;
     const { email } = user;
@@ -86,15 +83,15 @@ export default class Home extends Component {
         const savedMessages = await JSON.parse(stringySavedMessages);
         const savedInbox = savedMessages.inbox;
         savedMessages.inbox = [...savedInbox, ...messages];
-        // await AsyncStorage.setItem(user.email, JSON.stringify(savedMessages));
+        await AsyncStorage.setItem(user.email, JSON.stringify(savedMessages));
       } else if(stringySavedMessages === null && messages.length === 0) {
         const user = { inbox: [], sent: [] }
-        // await AsyncStorage.setItem(user.email, JSON.stringify(user));
+        await AsyncStorage.setItem(user.email, JSON.stringify(user));
       } else {
         const user = { inbox: messages, sent: [] };
-        // await AsyncStorage.setItem(email, JSON.stringify(user));
+        await AsyncStorage.setItem(email, JSON.stringify(user));
       }
-    } catch(err) {console.log({ err })}
+    } catch(err) {console.error({ err })}
   }
 
   sortMessages = (messages) => {
@@ -123,7 +120,11 @@ export default class Home extends Component {
     }, []);
  
     return sortedMessages;
-  } 
+  }
+
+  deleteInbox = async (inboxSnap) => {
+    inboxSnap.docs.forEach((msg) => msg.ref.delete());
+  }
 
   updateConversation = (from, newMessage) => {
     const conversations = this.state.conversations.map((convo) => convo);
