@@ -45,7 +45,6 @@ export default class Home extends Component {
     try{
       const inboxSnap = await firebase.firestore().collection('users').doc(user.email).collection('inbox').get();
       const inbox = await inboxSnap.docs.map((doc) => doc.data());
-      // const conversations = this.sortMessages(inbox);
       if(inbox.length) {
         await this.saveNewMessages(inbox);
       }
@@ -56,25 +55,22 @@ export default class Home extends Component {
   };
 
   buildMessages = async () => {
-    const sentStringy = await AsyncStorage.getItem('sent');
-    const inboxStringy = await AsyncStorage.getItem('inbox');
-    if(sentStringy === null && inboxStringy === null) {
-      const date = new Date();
-      return [{ from: 'Tom', contents: 'Welcome to lightning messenger', timestamp: { seconds: date.getTime() / 1000 }}];
-    } else if( sentStringy === null) {
-      const inbox = await JSON.parse(inboxStringy);
-      console.log('inbox');
-      return inbox;
-    } else if(inboxStringy === null) {
-      const sent = await JSON.parse(sentStringy);
-      console.log('sent');
-      return sent;
-    } else {
-      const inbox = await JSON.parse(inboxStringy);
-      const sent = await JSON.parse(sentStringy);
-      console.log('inbox/sent');
-      return [...inbox, ...sent];
-    }
+    try{
+      const { user } = this.state;
+      const stringySavedMessages = await AsyncStorage.getItem(user.email);
+      const savedMessages = await JSON.parse(stringySavedMessages);
+      const { inbox, sent } = savedMessages;
+      if(!inbox.length && !sent.length) {
+        const date = new Date();
+        return [{ from: 'Tom', contents: 'Welcome to lightning messenger', timestamp: { seconds: date.getTime() / 1000 }}];
+      } else if(!sent.length) {
+        return inbox;
+      } else if(!inbox.length) {
+        return sent;
+      } else {
+        return [...inbox, ...sent];
+      }
+    } catch(err) {console.log({ err })}
   }
 
   saveNewMessage = async (message) => {
@@ -82,15 +78,23 @@ export default class Home extends Component {
   }
 
   saveNewMessages = async (messages) => {
-    const stringyInbox = await AsyncStorage.getItem('inbox');
-    if(stringyInbox !== null) {
-      const inbox = await JSON.parse(stringyInbox);
-      // await AsyncStorage.setItem('inbox', JSON.stringify([...inbox, ...messages]));
-    } else if(stringInbox === null && messages.length === 0) {
-      // await AsyncStorage.setItem('inbox', JSON.stringify([]));
-    } else {
-      // await AsyncStorage.setItem('inbox', JSON.stringify(messages));
-    }
+    const { user } = this.state;
+    const { email } = user;
+    const stringySavedMessages = await AsyncStorage.getItem(user.email);
+    try {
+      if(stringySavedMessages !== null) {
+        const savedMessages = await JSON.parse(stringySavedMessages);
+        const savedInbox = savedMessages.inbox;
+        savedMessages.inbox = [...savedInbox, ...messages];
+        // await AsyncStorage.setItem(user.email, JSON.stringify(savedMessages));
+      } else if(stringySavedMessages === null && messages.length === 0) {
+        const user = { inbox: [], sent: [] }
+        // await AsyncStorage.setItem(user.email, JSON.stringify(user));
+      } else {
+        const user = { inbox: messages, sent: [] };
+        // await AsyncStorage.setItem(email, JSON.stringify(user));
+      }
+    } catch(err) {console.log({ err })}
   }
 
   sortMessages = (messages) => {
