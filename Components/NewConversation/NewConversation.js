@@ -21,14 +21,16 @@ export default class NewConversation extends Component {
     const { to } = this.state;
     const { handleNewConversation } = this.props;
     if(!to) return;
-    const userRef = await firebase.firestore().collection('users').doc(to);
-    const doc = await userRef.get();
-    if(!doc.exists) {
-      alert('No user found with that email!');
-      this.setState({ to: '' });
-      return;
-    }
-    handleNewConversation(to);
+    try {
+      const userRef = await firebase.firestore().collection('users').doc(to);
+      const doc = await userRef.get();
+      if(!doc.exists) {
+        alert('No user found with that email!');
+        this.setState({ to: '' });
+        return;
+      }
+      handleNewConversation(to);
+    } catch(err) {console.error({ err })}
   }
 
   closeNewConversation = () => {

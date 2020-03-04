@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage } from 'react-native';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
@@ -42,14 +42,57 @@ export default class Home extends Component {
   }
   
   getMessages = async (user) => {  
-    const recievedSnap = await firebase.firestore().collection('messages').where('to', '==', user.email).get();
-    const sentSnap = await firebase.firestore().collection('messages').where('from', '==', user.email).get();
-    const recieved = recievedSnap.docs.map((doc) => doc.data());
-    const sent = sentSnap.docs.map((doc) => doc.data());
-    const messages = [...recieved, ...sent];
-    const conversations = this.sortMessages(messages);
-    this.setState({ conversations });
+    try{
+      const inboxSnap = await firebase.firestore().collection('users').doc(user.email).collection('inbox').get();
+      const inbox = await inboxSnap.docs.map((doc) => doc.data());
+      if(inbox.length) {
+        await this.saveNewMessages(inbox);
+        await this.deleteInbox(inboxSnap);
+      }
+      const messages = await this.buildMessages();
+      const conversations = this.sortMessages(messages);
+      this.setState({ conversations });
+    } catch(error) {console.log({error});}
   };
+
+  buildMessages = async () => {
+    try{
+      const { user } = this.state;
+      const stringySavedMessages = await AsyncStorage.getItem(user.email);
+      const savedMessages = await JSON.parse(stringySavedMessages);
+      const { inbox, sent } = savedMessages;
+      if(!inbox.length && !sent.length) {
+        const date = new Date();
+        return [{ from: 'Tom', contents: 'Welcome to lightning messenger', timestamp: { seconds: date.getTime() / 1000 }}];
+      } else if(!sent.length) {
+        return inbox;
+      } else if(!inbox.length) {
+        return sent;
+      } else {
+        return [...inbox, ...sent];
+      }
+    } catch(err) {console.log({ err })}
+  }
+
+  saveNewMessages = async (messages) => {
+    const { user } = this.state;
+    const { email } = user;
+    const stringySavedMessages = await AsyncStorage.getItem(user.email);
+    try {
+      if(stringySavedMessages !== null) {
+        const savedMessages = await JSON.parse(stringySavedMessages);
+        const savedInbox = savedMessages.inbox;
+        savedMessages.inbox = [...savedInbox, ...messages];
+        await AsyncStorage.setItem(user.email, JSON.stringify(savedMessages));
+      } else if(stringySavedMessages === null && messages.length === 0) {
+        const user = { inbox: [], sent: [] }
+        await AsyncStorage.setItem(user.email, JSON.stringify(user));
+      } else {
+        const user = { inbox: messages, sent: [] };
+        await AsyncStorage.setItem(email, JSON.stringify(user));
+      }
+    } catch(err) {console.error({ err })}
+  }
 
   sortMessages = (messages) => {
     const { email } = this.state.user;
@@ -58,7 +101,7 @@ export default class Home extends Component {
         if(convo.from == curMessage.from) {
           return true;
         }
-        if(email === curMessage.from && convo.from === curMessage.to) {
+        if(convo.from === curMessage.to) {
           return true;
         }
       });
@@ -75,15 +118,20 @@ export default class Home extends Component {
       }
       return conversations;
     }, []);
-    sortedMessages.forEach((conversation) => {
-      conversation.messages.sort((a, b) => a.timestamp.seconds - b.timestamp.seconds);
-    });
+ 
     return sortedMessages;
+  }
+
+  deleteInbox = async (inboxSnap) => {
+    inboxSnap.docs.forEach((msg) => msg.ref.delete());
   }
 
   updateConversation = (from, newMessage) => {
     const conversations = this.state.conversations.map((convo) => convo);
     const conversation = conversations.find((convo) => convo.from === from);
+    if(!conversation) {
+      return;
+    }
     conversation.messages.push(newMessage);
     this.setState({ conversations });
   }
@@ -183,6 +231,7 @@ export default class Home extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
+        {/* <Text style={{ color: 'white', fontSize: 64 }}>Testing!!!</Text> */}
         <ScrollView>
           {this.state.user && this.renderConversationTabs()}
         </ScrollView>
