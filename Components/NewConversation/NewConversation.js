@@ -22,9 +22,8 @@ export default class NewConversation extends Component {
     const { handleNewConversation } = this.props;
     if(!to) return;
     try {
-      const userRef = await firebase.firestore().collection('users').doc(to);
-      const doc = await userRef.get();
-      if(!doc.exists) {
+      const user = await firebase.firestore().collection('availableUsers').doc(to).get();
+      if(!user.exists) {
         alert('No user found with that email!');
         this.setState({ to: '' });
         return;
