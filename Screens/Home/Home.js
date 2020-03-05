@@ -50,11 +50,11 @@ export default class Home extends Component {
         await this.deleteInbox(inboxSnap);
       }
       const messages = await this.buildMessages();
-      const conversations = this.sortMessages(messages);
+      const conversations = this.buildConversations(messages);
       this.setState({ conversations });
     } catch(error) {console.log({error});}
   };
-
+  
   buildMessages = async () => {
     try{
       const { user } = this.state;
@@ -62,16 +62,21 @@ export default class Home extends Component {
       const savedMessages = await JSON.parse(stringySavedMessages);
       const { inbox, sent } = savedMessages;
       if(!inbox.length && !sent.length) {
-        const date = new Date();
-        return [{ from: 'Tom', contents: 'Welcome to lightning messenger', timestamp: { seconds: date.getTime() / 1000 }}];
+        return [];
       } else if(!sent.length) {
-        return inbox;
+        return this.sortMessages(inbox);
       } else if(!inbox.length) {
-        return sent;
+        return this.sortMessages(sent);
       } else {
-        return [...inbox, ...sent];
+        const msgs = [...inbox, ...sent];
+        return this.sortMessages(msgs);
       }
     } catch(err) {console.log({ err })}
+  }
+  
+  sortMessages = (messages) => {
+    messages.sort((a, b) => a.sent.seconds > b.sent.seconds);
+    return messages;
   }
 
   saveNewMessages = async (messages) => {
@@ -94,7 +99,7 @@ export default class Home extends Component {
     } catch(err) {console.error({ err })}
   }
 
-  sortMessages = (messages) => {
+  buildConversations = (messages) => {
     const { email } = this.state.user;
     const sortedMessages = messages.reduce((conversations, curMessage) => {
       const existingConvo = conversations.findIndex((convo) => {
@@ -118,9 +123,9 @@ export default class Home extends Component {
       }
       return conversations;
     }, []);
- 
     return sortedMessages;
   }
+
 
   deleteInbox = async (inboxSnap) => {
     inboxSnap.docs.forEach((msg) => msg.ref.delete());
@@ -231,7 +236,6 @@ export default class Home extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        {/* <Text style={{ color: 'white', fontSize: 64 }}>Testing!!!</Text> */}
         <ScrollView>
           {this.state.user && this.renderConversationTabs()}
         </ScrollView>
