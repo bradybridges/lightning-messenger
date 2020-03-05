@@ -113,10 +113,17 @@ export default class Home extends Component {
       if(existingConvo > -1) {
         const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent };
         conversations[existingConvo].messages.push(newMessage);
-      } else {
+      } else if(curMessage.from !== undefined){
         const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent };
         const newConvo = {
           from: curMessage.from,
+          messages: [newMessage],
+        };
+        conversations.push(newConvo);
+      } else {
+        const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent };
+        const newConvo = {
+          from: curMessage.to,
           messages: [newMessage],
         };
         conversations.push(newConvo);
