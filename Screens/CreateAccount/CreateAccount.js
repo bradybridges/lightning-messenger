@@ -24,7 +24,8 @@ export default class CreateAccount extends Component {
     }
     firebase.auth().createUserWithEmailAndPassword(email, password) 
       .then((user) => {
-        firebase.firestore().collection('users').doc(user.user.email).collection('inbox').add({ from: 'Tom', contents: 'hey buddy', sent: new Date() })
+        firebase.firestore().collection('users').doc(user.user.email).collection('friends').doc('brady@gmail.com').set({ exists: true });
+        firebase.firestore().collection('availableUsers').doc(user.user.email).set({ exists: true });
       })
       .then(() => this.props.navigation.goBack())
       .catch((error) => alert(error));
