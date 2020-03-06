@@ -30,15 +30,25 @@ export default class Home extends Component {
 
 
   componentDidMount = () => {
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(async user => {
       if(user) {
         this.setState({ user });
         this.getMessages(user);
+        this.checkLocalStorage(user);
       } else {
         const { replace } = this.props.navigation;
         replace('Login');
       }
     });
+  }
+
+  checkLocalStorage = async (user) => {
+    const { email } = user;
+    const savedMessages = await AsyncStorage.getItem(email);
+    if(savedMessages === null) {
+      const newMailbox = JSON.stringify({ inbox: [], sent: [] });
+      await AsyncStorage.setItem(email, newMailbox);
+    }
   }
   
   getMessages = async (user) => {  
