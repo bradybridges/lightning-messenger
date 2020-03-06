@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, StyleSheet, Button, Dimensions } from 'react-native';
+import { Text, View, TextInput, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
 import 'firebase/auth';
@@ -35,14 +35,21 @@ export default class CreateAccount extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
+        <Text style={styles.header}>Lightning Messenger</Text>
         <Text style={styles.text}>Email</Text>
         <TextInput style={styles.input} onChangeText={(value) => this.handleChange("email", value)}/>
         <Text style={styles.text}>Password</Text>
         <TextInput secureTextEntry={true} style={styles.input} onChangeText={(value) => this.handleChange("password", value)}/>
         <Text style={styles.text}>Confirm Password</Text>
         <TextInput secureTextEntry={true} style={styles.input} onChangeText={(value) => this.handleChange("passwordConfirm", value)}/>
-        <Button style={styles.button} title="Create Account" onPress={this.handleCreateAccount}/>
-        <Button style={styles.button} title="Cancel" onPress={() => navigate('Login')}/>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={this.handleCreateAccount}>
+            <Text style={styles.buttonText}>Create Account</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => navigate('Login')}>
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -54,6 +61,11 @@ const styles = StyleSheet.create({
     backgroundColor: Constants.primaryBgColor,
     alignItems: 'center',
     paddingTop: Dimensions.get('window').height * .1,
+    justifyContent: 'space-between',
+  },
+  header: {
+    color: 'white',
+    fontSize: 40,
   },
   text: {
     fontSize: 24,
@@ -68,5 +80,22 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'center',
   },
+  buttonContainer: {
+    width: Dimensions.get('window').width * .8,
+    height: 140,
+    display: 'flex',
+    justifyContent: 'space-evenly',
+  },
+  button: { 
+    backgroundColor: 'white', 
+    height: 50, 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    borderRadius: 4,
+  },
+  buttonText: {
+    fontSize: 24,
+  }
 });
 
