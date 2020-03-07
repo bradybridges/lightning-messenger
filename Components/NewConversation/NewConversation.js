@@ -42,7 +42,7 @@ export default class NewConversation extends Component {
       <View style={styles.container}>
         <BackButton close={this.closeNewConversation} />
         <Text style={styles.headerText}>To</Text>
-        <TextInput style={styles.input} value={this.state.to} onChangeText={(value) => this.setState({to: value})}/>
+        <TextInput style={styles.input} value={this.state.to} onChangeText={(value) => this.setState({to: value})} placeholder="Email" />
         <TouchableOpacity style={styles.button} onPress={this.handleNewConversation}>
           <Text style={styles.text}>Start Conversation</Text>
         </TouchableOpacity>
