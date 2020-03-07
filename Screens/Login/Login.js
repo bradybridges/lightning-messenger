@@ -8,11 +8,13 @@ import { Text,
   KeyboardAvoidingView,
   TouchableOpacity,
   ImageBackground,
+  Image,
 } from 'react-native';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
 import 'firebase/auth';
 import ApiKeys from '../../ApiKeys';
+const logo = require('../../assets/logo.png');
 
 
 export default class Login extends Component {
@@ -55,6 +57,7 @@ export default class Login extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
+        <Image source={logo} style={{ width: 200, height: 200 }}/>
         <Text style={styles.header}>Lightning Messenger</Text>
         <KeyboardAvoidingView style={styles.loginContainer}>
           <Text style={styles.label}>Email</Text>
