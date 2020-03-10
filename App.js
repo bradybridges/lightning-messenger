@@ -25,7 +25,12 @@ const MainNavigator = createStackNavigator({
       },
     },
   },
-  CreateAccount: { screen: CreateAccount },
+  CreateAccount: { 
+    screen: CreateAccount ,
+    navigationOptions: {
+      headerShown: false,
+    }
+  },
 });
 
 const renderLogo = () => {
