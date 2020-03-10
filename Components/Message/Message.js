@@ -17,12 +17,12 @@ export default class Message extends Component {
     return `${hours}:${minutes} ${label}`;
   }
   render() {
-    const { content, timestamp } = this.props;
+    const { content, timestamp, isSender } = this.props;
     const time = this.formatTimestamp(timestamp);
     return (
-      <View style={styles.container}>
-        <Text style={styles.content}>{content}</Text>
-        <Text style={styles.timestamp}>{time}</Text>
+      <View style={isSender ? styles.senderContainer: styles.container}>
+        <Text style={isSender ? styles.senderContent: styles.content}>{content}</Text>
+        <Text style={isSender ? styles.senderTimestamp: styles.timestamp}>{time}</Text>
       </View>
     );
   }
@@ -35,8 +35,11 @@ const styles = StyleSheet.create({
     backgroundColor: Constants.secondaryBgColor,
     borderRadius: 25,
     marginVertical: 30,
-    width: Dimensions.get('window').width * .9,
+    width: Dimensions.get('window').width * .8,
     paddingBottom: 5,
+    borderColor: '#abababeb',
+    borderWidth: 1,
+    marginLeft: 10,
   },
   content: {
     padding: 10,
@@ -47,6 +50,29 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginRight: 20,
     color: 'white',
-  }
+  },
+  senderContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: '#151515',
+    borderRadius: 25,
+    marginVertical: 30,
+    width: Dimensions.get('window').width * .8,
+    paddingBottom: 5,
+    borderColor: '#abababeb',
+    borderWidth: 1,
+    alignSelf: 'flex-end',
+    marginRight: 10,
+  },
+  senderContent: {
+    padding: 10,
+    fontSize: 18,
+    color: 'white'
+  },
+  senderTimestamp: {
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    color: 'white',
+  },
 });
 
