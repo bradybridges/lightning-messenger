@@ -57,7 +57,7 @@ export default class Login extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <Image source={logo} style={{ width: 200, height: 200 }}/>
+        <Image source={logo} style={{ width: 150, height: 150 }}/>
         <Text style={styles.header}>Lightning Messenger</Text>
         <KeyboardAvoidingView style={styles.loginContainer}>
           <Text style={styles.label}>Email</Text>
