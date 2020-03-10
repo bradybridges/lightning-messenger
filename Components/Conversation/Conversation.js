@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   messagesContainer: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * .9,
+    height: Dimensions.get('window').height * .8,
   }
 })
 
