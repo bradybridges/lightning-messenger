@@ -23,7 +23,7 @@ export default class ComposeMessageForm extends Component {
     const newMessage = {
       from,
       contents: message,
-      sent, //possible issue with incorrect time here
+      sent,
     };
     const sentMessage = {
       to,
