@@ -34,15 +34,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Constants.secondaryBgColor,
     borderRadius: 25,
-    marginVertical: 30,
-    width: Dimensions.get('window').width * .8,
+    marginVertical: 15,
+    width: Dimensions.get('window').width * .9,
     paddingBottom: 5,
     borderColor: '#abababeb',
     borderWidth: 1,
     marginLeft: 10,
   },
   content: {
-    padding: 10,
+    padding: 5,
     fontSize: 18,
     color: 'white',
   },
@@ -50,14 +50,15 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginRight: 20,
     color: 'white',
+    fontSize: 12,
   },
   senderContainer: {
     display: 'flex',
     alignItems: 'center',
     backgroundColor: '#151515',
     borderRadius: 25,
-    marginVertical: 30,
-    width: Dimensions.get('window').width * .8,
+    marginVertical: 15,
+    width: Dimensions.get('window').width * .9,
     paddingBottom: 5,
     borderColor: '#abababeb',
     borderWidth: 1,
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   senderContent: {
-    padding: 10,
+    padding: 5,
     fontSize: 18,
     color: 'white'
   },
@@ -73,6 +74,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginRight: 20,
     color: 'white',
+    fontSize: 12,
   },
 });
 
