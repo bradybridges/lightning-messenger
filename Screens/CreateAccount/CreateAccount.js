@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { Text, View, TextInput, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
 import 'firebase/auth';
@@ -35,6 +35,7 @@ export default class CreateAccount extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
+        <Image source={require('../../assets/logo.png')} style={{ width: 150, height: 150 }}/>
         <Text style={styles.header}>Lightning Messenger</Text>
         <Text style={styles.text}>Email</Text>
         <TextInput style={styles.input} onChangeText={(value) => this.handleChange("email", value)}/>
@@ -58,10 +59,9 @@ export default class CreateAccount extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Constants.primaryBgColor,
+    backgroundColor: 'black',
     alignItems: 'center',
-    paddingTop: Dimensions.get('window').height * .1,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   header: {
     color: 'white',

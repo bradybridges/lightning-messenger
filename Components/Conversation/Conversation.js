@@ -14,6 +14,7 @@ export default class Conversation extends Component {
           key={i} 
           content={message.contents} 
           timestamp={message.timestamp}
+          isSender={message.sender === true ? true: false}
         />
       );  
     });
@@ -28,7 +29,7 @@ export default class Conversation extends Component {
           <Text style={styles.header}>{from}</Text>
         </View>
         <View style={styles.messagesContainer}>
-          <ScrollView contentContainerStyle={{ display: 'flex', alignItems: 'center'}}>
+          <ScrollView contentContainerStyle={{ display: 'flex' }}>
             { this.renderMessages() }
           </ScrollView>
         </View>
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
   },
   messagesContainer: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * .9,
+    height: Dimensions.get('window').height * .8,
   }
 })
 

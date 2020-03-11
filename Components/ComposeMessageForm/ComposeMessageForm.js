@@ -23,7 +23,7 @@ export default class ComposeMessageForm extends Component {
     const newMessage = {
       from,
       contents: message,
-      sent, //possible issue with incorrect time here
+      sent,
     };
     const sentMessage = {
       to,
@@ -33,7 +33,7 @@ export default class ComposeMessageForm extends Component {
     try {
       await firebase.firestore().collection('users').doc(to).collection('inbox').add(newMessage);
       this.setState({message: '' });
-      updateConversation(to, { contents: message, timestamp: { seconds: sentSeconds }});
+      updateConversation(to, { contents: message, timestamp: { seconds: sentSeconds }, sender: true });
       await this.saveSentMessage(sentMessage);
     } catch(error) { console.log(error); }
   }

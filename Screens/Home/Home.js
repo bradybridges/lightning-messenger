@@ -120,10 +120,13 @@ export default class Home extends Component {
           return true;
         }
       });
-      if(existingConvo > -1) {
-        const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent };
+      if(existingConvo > -1 && curMessage.from !== undefined) {
+        const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent }
         conversations[existingConvo].messages.push(newMessage);
-      } else if(curMessage.from !== undefined){
+      } else if(existingConvo > -1 && curMessage.to !== undefined) {
+        const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent, sender: true }
+        conversations[existingConvo].messages.push(newMessage);
+      } else if(curMessage.from !== undefined) {
         const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent };
         const newConvo = {
           from: curMessage.from,
@@ -131,7 +134,7 @@ export default class Home extends Component {
         };
         conversations.push(newConvo);
       } else {
-        const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent };
+        const newMessage = { contents: curMessage.contents, timestamp: curMessage.sent, sender: true }
         const newConvo = {
           from: curMessage.to,
           messages: [newMessage],
