@@ -50,7 +50,6 @@ export default class Login extends Component {
         alert(error.message);
         alert(error.code);
       });
-    this.setState({ email: '', password: '' });
   }
 
   render() {
@@ -86,10 +85,10 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Constants.primaryBgColor,
+    backgroundColor: 'black',
     flex: 1,
     alignItems: 'center',
-    paddingTop: Dimensions.get('window').height * .1,
+    justifyContent: 'center',
   },
   input: {
     width: Dimensions.get('window').width * .9,
