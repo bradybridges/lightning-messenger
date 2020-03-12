@@ -12,11 +12,6 @@ export default class NewConversation extends Component {
    to: '',
   }
 
-  findReceiver = () => {
-    const { to } = this.state;
-
-  }
-
   handleNewConversation = async () => {
     const { to } = this.state;
     const { handleNewConversation } = this.props;
