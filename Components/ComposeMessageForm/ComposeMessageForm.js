@@ -4,6 +4,7 @@ import * as firebase from 'firebase';
 import 'firebase/firestore';
 const sendImg = require('../../assets/send.png');
 import * as constants from '../../Constants/Constants';
+import nacl from 'tweet-nacl-react-native-expo';
 
 export default class ComposeMessageForm extends Component {
   state = {
@@ -14,24 +15,62 @@ export default class ComposeMessageForm extends Component {
     this.setState({ message });
   }
 
-  sendMessage = async () => {
-    const { message } = this.state;
-    if(!message) return;
-    const { from, to, updateConversation } = this.props;
-    const sent = new Date();
-    const sentSeconds = Math.floor(sent.getTime() / 1000);
-    const newMessage = {
-      from,
-      contents: message,
-      sent,
-    };
-    const sentMessage = {
-      to,
-      contents: message,
-      sent: { seconds: sentSeconds },
-    };
+  encryptMessage = async (newMessage) => {
     try {
-      await firebase.firestore().collection('users').doc(to).collection('inbox').add(newMessage);
+      const { to, from } = this.props;
+      let profile = await AsyncStorage.getItem(from);
+      profile = JSON.parse(profile);
+      const secretKeyEncoded = profile.keys.secretKey;
+      const secretKey = nacl.util.decodeBase64(secretKeyEncoded);
+      let publicKey = await this.getPublicKey(to);
+      if(!publicKey) {
+        console.log('no public key found...');
+        return;
+      }
+      publicKey = nacl.util.decodeBase64(publicKey);
+      const sharedKey = nacl.box.before(publicKey, secretKey);
+      const stringyMessage = JSON.stringify(newMessage);
+      const decodedMessage = new Uint8Array(nacl.util.decodeUTF8(stringyMessage));
+      const nonce = await nacl.randomBytes(24);
+      const encrypted = nacl.box.after(decodedMessage, nonce, sharedKey);
+      const base64Message = nacl.util.encodeBase64(encrypted);
+      return {
+        contents: base64Message,
+        nonce: nacl.util.encodeBase64(nonce),
+        publicKey: profile.keys.publicKey,
+      }
+    } catch(error) {console.error({ error })}
+  }
+
+  getPublicKey = async (email) => {
+    try {
+      const user = await firebase.firestore().collection('availableUsers').doc(email).get();
+      if(user.exists) {
+        return user.data().publicKey;
+      }
+      return false;
+    } catch(error) { console.error({ error })}
+  }
+
+  sendMessage = async () => {
+    try {
+      const { message } = this.state;
+      if(!message) return;
+      const { from, to, updateConversation } = this.props;
+      const sent = new Date();
+      const sentSeconds = Math.floor(sent.getTime() / 1000);
+      const newMessage = {
+        from,
+        contents: message,
+        sent,
+      };
+      const sentMessage = {
+        to,
+        contents: message,
+        sent: { seconds: sentSeconds },
+      };
+      const encryptedMessage = await this.encryptMessage(newMessage);
+      await firebase.firestore().collection('users').doc(to).collection('inbox').add(encryptedMessage);
       this.setState({message: '' });
       updateConversation(to, { contents: message, timestamp: { seconds: sentSeconds }, sender: true });
       await this.saveSentMessage(sentMessage);
