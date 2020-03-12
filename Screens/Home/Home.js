@@ -30,11 +30,11 @@ export default class Home extends Component {
   };
 
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     firebase.auth().onAuthStateChanged(async user => {
       if(user) {
         this.setState({ user });
-        this.getMessages(user);
+        await this.getMessages(user);
         // this.checkLocalStorage(user);
       } else {
         const { replace } = this.props.navigation;
@@ -42,6 +42,22 @@ export default class Home extends Component {
       }
     });
   }
+
+  getMessages = async (user) => {  
+    try{
+      const inboxSnap = await firebase.firestore().collection('users').doc(user.email).collection('inbox').get();
+      const inbox = await inboxSnap.docs.map((doc) => doc.data());
+      if(inbox.length) {
+        const messages = await this.decryptMessages(inbox);
+        console.log('RETURNED MESSAGES', messages);
+        await this.saveNewMessages(messages);
+        await this.deleteInbox(inboxSnap);
+      }
+      const messages = await this.buildMessages();
+      const conversations = await this.buildConversations(messages);
+      this.setState({ conversations });
+    } catch(error) {console.log({error});}
+  };
 
   decryptMessages = async (messages) => {
     try{
@@ -67,57 +83,7 @@ export default class Home extends Component {
         });
         return decryptedMessages;
       }
-    } catch(error) {console.error({ error })}
-  }
-
-  // decryptMessages = async (messages) => {
-  //   try{
-  //     const { email } = this.state.user;
-  //     let profile = await AsyncStorage.getItem(email);
-  //     profile = await JSON.parse(profile);
-  //     if(profile !== null) {
-  //       let { secretKey } = profile.keys;
-  //       secretKey = await nacl.util.decodeBase64(secretKey);
-  //       const decryptedMessages = await messages.map( async (message) => {
-  //         let { publicKey, nonce } = message;
-  //         publicKey = await nacl.util.decodeBase64(publicKey);
-  //         nonce = await nacl.util.decodeBase64(nonce);
-  //         const sharedKey = await nacl.box.before(publicKey, secretKey);
-  //         const decodedMessage = await nacl.util.decodeBase64(message.contents);
-  //         const decrypted = await nacl.box.open.after(decodedMessage, nonce, sharedKey);
-  //         console.log('DECRYPTED', decrypted);
-  //         const utf = await nacl.util.encodeUTF8(decrypted);
-  //         const parsedDecrypted = await JSON.parse(utf);
-  //         return parsedDecrypted;
-  //       });
-  //       return decryptedMessages;
-  //     }
-  //   }catch(error) {console.error({ error })}
-  // }
-  
-  getMessages = async (user) => {  
-    try{
-      const inboxSnap = await firebase.firestore().collection('users').doc(user.email).collection('inbox').get();
-      const inbox = await inboxSnap.docs.map((doc) => doc.data());
-      if(inbox.length) {
-        const messages = await this.decryptMessages(inbox);
-        console.log('RETURNED MESSAGES', messages);
-        await this.saveNewMessages(messages);
-        await this.deleteInbox(inboxSnap);
-      }
-      const messages = await this.buildMessages();
-      const conversations = await this.buildConversations(messages);
-      this.setState({ conversations });
-    } catch(error) {console.log({error});}
-  };
-
-  checkLocalStorage = async (user) => {
-    const { email } = user;
-    const savedMessages = await AsyncStorage.getItem(email);
-    if(savedMessages === null) {
-      const newMailbox = JSON.stringify({ inbox: [], sent: [] });
-      await AsyncStorage.setItem(email, newMailbox);
-    }
+    } catch(error) {console.log({ error })}
   }
   
   buildMessages = async () => {
@@ -192,14 +158,6 @@ export default class Home extends Component {
         savedMessages.inbox = [...savedInbox, ...messages];
         await AsyncStorage.setItem(user.email, JSON.stringify(savedMessages));
       } 
-      // else if(stringySavedMessages === null && messages.length === 0) {
-      //   console.log('this should no longer run!');
-      //   const user = { inbox: [], sent: [] }
-      //   await AsyncStorage.setItem(user.email, JSON.stringify(user));
-      // } else {
-      //   const user = { inbox: messages, sent: [], keys: savedInbox.keys };
-      //   await AsyncStorage.setItem(email, JSON.stringify(user));
-      // }
     } catch(err) {console.error({ err })}
   }
 
