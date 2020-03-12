@@ -42,9 +42,9 @@ export default class Login extends Component {
     this.setState({ password });
   }
 
-  handleLogin = () => {
+  handleLogin = async () => {
     const { email, password } = this.state;
-    firebase.auth().signInWithEmailAndPassword(email, password)
+    await firebase.auth().signInWithEmailAndPassword(email, password)
       .catch((error) => {
         this.setState({ error });
         alert(error.message);

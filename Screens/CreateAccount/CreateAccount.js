@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
+import { Text, View, TextInput, StyleSheet, TouchableOpacity, Dimensions, Image, AsyncStorage } from 'react-native';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
+import nacl from 'tweet-nacl-react-native-expo';
 import 'firebase/auth';
 import 'firebase/firestore';
 
@@ -16,19 +17,29 @@ export default class CreateAccount extends Component {
     this.setState({ [field]: value });
   }
 
-  handleCreateAccount = () => {
-    const { email, password, passwordConfirm } = this.state;
-    if( password !== passwordConfirm) {
-      alert('Passwords don\'t match...');
-      return;
-    }
-    firebase.auth().createUserWithEmailAndPassword(email, password) 
-      .then((user) => {
-        firebase.firestore().collection('users').doc(user.user.email).collection('friends').doc('brady@gmail.com').set({ exists: true });
-        firebase.firestore().collection('availableUsers').doc(user.user.email).set({ exists: true });
-      })
-      .then(() => this.props.navigation.goBack())
-      .catch((error) => alert(error));
+  handleCreateAccount = async () => {
+    try {
+      const { email, password, passwordConfirm } = this.state;
+      if( password !== passwordConfirm) {
+        alert('Passwords don\'t match...');
+        return;
+      }
+      const user = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      const publicKey = await this.handleKeyGeneration(email);
+      await firebase.firestore().collection('users').doc(email).collection('friends').doc('brady@gmail.com').set({ exists: true });
+      await firebase.firestore().collection('availableUsers').doc(email).set({ publicKey });
+      this.props.navigation.goBack()
+    } catch(error) {console.error({ error })}
+  }
+
+  handleKeyGeneration = async (email) => {
+    const keyPair = await nacl.box.keyPair();
+    const { publicKey, secretKey } = keyPair;
+    const publicEncoded = nacl.util.encodeBase64(publicKey);
+    const privateEncoded = nacl.util.encodeBase64(secretKey);
+    const newUser = { inbox: [], sent: [], keys: { publicKey: publicEncoded, secretKey: privateEncoded }};
+    await AsyncStorage.setItem(email, JSON.stringify(newUser));
+    return publicEncoded;
   }
 
   render() {

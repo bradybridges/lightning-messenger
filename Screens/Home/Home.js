@@ -10,6 +10,7 @@ import * as constants from '../../Constants/Constants';
 import 'firebase/firestore';
 import 'firebase/auth';
 import _ from 'lodash';
+import nacl from 'tweet-nacl-react-native-expo';
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 const _console = _.clone(console);
@@ -29,12 +30,11 @@ export default class Home extends Component {
   };
 
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     firebase.auth().onAuthStateChanged(async user => {
       if(user) {
         this.setState({ user });
-        this.getMessages(user);
-        this.checkLocalStorage(user);
+        await this.getMessages(user);
       } else {
         const { replace } = this.props.navigation;
         replace('Login');
@@ -42,28 +42,51 @@ export default class Home extends Component {
     });
   }
 
-  checkLocalStorage = async (user) => {
-    const { email } = user;
-    const savedMessages = await AsyncStorage.getItem(email);
-    if(savedMessages === null) {
-      const newMailbox = JSON.stringify({ inbox: [], sent: [] });
-      await AsyncStorage.setItem(email, newMailbox);
-    }
-  }
-  
   getMessages = async (user) => {  
     try{
       const inboxSnap = await firebase.firestore().collection('users').doc(user.email).collection('inbox').get();
       const inbox = await inboxSnap.docs.map((doc) => doc.data());
-      if(inbox.length) {
-        await this.saveNewMessages(inbox);
+      if(inbox.length > 0) {
+        const messages = await this.decryptMessages(inbox);
+        await this.saveNewMessages(messages);
         await this.deleteInbox(inboxSnap);
       }
-      const messages = await this.buildMessages();
-      const conversations = this.buildConversations(messages);
-      this.setState({ conversations });
+      const builtMessages = await this.buildMessages();
+      console.log('builtMessages', builtMessages);
+      if((builtMessages.length > 0 && this.state.conversations.length === 0) || inbox.length) {
+        console.log('building messages!');
+        const conversations = await this.buildConversations(builtMessages);
+        this.setState({ conversations });
+      }
     } catch(error) {console.log({error});}
   };
+
+  decryptMessages = async (messages) => {
+    try{
+      const { email } = this.state.user;
+      let profile = await AsyncStorage.getItem(email);
+      if(profile !== null) {
+        profile = JSON.parse(profile);
+        let { secretKey } = profile.keys;
+        secretKey = nacl.util.decodeBase64(secretKey);
+        const decryptedMessages = messages.map((message) => {
+          let { publicKey, nonce } = message;
+          publicKey = nacl.util.decodeBase64(publicKey);
+          nonce = nacl.util.decodeBase64(nonce);
+          const sharedKey = nacl.box.before(publicKey, secretKey);
+          const decodedMessage = nacl.util.decodeBase64(message.contents);
+          const decrypted = nacl.box.open.after(decodedMessage, nonce, sharedKey);
+          const utfMessage = nacl.util.encodeUTF8(decrypted);
+          const parsedMessage = JSON.parse(utfMessage);
+          const sentDate = new Date(parsedMessage.sent);
+          const sentSeconds = Math.floor(sentDate.getTime() / 1000);
+          parsedMessage.sent = { seconds: sentSeconds };        
+          return parsedMessage;
+        });
+        return decryptedMessages;
+      }
+    } catch(error) {console.log({ error })}
+  }
   
   buildMessages = async () => {
     try{
@@ -84,31 +107,6 @@ export default class Home extends Component {
     } catch(err) {console.log({ err })}
   }
   
-  sortMessages = (messages) => {
-    messages.sort((a, b) => a.sent.seconds > b.sent.seconds);
-    return messages;
-  }
-
-  saveNewMessages = async (messages) => {
-    const { user } = this.state;
-    const { email } = user;
-    const stringySavedMessages = await AsyncStorage.getItem(user.email);
-    try {
-      if(stringySavedMessages !== null) {
-        const savedMessages = await JSON.parse(stringySavedMessages);
-        const savedInbox = savedMessages.inbox;
-        savedMessages.inbox = [...savedInbox, ...messages];
-        await AsyncStorage.setItem(user.email, JSON.stringify(savedMessages));
-      } else if(stringySavedMessages === null && messages.length === 0) {
-        const user = { inbox: [], sent: [] }
-        await AsyncStorage.setItem(user.email, JSON.stringify(user));
-      } else {
-        const user = { inbox: messages, sent: [] };
-        await AsyncStorage.setItem(email, JSON.stringify(user));
-      }
-    } catch(err) {console.error({ err })}
-  }
-
   buildConversations = (messages) => {
     const { email } = this.state.user;
     const sortedMessages = messages.reduce((conversations, curMessage) => {
@@ -146,11 +144,76 @@ export default class Home extends Component {
     return sortedMessages;
   }
 
+  sortMessages = (messages) => {
+    messages.sort((a, b) => a.sent.seconds > b.sent.seconds);
+    return messages;
+  }
 
-  deleteInbox = async (inboxSnap) => {
+  saveNewMessages = async (messages) => {
+    try {
+      const { user } = this.state;
+      const { email } = user;
+      const stringySavedMessages = await AsyncStorage.getItem(user.email);
+      if(stringySavedMessages !== null) {
+        const savedMessages = JSON.parse(stringySavedMessages);
+        const savedInbox = savedMessages.inbox;
+        savedMessages.inbox = [...savedInbox, ...messages];
+        await AsyncStorage.setItem(user.email, JSON.stringify(savedMessages));
+      } 
+    } catch(err) {console.error({ err })}
+  }
+
+  deleteInbox = (inboxSnap) => {
     inboxSnap.docs.forEach((msg) => msg.ref.delete());
   }
 
+  
+  renderConversationTabs = () => {
+    const { conversations } = this.state;
+    return conversations.map((convo) => {
+      let time;
+      if(convo.messages.length) {
+        const timestamp = convo.messages[convo.messages.length - 1].timestamp;
+        time = this.formatTimestamp(timestamp);
+      } else {
+        time = 'New';
+      }
+      return (
+        <ConversationTab 
+          from={convo.from} 
+          time={time} 
+          key={convo.from} 
+          updateSelectedConversation={this.updateSelectedConversation} 
+        />
+      );
+    });
+  }
+  
+  renderMessages = () => {
+    return this.state.messages.map((message, i) => {
+      return (
+        <Message key={i} message={message.contents} timestamp={message.sent} />
+        );  
+      });
+    }
+    
+    renderConversation = () => {
+      const { selectedConversation, user } = this.state;
+      return (
+        <Conversation
+        from={selectedConversation.from}
+        messages={selectedConversation.messages}
+        user={user}
+        updateConversation={this.updateConversation}
+        closeSelectedConversation={this.closeSelectedConversation}
+      />
+    );
+  }
+  
+  toggleNewConversation = () => {
+    this.setState({ showNewConversation: !this.state.showNewConversation });
+  }
+  
   updateConversation = (from, newMessage) => {
     const conversations = this.state.conversations.map((convo) => convo);
     const conversation = conversations.find((convo) => convo.from === from);
@@ -173,52 +236,6 @@ export default class Home extends Component {
       minutes = `0${minutes}`;
     }
     return `${hours}:${minutes} ${label}`;
-  }
-
-  renderConversationTabs = () => {
-    const { conversations } = this.state;
-    return conversations.map((convo) => {
-      let time;
-      if(convo.messages.length) {
-        const timestamp = convo.messages[convo.messages.length - 1].timestamp;
-        time = this.formatTimestamp(timestamp);
-      } else {
-        time = 'New';
-      }
-      return (
-        <ConversationTab 
-          from={convo.from} 
-          time={time} 
-          key={convo.from} 
-          updateSelectedConversation={this.updateSelectedConversation} 
-        />
-      );
-    });
-  }
-
-  toggleNewConversation = () => {
-    this.setState({ showNewConversation: !this.state.showNewConversation });
-  }
-
-  renderMessages = () => {
-    return this.state.messages.map((message, i) => {
-      return (
-        <Message key={i} message={message.contents} timestamp={message.sent} />
-      );  
-    });
-  }
-
-  renderConversation = () => {
-    const { selectedConversation, user } = this.state;
-    return (
-      <Conversation
-        from={selectedConversation.from}
-        messages={selectedConversation.messages}
-        user={user}
-        updateConversation={this.updateConversation}
-        closeSelectedConversation={this.closeSelectedConversation}
-      />
-    );
   }
 
   updateSelectedConversation = (from) => {
@@ -249,10 +266,10 @@ export default class Home extends Component {
   }
 
   render() {
-    // setTimeout(() => {
-    //   const user = this.state.user;
-    //   this.getMessages(user);
-    // }, 10000);
+    setTimeout(() => {
+      const user = this.state.user;
+      this.getMessages(user);
+    }, 5000);
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
