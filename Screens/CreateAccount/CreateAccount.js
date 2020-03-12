@@ -46,14 +46,10 @@ export default class CreateAccount extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <Image source={require('../../assets/logo.png')} style={{ width: 150, height: 150 }}/>
-        <Text style={styles.header}>Lightning Messenger</Text>
-        <Text style={styles.text}>Email</Text>
-        <TextInput style={styles.input} onChangeText={(value) => this.handleChange("email", value)}/>
-        <Text style={styles.text}>Password</Text>
-        <TextInput secureTextEntry={true} style={styles.input} onChangeText={(value) => this.handleChange("password", value)}/>
-        <Text style={styles.text}>Confirm Password</Text>
-        <TextInput secureTextEntry={true} style={styles.input} onChangeText={(value) => this.handleChange("passwordConfirm", value)}/>
+        <Text style={styles.header}>Create Account</Text>
+        <TextInput style={styles.input} onChangeText={(value) => this.handleChange("email", value)} placeholder="Email"/>
+        <TextInput secureTextEntry={true} style={styles.input} onChangeText={(value) => this.handleChange("password", value)} placeholder='Password'/>
+        <TextInput secureTextEntry={true} style={styles.input} onChangeText={(value) => this.handleChange("passwordConfirm", value)} placeholder='Confirm Password'/>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={this.handleCreateAccount}>
             <Text style={styles.buttonText}>Create Account</Text>
@@ -70,13 +66,14 @@ export default class CreateAccount extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: Constants.primaryBgColor,
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: Constants.baseMarginPadding,
   },
   header: {
     color: 'white',
     fontSize: 40,
+    marginVertical: Constants.baseMarginPadding,
   },
   text: {
     fontSize: 24,
@@ -90,23 +87,27 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     fontSize: 24,
     textAlign: 'center',
+    marginVertical: Constants.baseMarginPadding,
   },
   buttonContainer: {
     width: Dimensions.get('window').width * .8,
-    height: 140,
     display: 'flex',
     justifyContent: 'space-evenly',
   },
   button: { 
-    backgroundColor: 'white', 
+    backgroundColor: Constants.primaryHeaderColor, 
     height: 50, 
     display: 'flex', 
     alignItems: 'center', 
     justifyContent: 'center',
     borderRadius: 4,
+    marginVertical: Constants.baseMarginPadding,
+    borderColor: Constants.tertiaryBgColor,
+    borderWidth: 1,
   },
   buttonText: {
     fontSize: 24,
+    color: Constants.tertiaryBgColor,
   }
 });
 
