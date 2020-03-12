@@ -5,13 +5,19 @@ import Home from './Screens/Home/Home';
 import Login from './Screens/Login/Login';
 import CreateAccount from './Screens/CreateAccount/CreateAccount';
 import SignoutIconButton from './Components/SignoutIconButton/SignoutIconButton';
-import { View, Text, Image, BlurView, StyleSheet } from 'react-native';
+import { View, Text, Image, BlurView, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import * as Constants from './Constants/Constants';
 
 const MainNavigator = createStackNavigator({
   Login: {
     screen: Login,
     navigationOptions: {
-      headerShown: false,
+      headerRight: () => renderJoinButton(),
+      headerTitle: () => renderLogo(),
+      headerTitleAlign: () => 'center',
+      headerStyle: {
+        backgroundColor: Constants.primaryHeaderColor,
+      }
     }
   },
   Home: {
@@ -21,23 +27,36 @@ const MainNavigator = createStackNavigator({
       headerTitle: () => renderLogo(),
       headerTitleAlign: () => 'center',
       headerStyle: {
-        backgroundColor: 'black',
+        backgroundColor: Constants.primaryHeaderColor,
       },
     },
   },
   CreateAccount: { 
     screen: CreateAccount ,
     navigationOptions: {
-      headerShown: false,
+      headerTitle: () => renderLogo(),
+      headerTitleAlign: () => 'center',
+      headerStyle: {
+        backgroundColor: Constants.primaryHeaderColor,
+      },
     }
   },
 });
 
+const renderJoinButton = () => {
+  return (
+    <TouchableOpacity onPress={(navigation) => navigation.navigate('CreateAccount')}>
+      <Text style={{ color: 'white', fontSize: 20 }}>Join</Text>
+    </TouchableOpacity>
+  );
+}
+
 const renderLogo = () => {
   return (
-    <View>
-      <Image source={require('./assets/logo.png')} style={{ width: 50, height: 50 }} />
-    </View>
+    // <View>
+    //   <Image source={require('./assets/logo.png')} style={{ width: 50, height: 50 }} />
+    // </View>
+    <Text style={{ color: Constants.tertiaryBgColor, fontSize: 24 }}>Lightning Messenger</Text>
   );
 }
 
