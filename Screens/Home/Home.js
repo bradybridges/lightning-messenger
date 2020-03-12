@@ -35,7 +35,6 @@ export default class Home extends Component {
       if(user) {
         this.setState({ user });
         await this.getMessages(user);
-        // this.checkLocalStorage(user);
       } else {
         const { replace } = this.props.navigation;
         replace('Login');
@@ -47,15 +46,18 @@ export default class Home extends Component {
     try{
       const inboxSnap = await firebase.firestore().collection('users').doc(user.email).collection('inbox').get();
       const inbox = await inboxSnap.docs.map((doc) => doc.data());
-      if(inbox.length) {
+      if(inbox.length > 0) {
         const messages = await this.decryptMessages(inbox);
-        console.log('RETURNED MESSAGES', messages);
         await this.saveNewMessages(messages);
         await this.deleteInbox(inboxSnap);
       }
-      const messages = await this.buildMessages();
-      const conversations = await this.buildConversations(messages);
-      this.setState({ conversations });
+      const builtMessages = await this.buildMessages();
+      console.log('builtMessages', builtMessages);
+      if((builtMessages.length > 0 && this.state.conversations.length === 0) || inbox.length) {
+        console.log('building messages!');
+        const conversations = await this.buildConversations(builtMessages);
+        this.setState({ conversations });
+      }
     } catch(error) {console.log({error});}
   };
 
@@ -264,10 +266,10 @@ export default class Home extends Component {
   }
 
   render() {
-    // setTimeout(() => {
-    //   const user = this.state.user;
-    //   this.getMessages(user);
-    // }, 10000);
+    setTimeout(() => {
+      const user = this.state.user;
+      this.getMessages(user);
+    }, 5000);
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
