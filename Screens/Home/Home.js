@@ -52,9 +52,7 @@ export default class Home extends Component {
         await this.deleteInbox(inboxSnap);
       }
       const builtMessages = await this.buildMessages();
-      console.log('builtMessages', builtMessages);
       if((builtMessages.length > 0 && this.state.conversations.length === 0) || inbox.length) {
-        console.log('building messages!');
         const conversations = await this.buildConversations(builtMessages);
         this.setState({ conversations });
       }
