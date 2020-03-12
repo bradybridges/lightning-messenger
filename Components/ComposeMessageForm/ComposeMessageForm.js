@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, TextInput, View, Image, TouchableOpacity, StyleSheet, Dimensions, AsyncStorage } from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
-const sendImg = require('../../assets/send.png');
+const lock = require('../../assets/lock.png');
 import * as constants from '../../Constants/Constants';
 import nacl from 'tweet-nacl-react-native-expo';
 
@@ -90,9 +90,9 @@ export default class ComposeMessageForm extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TextInput style={styles.input} onChangeText={this.handleChange} value={this.state.message} placeholder="Send a message..."/>
+        <TextInput style={styles.input} onChangeText={this.handleChange} value={this.state.message} placeholder="Send Encrypted Message"/>
         <TouchableOpacity style={styles.sendBtnContainer} onPress={this.sendMessage}>
-          <Image source={sendImg} style={{width: 50, height: 50}}/>
+          <Image source={lock} style={{width: 40, height: 40}}/>
         </TouchableOpacity>
       </View>
     )
