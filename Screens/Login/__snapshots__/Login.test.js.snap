@@ -1,18 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Login should match snapshot 1`] = `
-<ImageBackground
-  imageStyle={
-    Object {
-      "resizeMode": "stretch",
-    }
-  }
-  source={1}
+<View
   style={
     Object {
       "alignItems": "center",
-      "backgroundColor": "black",
+      "backgroundColor": "#14272E",
       "flex": 1,
+      "justifyContent": "flex-start",
+      "paddingTop": 20,
     }
   }
 >
@@ -20,11 +16,12 @@ exports[`Login should match snapshot 1`] = `
     style={
       Object {
         "color": "white",
-        "fontSize": 32,
+        "fontSize": 40,
+        "marginVertical": 10,
       }
     }
   >
-    Lightning Messenger
+    Login
   </Text>
   <KeyboardAvoidingView
     enabled={true}
@@ -34,23 +31,13 @@ exports[`Login should match snapshot 1`] = `
         "alignItems": "center",
         "display": "flex",
         "height": 400,
-        "justifyContent": "space-evenly",
       }
     }
   >
-    <Text
-      style={
-        Object {
-          "color": "white",
-          "fontSize": 24,
-        }
-      }
-    >
-      Email
-    </Text>
     <TextInput
       allowFontScaling={true}
       onChangeText={[Function]}
+      placeholder="Email"
       rejectResponderTermination={true}
       style={
         Object {
@@ -58,6 +45,7 @@ exports[`Login should match snapshot 1`] = `
           "borderRadius": 4,
           "fontSize": 24,
           "height": 60,
+          "marginVertical": 10,
           "maxWidth": 400,
           "textAlign": "center",
           "width": 675,
@@ -66,19 +54,10 @@ exports[`Login should match snapshot 1`] = `
       underlineColorAndroid="transparent"
       value=""
     />
-    <Text
-      style={
-        Object {
-          "color": "white",
-          "fontSize": 24,
-        }
-      }
-    >
-      Password
-    </Text>
     <TextInput
       allowFontScaling={true}
       onChangeText={[Function]}
+      placeholder="Password"
       rejectResponderTermination={true}
       secureTextEntry={true}
       style={
@@ -87,6 +66,7 @@ exports[`Login should match snapshot 1`] = `
           "borderRadius": 4,
           "fontSize": 24,
           "height": 60,
+          "marginVertical": 10,
           "maxWidth": 400,
           "textAlign": "center",
           "width": 675,
@@ -98,9 +78,6 @@ exports[`Login should match snapshot 1`] = `
     <View
       style={
         Object {
-          "display": "flex",
-          "height": 140,
-          "justifyContent": "space-evenly",
           "width": 600,
         }
       }
@@ -111,17 +88,21 @@ exports[`Login should match snapshot 1`] = `
         style={
           Object {
             "alignItems": "center",
-            "backgroundColor": "white",
+            "backgroundColor": "#121716",
+            "borderColor": "#6E8F76",
             "borderRadius": 4,
+            "borderWidth": 1,
             "display": "flex",
             "height": 50,
             "justifyContent": "center",
+            "marginTop": 10,
           }
         }
       >
         <Text
           style={
             Object {
+              "color": "#6E8F76",
               "fontSize": 24,
             }
           }
@@ -135,25 +116,29 @@ exports[`Login should match snapshot 1`] = `
         style={
           Object {
             "alignItems": "center",
-            "backgroundColor": "white",
+            "backgroundColor": "#121716",
+            "borderColor": "#6E8F76",
             "borderRadius": 4,
+            "borderWidth": 1,
             "display": "flex",
             "height": 50,
             "justifyContent": "center",
+            "marginTop": 10,
           }
         }
       >
         <Text
           style={
             Object {
+              "color": "#6E8F76",
               "fontSize": 24,
             }
           }
         >
-          Create Account
+          Join
         </Text>
       </TouchableOpacity>
     </View>
   </KeyboardAvoidingView>
-</ImageBackground>
+</View>
 `;

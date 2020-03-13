@@ -1,16 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SignoutIconButton should match snapshot 1`] = `
+exports[`NewMessageButton should match the snapshot 1`] = `
 <TouchableOpacity
   activeOpacity={0.2}
   onPress={[Function]}
   style={
     Object {
       "alignItems": "center",
+      "backgroundColor": "#121716",
+      "borderColor": "#6E8F76",
+      "borderRadius": 100,
+      "borderWidth": 1,
+      "bottom": 15,
       "display": "flex",
-      "height": 106.72,
+      "height": 60,
       "justifyContent": "center",
-      "marginRight": 10,
+      "position": "absolute",
+      "right": 15,
+      "width": 60,
     }
   }
 >

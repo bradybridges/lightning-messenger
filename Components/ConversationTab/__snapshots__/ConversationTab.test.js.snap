@@ -7,12 +7,13 @@ exports[`ConversationTab should match snapshot 1`] = `
   style={
     Object {
       "alignItems": "center",
-      "borderBottomColor": "white",
+      "borderBottomColor": "#6E8F76",
       "borderBottomWidth": 1,
       "display": "flex",
       "flexDirection": "row",
       "height": 200.1,
-      "justifyContent": "space-evenly",
+      "justifyContent": "space-between",
+      "paddingHorizontal": 20,
     }
   }
 >
