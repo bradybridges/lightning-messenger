@@ -73,12 +73,15 @@ const styles = StyleSheet.create({
   },
   button: {
     width: Dimensions.get('window').width * .5,
-    backgroundColor: Constants.secondaryBgColor,
+    backgroundColor: Constants.primaryHeaderColor,
     display: 'flex',
     alignItems: 'center',
     height: 50,
     justifyContent: 'center',
     borderRadius: 6,
+    color: Constants.tertiaryBgColor,
+    borderColor: Constants.tertiaryBgColor,
+    borderWidth: 1,
   }
 });
 

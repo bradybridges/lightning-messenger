@@ -1,12 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import * as Constants from '../../Constants/Constants';
 const add = require('../../assets/add.png');
 
 const NewMessageButton = ({ toggleNewConversation }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={() => toggleNewConversation()}>
-      <Image source={add} style={styles.image}/>
+      <Image source={add} style={styles.image} />
     </TouchableOpacity>
   );
 }
@@ -18,12 +18,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 15,
     right: 15,
-    backgroundColor: Constants.secondaryBgColor,
+    backgroundColor: Constants.primaryHeaderColor,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 100,
-    borderColor: 'white',
+    borderColor: Constants.tertiaryBgColor,
     borderWidth: 1,
   },
   image: {

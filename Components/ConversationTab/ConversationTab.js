@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
+import * as Constants from '../../Constants/Constants';
 
 const ConversationTab = ({from, time, updateSelectedConversation}) => {
   return (
@@ -17,9 +18,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    borderBottomColor: 'white',
+    borderBottomColor: Constants.tertiaryBgColor,
     borderBottomWidth: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: Constants.midMarginPadding,
   },
   text: {
     fontSize: 18,

@@ -56,28 +56,26 @@ export default class Login extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <Image source={logo} style={{ width: 150, height: 150 }}/>
-        <Text style={styles.header}>Lightning Messenger</Text>
+        <Text style={styles.header}>Login</Text>
         <KeyboardAvoidingView style={styles.loginContainer}>
-          <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.input}
             value={this.state.email}
             onChangeText={this.handleEmailChange}
+            placeholder="Email"
           />
-          <Text style={styles.label}>Password</Text>
           <TextInput
             style={styles.input}
             secureTextEntry={true}
             value={this.state.password}
             onChangeText={this.handlePasswordChange}
+            placeholder="Password"
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={this.handleLogin}><Text style={styles.buttonText}>Login</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigate('CreateAccount')}><Text style={styles.buttonText}>Create Account</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => navigate('CreateAccount')}><Text style={styles.buttonText}>Join</Text></TouchableOpacity>
           </View>
-
-          </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
       </View>
     );
   }
@@ -85,19 +83,21 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black',
+    backgroundColor: '#14272E',
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: Constants.midMarginPadding,
   },
   input: {
     width: Dimensions.get('window').width * .9,
     maxWidth: 400,
     height: 60,
-    backgroundColor: 'white',
     borderRadius: 4,
     fontSize: 24,
     textAlign: 'center',
+    backgroundColor: 'white',
+    marginVertical: Constants.baseMarginPadding,
   },
   label: {
     color: 'white',
@@ -106,29 +106,30 @@ const styles = StyleSheet.create({
   loginContainer: {
     height: 400,
     display: 'flex',
-    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   buttonContainer: {
     width: Dimensions.get('window').width * .8,
-    height: 140,
-    display: 'flex',
-    justifyContent: 'space-evenly',
   },  
   header: {
     color: 'white',
     fontSize: 40,
+    marginVertical: Constants.baseMarginPadding,
   },
   button: { 
-    backgroundColor: 'white', 
+    backgroundColor: Constants.primaryHeaderColor, 
     height: 50, 
     display: 'flex', 
     alignItems: 'center', 
     justifyContent: 'center',
     borderRadius: 4,
+    marginTop: Constants.baseMarginPadding,
+    borderColor: Constants.tertiaryBgColor,
+    borderWidth: 1,
   },
   buttonText: {
     fontSize: 24,
+    color: Constants.tertiaryBgColor,
   }
 });
 
