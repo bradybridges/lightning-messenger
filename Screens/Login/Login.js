@@ -7,8 +7,8 @@ import { Text,
   Dimensions, 
   KeyboardAvoidingView,
   TouchableOpacity,
-  ImageBackground,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
@@ -21,6 +21,7 @@ export default class Login extends Component {
   state = {
     email: '',
     password: '',
+    loading: false,
   }
 
   componentDidMount = () => {
@@ -43,11 +44,12 @@ export default class Login extends Component {
   }
 
   handleLogin = async () => {
+    this.setState({ loading: true });
     const { email, password } = this.state;
     if(this.handleInputCheck(email, password)) {
       await firebase.auth().signInWithEmailAndPassword(email, password)
         .catch((error) => {
-          this.setState({ error });
+          this.setState({ error, loading: false });
           return this.returnErrorMessage(error.code);
         });
     }
@@ -94,9 +96,16 @@ export default class Login extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const { loading } = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Login</Text>
+        <ActivityIndicator 
+          animating={loading} 
+          size="large" 
+          color={Constants.tertiaryBgColor}
+          style={{ position: 'absolute', top: '30%', zIndex: 5 }}
+        />
         <KeyboardAvoidingView style={styles.loginContainer}>
           <TextInput
             style={styles.input}

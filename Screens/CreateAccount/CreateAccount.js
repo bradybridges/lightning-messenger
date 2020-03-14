@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, StyleSheet, TouchableOpacity, Dimensions, Image, AsyncStorage } from 'react-native';
+import { 
+  Text,
+   View, 
+  TextInput, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Dimensions, 
+  Image, 
+  AsyncStorage,
+  ActivityIndicator, 
+} from 'react-native';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
 import nacl from 'tweet-nacl-react-native-expo';
@@ -11,6 +21,7 @@ export default class CreateAccount extends Component {
     email: "",
     password: "",
     passwordConfirm: "",
+    loading: false,
   }
 
   handleChange = (field, value) => {
@@ -19,15 +30,18 @@ export default class CreateAccount extends Component {
 
   handleCreateAccount = async () => {
     try {
+      this.setState({ loading: true });
       const { email, password, passwordConfirm } = this.state;
       if(this.validateInputs(email, password, passwordConfirm)) {
         const user = await firebase.auth().createUserWithEmailAndPassword(email, password);
         const publicKey = await this.handleKeyGeneration(email);
         await firebase.firestore().collection('users').doc(email).collection('friends').doc('brady@gmail.com').set({ exists: true });
         await firebase.firestore().collection('availableUsers').doc(email).set({ publicKey });
-        this.props.navigation.goBack()
+        this.props.navigation.goBack();
       }
+      this.setState({ loading: false });
     } catch(error) {
+      this.setState({ loading: false });
       if(error.code === 'auth/invalid-email') {
         this.setState({ email: '', password: '', passwordConfirm: '' });
         alert('Please enter a valid email address');
@@ -101,6 +115,12 @@ export default class CreateAccount extends Component {
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
+        <ActivityIndicator 
+          animating={this.state.loading} 
+          size='large' 
+          color={Constants.tertiaryBgColor}        
+          style={{ position: 'absolute', top: '30%' }}   
+        />
       </View>
     );
   }
@@ -135,7 +155,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: Dimensions.get('window').width * .8,
     display: 'flex',
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
   },
   button: { 
     backgroundColor: Constants.primaryHeaderColor, 
@@ -144,7 +164,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center',
     borderRadius: 4,
-    marginVertical: Constants.baseMarginPadding,
+    marginTop: Constants.baseMarginPadding,
     borderColor: Constants.tertiaryBgColor,
     borderWidth: 1,
   },
