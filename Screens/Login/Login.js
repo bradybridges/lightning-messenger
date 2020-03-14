@@ -53,6 +53,7 @@ export default class Login extends Component {
           return this.returnErrorMessage(error.code);
         });
     }
+    this.setState({loading: false });
   }
 
   handleInputCheck = (email, password) => {
