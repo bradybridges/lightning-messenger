@@ -20,16 +20,42 @@ export default class CreateAccount extends Component {
   handleCreateAccount = async () => {
     try {
       const { email, password, passwordConfirm } = this.state;
-      if( password !== passwordConfirm) {
-        alert('Passwords don\'t match...');
+      if(this.validateInputs(email, password, passwordConfirm)) {
+        const user = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const publicKey = await this.handleKeyGeneration(email);
+        await firebase.firestore().collection('users').doc(email).collection('friends').doc('brady@gmail.com').set({ exists: true });
+        await firebase.firestore().collection('availableUsers').doc(email).set({ publicKey });
+        this.props.navigation.goBack()
+      }
+    } catch(error) {
+      if(error.code === 'auth/invalid-email') {
+        this.setState({ email: '', password: '', passwordConfirm: '' });
+        alert('Please enter a valid email address');
         return;
       }
-      const user = await firebase.auth().createUserWithEmailAndPassword(email, password);
-      const publicKey = await this.handleKeyGeneration(email);
-      await firebase.firestore().collection('users').doc(email).collection('friends').doc('brady@gmail.com').set({ exists: true });
-      await firebase.firestore().collection('availableUsers').doc(email).set({ publicKey });
-      this.props.navigation.goBack()
-    } catch(error) {console.error({ error })}
+      console.error({ error });
+    }
+  }
+
+  validateInputs = (email, password, passwordConfirm) => {
+    if(!email && !password && !passwordConfirm) {
+      alert('Please complete the form');
+    } else if(!password && !passwordConfirm) {
+      alert('Please enter a password and confirm it')
+    } else if(!email) {
+      alert('Please enter an email');
+    } else if(!password) {
+      alert('Please enter a password');
+    } else if(!passwordConfirm) {
+      alert('Please verify your password');
+    } else if(password !== passwordConfirm) {
+      this.setState({ password: '', passwordConfirm: '' })
+      alert('Password don\'t match');
+    }
+    if(!email || !password || !passwordConfirm || (password !== passwordConfirm)) {
+      return false;
+    }
+    return true;
   }
 
   handleKeyGeneration = async (email) => {
@@ -47,9 +73,26 @@ export default class CreateAccount extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Create Account</Text>
-        <TextInput style={styles.input} onChangeText={(value) => this.handleChange("email", value)} placeholder="Email"/>
-        <TextInput secureTextEntry={true} style={styles.input} onChangeText={(value) => this.handleChange("password", value)} placeholder='Password'/>
-        <TextInput secureTextEntry={true} style={styles.input} onChangeText={(value) => this.handleChange("passwordConfirm", value)} placeholder='Confirm Password'/>
+        <TextInput 
+          style={styles.input} 
+          onChangeText={(value) => this.handleChange("email", value)} 
+          placeholder="Email" 
+          value={this.state.email}
+        />
+        <TextInput 
+          secureTextEntry={true} 
+          style={styles.input} 
+          onChangeText={(value) => this.handleChange("password", value)}
+          placeholder='Password' 
+          value={this.state.password}
+        />
+        <TextInput 
+          secureTextEntry={true} 
+          style={styles.input} 
+          onChangeText={(value) => this.handleChange("passwordConfirm", value)} 
+          placeholder='Confirm Password' 
+          value={this.state.passwordConfirm}            
+        />
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={this.handleCreateAccount}>
             <Text style={styles.buttonText}>Create Account</Text>
