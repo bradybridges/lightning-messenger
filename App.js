@@ -5,6 +5,7 @@ import Home from './Screens/Home/Home';
 import Login from './Screens/Login/Login';
 import CreateAccount from './Screens/CreateAccount/CreateAccount';
 import SignoutIconButton from './Components/SignoutIconButton/SignoutIconButton';
+import ResetPassword from './Screens/ResetPassword/ResetPassword';
 import { View, Text, Image, BlurView, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import * as Constants from './Constants/Constants';
 
@@ -32,7 +33,7 @@ const MainNavigator = createStackNavigator({
     },
   },
   CreateAccount: { 
-    screen: CreateAccount ,
+    screen: CreateAccount,
     navigationOptions: {
       headerTitle: () => renderLogo(),
       headerTitleAlign: () => 'center',
@@ -41,6 +42,16 @@ const MainNavigator = createStackNavigator({
       },
     }
   },
+  ResetPassword: {
+    screen: ResetPassword,
+    navigationOptions: {
+      headerTitle: () => renderLogo(),
+      headerTitleAlign: () => 'center',
+      headerStyle: {
+        backgroundColor: Constants.primaryHeaderColor,
+      }
+    }
+  }
 });
 
 const renderJoinButton = () => {
