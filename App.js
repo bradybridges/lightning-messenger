@@ -12,7 +12,7 @@ const MainNavigator = createStackNavigator({
   Login: {
     screen: Login,
     navigationOptions: {
-      headerRight: () => renderJoinButton(),
+      // headerRight: () => renderJoinButton(),
       headerTitle: () => renderLogo(),
       headerTitleAlign: () => 'center',
       headerStyle: {
@@ -53,9 +53,6 @@ const renderJoinButton = () => {
 
 const renderLogo = () => {
   return (
-    // <View>
-    //   <Image source={require('./assets/logo.png')} style={{ width: 50, height: 50 }} />
-    // </View>
     <Text style={{ color: Constants.tertiaryBgColor, fontSize: 24 }}>Lightning Messenger</Text>
   );
 }
