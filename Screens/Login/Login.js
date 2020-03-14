@@ -57,6 +57,7 @@ export default class Login extends Component {
     if(!email && !password) {
       alert('Please enter email and password');
     } else if(!email) {
+      this.setState({ password: '' })
       alert('Please enter your email');
     } else if(!password) {
       alert('Please enter you password');
@@ -70,6 +71,7 @@ export default class Login extends Component {
   returnErrorMessage = (code) => {
     switch(code) {
       case 'auth/wrong-password':
+        this.setState({ password: '' });
         alert('Incorrect Username or Password');
         break;
       case 'auth/user-not-found':
