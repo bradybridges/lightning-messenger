@@ -13,8 +13,8 @@ describe('Login', () => {
     expect(wrapper).toMatchSnapshot();
   });
   
-  it('should have properties of email and password in state', () => {
-    expect(wrapper.state()).toEqual({ email: '', password: '' });
+  it('should have properties of email, password and loading in state', () => {
+    expect(wrapper.state()).toEqual({ email: '', password: '', loading: false });
   });
 
   it('handleEmailChange should update email in state', () => {
