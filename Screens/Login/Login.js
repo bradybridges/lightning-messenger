@@ -44,12 +44,52 @@ export default class Login extends Component {
 
   handleLogin = async () => {
     const { email, password } = this.state;
-    await firebase.auth().signInWithEmailAndPassword(email, password)
-      .catch((error) => {
-        this.setState({ error });
-        alert(error.message);
-        alert(error.code);
-      });
+    if(this.handleInputCheck(email, password)) {
+      await firebase.auth().signInWithEmailAndPassword(email, password)
+        .catch((error) => {
+          this.setState({ error });
+          return this.returnErrorMessage(error.code);
+        });
+    }
+  }
+
+  handleInputCheck = (email, password) => {
+    if(!email && !password) {
+      alert('Please enter email and password');
+    } else if(!email) {
+      this.setState({ password: '' })
+      alert('Please enter your email');
+    } else if(!password) {
+      alert('Please enter you password');
+    }
+    if(!email || !password) {
+      return false;
+    }
+    return true;
+  }
+
+  returnErrorMessage = (code) => {
+    switch(code) {
+      case 'auth/wrong-password':
+        this.setState({ password: '' });
+        alert('Incorrect Username or Password');
+        break;
+      case 'auth/user-not-found':
+        alert('Incorrect Username or Password');
+        break;
+      case 'auth/invalid-email':
+        alert('Please enter an email address');
+        break;
+      default:
+        alert(code, 'hi');
+        break;
+    }
+  }
+
+  handleNavigationToCreateAccount = () => {
+    const { navigate } = this.props.navigation;
+    this.setState({ email: '', password: '' });
+    navigate('CreateAccount');
   }
 
   render() {
@@ -73,7 +113,7 @@ export default class Login extends Component {
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={this.handleLogin}><Text style={styles.buttonText}>Login</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigate('CreateAccount')}><Text style={styles.buttonText}>Join</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={ this.handleNavigationToCreateAccount}><Text style={styles.buttonText}>Join</Text></TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       </View>
