@@ -38,7 +38,17 @@ export default class ResetPassword extends Component {
       alert(`A link to reset your password was sent to ${email}`);
       this.setState({ loading: false, email: '' });
       navigate('Login');
-    } catch(error) { alert({ error })}
+    } catch(error) {
+      this.setState({ email: '' });
+      if(error.code === 'auth/user-not-found') {
+        alert('Unable reset password for given email');
+        return;
+      } else if(error.code === 'auth/invalid-email') {
+        alert('Please enter a valid email address');
+        return;
+      }
+      console.error({ error });
+    }
   }
 
   render() {
