@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl } from 'react-native';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
@@ -27,6 +27,7 @@ export default class Home extends Component {
     selectedConversation: null,
     showConversation: false,
     showNewConversation: false,
+    refreshing: false,
   };
 
 
@@ -56,7 +57,15 @@ export default class Home extends Component {
         const conversations = await this.buildConversations(builtMessages);
         this.setState({ conversations });
       }
-    } catch(error) {console.log({error});}
+      if(this.state.refreshing) {
+        this.setState({ refreshing: false });
+      }
+    } catch(error) {
+      if(this.state.refreshing) {
+        this.setState({ refreshing: false });
+      }
+      console.log({error});
+    }
   };
 
   decryptMessages = async (messages) => {
@@ -264,15 +273,19 @@ export default class Home extends Component {
   }
 
   render() {
+    const { refreshing, user } = this.state;
     setTimeout(() => {
-      const user = this.state.user;
       this.getMessages(user);
     }, 5000);
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <ScrollView>
-          {this.state.user && this.renderConversationTabs()}
+        <ScrollView
+          refreshControl= {
+            <RefreshControl refreshing={refreshing} onRefresh={() => this.getMessages(user)} />
+          }
+        >
+            {this.state.user && this.renderConversationTabs()}
         </ScrollView>
         <NewMessageButton toggleNewConversation={this.toggleNewConversation}/>
         <Modal
