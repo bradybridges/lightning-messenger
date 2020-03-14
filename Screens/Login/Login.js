@@ -100,12 +100,6 @@ export default class Login extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Login</Text>
-        <ActivityIndicator 
-          animating={loading} 
-          size="large" 
-          color={Constants.tertiaryBgColor}
-          style={{ position: 'absolute', top: '30%', zIndex: 5 }}
-        />
         <KeyboardAvoidingView style={styles.loginContainer}>
           <TextInput
             style={styles.input}
@@ -125,6 +119,12 @@ export default class Login extends Component {
             <TouchableOpacity style={styles.button} onPress={ this.handleNavigationToCreateAccount}><Text style={styles.buttonText}>Join</Text></TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
+        <ActivityIndicator 
+          animating={loading} 
+          size="large" 
+          color={Constants.tertiaryBgColor}
+          style={{ position: 'absolute', top: '30%', zIndex: 5 }}
+        />
       </View>
     );
   }
