@@ -11,6 +11,7 @@ import 'firebase/firestore';
 import 'firebase/auth';
 import _ from 'lodash';
 import nacl from 'tweet-nacl-react-native-expo';
+import * as Constants from '../../Constants/Constants';
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 const _console = _.clone(console);
@@ -282,7 +283,13 @@ export default class Home extends Component {
       <View style={styles.container}>
         <ScrollView
           refreshControl= {
-            <RefreshControl refreshing={refreshing} onRefresh={() => this.getMessages(user)} />
+            <RefreshControl 
+              refreshing={refreshing} 
+              onRefresh={() => this.getMessages(user)} 
+              title='Refresh Messages'
+              colors={[Constants.primaryBgColor, Constants.primaryHeaderColor]}
+              progressBackgroundColor={Constants.tertiaryBgColor}
+            />
           }
         >
             {this.state.user && this.renderConversationTabs()}
