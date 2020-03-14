@@ -23,6 +23,19 @@ exports[`Login should match snapshot 1`] = `
   >
     Login
   </Text>
+  <ActivityIndicator
+    animating={false}
+    color="#6E8F76"
+    hidesWhenStopped={true}
+    size="large"
+    style={
+      Object {
+        "position": "absolute",
+        "top": "30%",
+        "zIndex": 5,
+      }
+    }
+  />
   <KeyboardAvoidingView
     enabled={true}
     keyboardVerticalOffset={0}

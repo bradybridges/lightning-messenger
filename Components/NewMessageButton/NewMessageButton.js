@@ -6,7 +6,7 @@ const add = require('../../assets/add.png');
 const NewMessageButton = ({ toggleNewConversation }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={() => toggleNewConversation()}>
-      <Image source={add} style={styles.image} />
+       <Image source={add} style={styles.image} />
     </TouchableOpacity>
   );
 }
