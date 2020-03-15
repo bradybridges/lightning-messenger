@@ -36,7 +36,7 @@ export default class Login extends Component {
   }
 
   handleEmailChange = (email) => {
-    this.setState({ email });
+    this.setState({ email: email.toLowerCase() });
   }
 
   handlePasswordChange = (password) => {

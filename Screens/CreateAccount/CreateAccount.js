@@ -25,6 +25,10 @@ export default class CreateAccount extends Component {
   }
 
   handleChange = (field, value) => {
+    if(field === 'email') {
+      this.setState({ email: value.toLowerCase() });
+      return;
+    }
     this.setState({ [field]: value });
   }
 
