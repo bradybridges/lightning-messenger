@@ -44,12 +44,12 @@ const styles = StyleSheet.create({
   content: {
     padding: 5,
     fontSize: 18,
-    color: 'white',
+    color: 'black',
   },
   timestamp: {
     alignSelf: 'flex-end',
     marginRight: 20,
-    color: 'white',
+    color: 'black',
     fontSize: 12,
   },
   senderContainer: {
