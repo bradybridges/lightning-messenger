@@ -89,10 +89,10 @@ export default class Login extends Component {
     }
   }
 
-  handleNavigationToCreateAccount = () => {
+  handleNavigation = (screen) => {
     const { navigate } = this.props.navigation;
     this.setState({ email: '', password: '' });
-    navigate('CreateAccount');
+    navigate(screen);
   }
 
   render() {
@@ -117,7 +117,8 @@ export default class Login extends Component {
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={this.handleLogin}><Text style={styles.buttonText}>Login</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={ this.handleNavigationToCreateAccount}><Text style={styles.buttonText}>Join</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => this.handleNavigation('CreateAccount')}><Text style={styles.buttonText}>Join</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => this.handleNavigation('ResetPassword')}><Text style={styles.buttonText}>Reset Password</Text></TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
         <ActivityIndicator 

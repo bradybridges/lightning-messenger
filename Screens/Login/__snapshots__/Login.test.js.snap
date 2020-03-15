@@ -23,19 +23,6 @@ exports[`Login should match snapshot 1`] = `
   >
     Login
   </Text>
-  <ActivityIndicator
-    animating={false}
-    color="#6E8F76"
-    hidesWhenStopped={true}
-    size="large"
-    style={
-      Object {
-        "position": "absolute",
-        "top": "30%",
-        "zIndex": 5,
-      }
-    }
-  />
   <KeyboardAvoidingView
     enabled={true}
     keyboardVerticalOffset={0}
@@ -151,7 +138,48 @@ exports[`Login should match snapshot 1`] = `
           Join
         </Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={0.2}
+        onPress={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "#121716",
+            "borderColor": "#6E8F76",
+            "borderRadius": 4,
+            "borderWidth": 1,
+            "display": "flex",
+            "height": 50,
+            "justifyContent": "center",
+            "marginTop": 10,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "#6E8F76",
+              "fontSize": 24,
+            }
+          }
+        >
+          Reset Password
+        </Text>
+      </TouchableOpacity>
     </View>
   </KeyboardAvoidingView>
+  <ActivityIndicator
+    animating={false}
+    color="#6E8F76"
+    hidesWhenStopped={true}
+    size="large"
+    style={
+      Object {
+        "position": "absolute",
+        "top": "30%",
+        "zIndex": 5,
+      }
+    }
+  />
 </View>
 `;

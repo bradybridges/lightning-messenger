@@ -20,7 +20,7 @@ exports[`Message should match snapshot 1`] = `
   <Text
     style={
       Object {
-        "color": "white",
+        "color": "black",
         "fontSize": 18,
         "padding": 5,
       }
@@ -32,7 +32,7 @@ exports[`Message should match snapshot 1`] = `
     style={
       Object {
         "alignSelf": "flex-end",
-        "color": "white",
+        "color": "black",
         "fontSize": 12,
         "marginRight": 20,
       }
