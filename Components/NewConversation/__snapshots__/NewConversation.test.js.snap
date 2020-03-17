@@ -7,6 +7,7 @@ exports[`NewConversation should match the snapshot 1`] = `
       "alignItems": "center",
       "backgroundColor": "#14272E",
       "flex": 1,
+      "paddingTop": 20,
     }
   }
 >
@@ -14,11 +15,15 @@ exports[`NewConversation should match the snapshot 1`] = `
     style={
       Object {
         "alignItems": "center",
+        "backgroundColor": "#121716",
         "display": "flex",
-        "height": 50,
-        "left": 20,
+        "flexDirection": "row",
+        "height": 133.4,
+        "padding": 10,
+        "paddingTop": 20,
         "position": "absolute",
-        "top": 10,
+        "width": "100%",
+        "zIndex": 5,
       }
     }
   >

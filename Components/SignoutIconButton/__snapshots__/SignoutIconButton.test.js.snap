@@ -18,8 +18,8 @@ exports[`SignoutIconButton should match snapshot 1`] = `
     source={1}
     style={
       Object {
-        "height": 35,
-        "width": 35,
+        "height": 30,
+        "width": 30,
       }
     }
   />
