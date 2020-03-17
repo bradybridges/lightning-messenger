@@ -10,6 +10,8 @@ export default class Message extends Component {
     let minutes = Number(date.getMinutes());
     if(hours > 12) {
       hours = hours - 12;
+    } else if(hours === 0) {
+      hours = 12;
     }
     if(minutes < 10) {
       minutes = `0${minutes}`;
