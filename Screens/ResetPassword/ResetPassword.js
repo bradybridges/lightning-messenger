@@ -51,6 +51,12 @@ export default class ResetPassword extends Component {
     }
   }
 
+  cancelResetPassword = () => {
+    const { navigate } = this.props.navigation;
+    this.setState({ email: '' });
+    navigate('Login');
+  }
+
   render() {
     const { email } = this.state;
     return (
@@ -68,6 +74,14 @@ export default class ResetPassword extends Component {
         >
           <Text style={styles.buttonText}>
             ResetPassword
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={this.cancelResetPassword}  
+        >
+          <Text style={styles.buttonText}>
+            Cancel
           </Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
