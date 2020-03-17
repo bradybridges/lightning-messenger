@@ -37,6 +37,7 @@ const MainNavigator = createStackNavigator({
     navigationOptions: {
       headerTitle: () => renderLogo(),
       headerTitleAlign: () => 'center',
+      headerLeft: () => null,
       headerStyle: {
         backgroundColor: Constants.primaryHeaderColor,
       },
@@ -49,7 +50,7 @@ const MainNavigator = createStackNavigator({
       headerTitleAlign: () => 'center',
       headerStyle: {
         backgroundColor: Constants.primaryHeaderColor,
-      }
+      },
     }
   }
 });
