@@ -5,6 +5,7 @@
 * [Tools Used](#Tools-Used)
 * [Requirements](#Requirements)
 * [Setup](#Setup)
+* [Demo](#Demo)
 * [Screenshots](#Screenshots) 
 
 ## Objective
@@ -21,7 +22,7 @@
 ## Requirements
 
 You must have node and npm installed on your local machine. This is used to install all of the dependencies of the application. To install these packages, just intall node, which includes an installation of npm.
-
+ 
 ```bash
 brew install node
 ```
@@ -36,17 +37,19 @@ npm install
 ```
 1. To verify that it is setup correctly, run `npm start` in your terminal. Metro bundler should open in your browser.
 
-1. To run the application install Expo on your smartphone or virtual device. If using a physical device, scan the QR code provided by Expo's metro bundler. If you are using a virtual device, open the terminal where the application is being served from, hit 'a' to open on your android device, or 'i' to open the application on an IOS simulator.
+## Run The Application
+
+To run the application install Expo on your smartphone or virtual device. If using a physical device, scan the QR code provided by Expo's metro bundler. If you are using a virtual device, open the terminal where the application is being served from, hit 'a' to open on your android device, or 'i' to open the application on an IOS simulator.
 
 ## Demo
-![lightning-messenger-basic-demo](https://user-images.githubusercontent.com/25031031/76808918-c1b42300-67ae-11ea-8f1d-cfeebecfd62b.gif)
+![basic-demo](https://user-images.githubusercontent.com/25031031/76831305-b67fe800-67ec-11ea-9feb-988af5409aa6.gif)
 
 
 ## Screenshots
-<img width="345" alt="Login" src="https://user-images.githubusercontent.com/25031031/76808779-6a15b780-67ae-11ea-88a0-e592c081dd3d.png">
-<img width="289" alt="CreateAccount" src="https://user-images.githubusercontent.com/25031031/76808784-6d10a800-67ae-11ea-9466-0aecc4c893af.png">
-<img width="349" alt="ResetPassword" src="https://user-images.githubusercontent.com/25031031/76808794-700b9880-67ae-11ea-9361-fe56087e4adb.png">
-<img width="347" alt="Home" src="https://user-images.githubusercontent.com/25031031/76808800-7437b600-67ae-11ea-82c2-323e69ba71a3.png">
-<img width="351" alt="Conversation" src="https://user-images.githubusercontent.com/25031031/76808805-769a1000-67ae-11ea-8e22-959192e7c688.png">
-<img width="346" alt="NewConversation" src="https://user-images.githubusercontent.com/25031031/76808812-79950080-67ae-11ea-8c1f-d7b92c5aa859.png">
+<img width="287" alt="login" src="https://user-images.githubusercontent.com/25031031/76831313-ba136f00-67ec-11ea-8158-3777e37d0131.png">
+<img width="286" alt="createaccount" src="https://user-images.githubusercontent.com/25031031/76831319-bc75c900-67ec-11ea-8248-62e1a3a07c62.png">
+<img width="288" alt="resetpassword" src="https://user-images.githubusercontent.com/25031031/76831336-c4356d80-67ec-11ea-8d8b-227cd177f30f.png">
+<img width="287" alt="home" src="https://user-images.githubusercontent.com/25031031/76831345-c697c780-67ec-11ea-98fd-2b262ed52b89.png">
+<img width="288" alt="conversation" src="https://user-images.githubusercontent.com/25031031/76831349-c8618b00-67ec-11ea-853d-d8104a58c8c5.png">
+<img width="287" alt="newmessage" src="https://user-images.githubusercontent.com/25031031/76831360-cdbed580-67ec-11ea-9689-f6439678c4d8.png">
 
