@@ -11,7 +11,7 @@ exports[`Message should match snapshot 1`] = `
       "borderWidth": 1,
       "display": "flex",
       "marginLeft": 10,
-      "marginVertical": 15,
+      "marginTop": 15,
       "paddingBottom": 5,
       "width": 675,
     }

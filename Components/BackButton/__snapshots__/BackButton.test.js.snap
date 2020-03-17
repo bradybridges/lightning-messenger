@@ -5,13 +5,11 @@ exports[`BackButton should m atch the snapshot 1`] = `
   activeOpacity={0.2}
   style={
     Object {
-      "height": 40,
-      "left": 10,
-      "marginTop": -20,
-      "position": "absolute",
-      "top": 66.7,
-      "width": 40,
-      "zIndex": 10,
+      "alignItems": "center",
+      "display": "flex",
+      "height": "100%",
+      "justifyContent": "center",
+      "width": "10%",
     }
   }
 >
@@ -19,8 +17,8 @@ exports[`BackButton should m atch the snapshot 1`] = `
     source={1}
     style={
       Object {
-        "height": 40,
-        "width": 40,
+        "height": 30,
+        "width": 30,
       }
     }
   />
