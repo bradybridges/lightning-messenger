@@ -35,7 +35,10 @@ export default class NewConversation extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <BackButton close={this.closeNewConversation} />
+        <View style={styles.headerContainer}>
+          <BackButton close={this.closeNewConversation} />
+          {/* <Text style={styles.titleText}>New Conversation</Text> */}
+        </View>
         <Text style={styles.headerText}>To</Text>
         <TextInput style={styles.input} value={this.state.to} onChangeText={(value) => this.setState({to: value.toLowerCase() })} placeholder="Email" />
         <TouchableOpacity style={styles.button} onPress={this.handleNewConversation}>
@@ -49,14 +52,32 @@ export default class NewConversation extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Constants.primaryBgColor,
+    paddingTop: getStatusBarHeight(),
+  },
+  headerContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: Dimensions.get('window').height * .1,
+    backgroundColor: Constants.primaryHeaderColor,
+    padding: Constants.baseMarginPadding,
+    position: 'absolute',
+    zIndex: 5,
+    width: '100%',
+    paddingTop: getStatusBarHeight(true),
   },
   headerText: {
     color: 'white',
     fontSize: 36,
     marginTop: getStatusBarHeight() + 20,
+  },
+  titleText: {
+    color: 'white',
+    fontSize: 24,
+    width: '90%',
+    textAlign: 'center',
   },
   text: {
     color: 'white',

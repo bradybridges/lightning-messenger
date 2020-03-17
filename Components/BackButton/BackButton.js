@@ -12,17 +12,15 @@ const BackButton = ({ close }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 40,
-    height: 40,
-    position: 'absolute',
-    zIndex: 10,
-    left: 10,
-    top: Dimensions.get('window').height * .05,
-    marginTop: -20,
+    width: '10%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
-    width: 40,
-    height: 40,    
+    width: 30,
+    height: 30,    
   }
 });
 

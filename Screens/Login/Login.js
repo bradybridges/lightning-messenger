@@ -9,6 +9,7 @@ import { Text,
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
@@ -100,6 +101,7 @@ export default class Login extends Component {
     const { loading } = this.state;
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
         <Text style={styles.header}>Login</Text>
         <KeyboardAvoidingView style={styles.loginContainer}>
           <TextInput

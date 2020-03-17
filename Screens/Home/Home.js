@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar } from 'react-native';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
@@ -239,6 +239,8 @@ export default class Home extends Component {
     let minutes = Number(date.getMinutes());
     if(hours > 12) {
       hours = hours - 12;
+    } else if(hours === 0) {
+      hours = 12;
     }
     if(minutes < 10) {
       minutes = `0${minutes}`;
@@ -275,12 +277,13 @@ export default class Home extends Component {
 
   render() {
     const { refreshing, user } = this.state;
-    setTimeout(() => {
-      this.getMessages(user);
-    }, 5000);
+    // setTimeout(() => {
+    //   this.getMessages(user);
+    // }, 5000);
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
         <ScrollView
           refreshControl= {
             <RefreshControl 
@@ -306,7 +309,7 @@ export default class Home extends Component {
           {this.state.selectedConversation && this.renderConversation()}
         </Modal>
         <Modal
-          animationType="fade"
+          animationType="slide"
           transparent={false}
           visible={this.state.showNewConversation}
           onRequestClose={() => {

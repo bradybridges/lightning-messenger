@@ -10,9 +10,22 @@ exports[`NewConversation should match the snapshot 1`] = `
     }
   }
 >
-  <BackButton
-    close={[Function]}
-  />
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "display": "flex",
+        "height": 50,
+        "left": 20,
+        "position": "absolute",
+        "top": 10,
+      }
+    }
+  >
+    <BackButton
+      close={[Function]}
+    />
+  </View>
   <Text
     style={
       Object {

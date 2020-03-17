@@ -10,6 +10,8 @@ export default class Message extends Component {
     let minutes = Number(date.getMinutes());
     if(hours > 12) {
       hours = hours - 12;
+    } else if(hours === 0) {
+      hours = 12;
     }
     if(minutes < 10) {
       minutes = `0${minutes}`;
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Constants.tertiaryBgColor,
     borderRadius: 25,
-    marginVertical: 15,
+    marginTop: 15,
     width: Dimensions.get('window').width * .9,
     paddingBottom: 5,
     borderColor: '#abababeb',
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#151515',
     borderRadius: 25,
-    marginVertical: 15,
+    marginTop: 15,
     width: Dimensions.get('window').width * .9,
     paddingBottom: 5,
     borderColor: '#abababeb',
