@@ -13,7 +13,7 @@ const ConversationTab = ({from, time, updateSelectedConversation}) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: Dimensions.get('window').height * .15,
+    height: Dimensions.get('window').height * .125,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
