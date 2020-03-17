@@ -3,7 +3,8 @@ import { Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import Message from '../Message/Message';
 import ComposeMessageForm from '../ComposeMessageForm/ComposeMessageForm';
 import BackButton from '../BackButton/BackButton';
-import * as constants from '../../Constants/Constants';
+import * as Constants from '../../Constants/Constants';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 export default class Conversation extends Component {
   renderMessages = () => {
@@ -24,8 +25,8 @@ export default class Conversation extends Component {
     const { email } = this.props.user;
     return (
       <View style={styles.container}>
-        <BackButton close={closeSelectedConversation} />
         <View style={styles.headerContainer}>
+          <BackButton close={closeSelectedConversation} />
           <Text style={styles.header}>{from}</Text>
         </View>
         <View style={styles.messagesContainer}>
@@ -43,24 +44,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: constants.primaryBgColor,
+    backgroundColor: Constants.primaryBgColor,
     justifyContent: 'flex-start',
     paddingTop: Dimensions.get('window').height * .1,
   },
   headerContainer: {
     display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     height: Dimensions.get('window').height * .1,
-    backgroundColor: constants.primaryHeaderColor,
-    padding: constants.baseMarginPadding,
+    backgroundColor: Constants.primaryHeaderColor,
+    padding: Constants.baseMarginPadding,
     position: 'absolute',
     zIndex: 5,
     width: '100%',
-    justifyContent: 'center',
+    paddingTop: getStatusBarHeight(true),
   },
   header: {
     color: 'white',
     fontSize: 24,
+    width: '90%',
+    textAlign: 'center',
   },
   messagesContainer: {
     width: Dimensions.get('window').width,
