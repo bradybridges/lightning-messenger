@@ -317,7 +317,15 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        { showDeleteConversationMenu && <DeleteConversationMenu toggleDeleteConversationMenu={this.toggleDeleteConversationMenu} deleteConversation={this.deleteConversation} /> }
+        <Modal 
+          visible={this.state.showDeleteConversationMenu} 
+          animationType="slide" transparent={true}
+        >
+          <DeleteConversationMenu 
+            toggleDeleteConversationMenu={this.toggleDeleteConversationMenu} 
+            deleteConversation={this.deleteConversation}  
+          />
+        </Modal>
         <ScrollView
           refreshControl= {
             <RefreshControl 
@@ -350,7 +358,10 @@ export default class Home extends Component {
             this.setState({ showNewConversation: false });
           }}
         >
-          <NewConversation handleNewConversation={this.handleNewConversation} toggleNewConversation={this.toggleNewConversation}/>
+          <NewConversation 
+            handleNewConversation={this.handleNewConversation} 
+            toggleNewConversation={this.toggleNewConversation}
+          />
         </Modal>
       </View>
     )
