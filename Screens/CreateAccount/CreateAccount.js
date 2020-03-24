@@ -10,6 +10,7 @@ import {
   AsyncStorage,
   ActivityIndicator, 
 } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
 import nacl from 'tweet-nacl-react-native-expo';
@@ -82,7 +83,7 @@ export default class CreateAccount extends Component {
     const publicEncoded = nacl.util.encodeBase64(publicKey);
     const privateEncoded = nacl.util.encodeBase64(secretKey);
     const newUser = { inbox: [], sent: [], keys: { publicKey: publicEncoded, secretKey: privateEncoded }};
-    await AsyncStorage.setItem(email, JSON.stringify(newUser));
+    await SecureStore.setItemAsync(email.replace('@', ''), JSON.stringify(newUser));
     return publicEncoded;
   }
 

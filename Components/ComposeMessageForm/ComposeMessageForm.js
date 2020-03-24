@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text, TextInput, View, Image, TouchableOpacity, StyleSheet, Dimensions, AsyncStorage } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 const lock = require('../../assets/lock.png');
@@ -18,7 +19,7 @@ export default class ComposeMessageForm extends Component {
   encryptMessage = async (newMessage) => {
     try {
       const { to, from } = this.props;
-      let profile = await AsyncStorage.getItem(from);
+      let profile = await SecureStore.getItemAsync(from.replace('@', ''));
       profile = JSON.parse(profile);
       const secretKeyEncoded = profile.keys.secretKey;
       const secretKey = nacl.util.decodeBase64(secretKeyEncoded);
@@ -80,10 +81,10 @@ export default class ComposeMessageForm extends Component {
   saveSentMessage = async (newMessage) => {
     const { from } = this.props;
     try{
-      const stringySavedMessages = await AsyncStorage.getItem(from);
+      const stringySavedMessages = await SecureStore.getItemAsync(from.replace('@', ''));
       const savedMessages = JSON.parse(stringySavedMessages);
       savedMessages.sent.push(newMessage);
-      await AsyncStorage.setItem(from, JSON.stringify(savedMessages));
+      await SecureStore.setItemAsync(from.replace('@', ''), JSON.stringify(savedMessages));
     } catch(err) {console.error({ err })}   
   }
   

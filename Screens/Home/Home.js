@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
@@ -72,7 +73,7 @@ export default class Home extends Component {
   decryptMessages = async (messages) => {
     try{
       const { email } = this.state.user;
-      let profile = await AsyncStorage.getItem(email);
+      let profile = await SecureStore.getItemAsync(email.replace('@', ''));
       if(profile !== null) {
         profile = JSON.parse(profile);
         let { secretKey } = profile.keys;
@@ -99,7 +100,7 @@ export default class Home extends Component {
   buildMessages = async () => {
     try{
       const { user } = this.state;
-      const stringySavedMessages = await AsyncStorage.getItem(user.email);
+      const stringySavedMessages = await SecureStore.getItemAsync(user.email.replace('@', ''));
       const savedMessages = await JSON.parse(stringySavedMessages);
       const { inbox, sent } = savedMessages;
       if(!inbox.length && !sent.length) {
@@ -161,12 +162,12 @@ export default class Home extends Component {
     try {
       const { user } = this.state;
       const { email } = user;
-      const stringySavedMessages = await AsyncStorage.getItem(user.email);
+      const stringySavedMessages = await SecureStore.getItemAsync(user.email.replace('@', ''));
       if(stringySavedMessages !== null) {
         const savedMessages = JSON.parse(stringySavedMessages);
         const savedInbox = savedMessages.inbox;
         savedMessages.inbox = [...savedInbox, ...messages];
-        await AsyncStorage.setItem(user.email, JSON.stringify(savedMessages));
+        await SecureStore.setItemAsync(user.email.replace('@', ''), JSON.stringify(savedMessages));
       } 
     } catch(err) {console.error({ err })}
   }
