@@ -11,6 +11,7 @@ import { Text,
   ActivityIndicator,
   StatusBar,
 } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
 import 'firebase/auth';
@@ -25,9 +26,9 @@ export default class Login extends Component {
     loading: false,
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     if(!firebase.apps.length) {
-      firebase.initializeApp(ApiKeys.FirebaseConfig);
+      await firebase.initializeApp(ApiKeys.FirebaseConfig);
     } 
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
