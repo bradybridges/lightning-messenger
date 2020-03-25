@@ -292,7 +292,6 @@ export default class Home extends Component {
   }
 
   deleteConversation = async () => {
-    console.log('delete conversation ran');
     const { conversationToDelete, conversations, user } = this.state;
     const toDeleteFrom = conversationToDelete.from;
     const updatedConversations = conversations.filter((convo) => convo.from !== toDeleteFrom);
