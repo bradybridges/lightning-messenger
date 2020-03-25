@@ -3,6 +3,7 @@
 exports[`ConversationTab should match snapshot 1`] = `
 <TouchableOpacity
   activeOpacity={0.2}
+  onLongPress={[Function]}
   onPress={[Function]}
   style={
     Object {

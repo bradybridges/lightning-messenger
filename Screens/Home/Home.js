@@ -6,6 +6,7 @@ import Conversation from '../../Components/Conversation/Conversation';
 import ConversationTab from '../../Components/ConversationTab/ConversationTab';
 import NewMessageButton from '../../Components/NewMessageButton/NewMessageButton';
 import NewConversation from '../../Components/NewConversation/NewConversation';
+import showDeleteConversationMenu from '../../Components/DeleteConversationMenu/DeleteConversationMenu';
 import * as firebase from 'firebase';
 import * as constants from '../../Constants/Constants';
 import 'firebase/firestore';
@@ -13,6 +14,7 @@ import 'firebase/auth';
 import _ from 'lodash';
 import nacl from 'tweet-nacl-react-native-expo';
 import * as Constants from '../../Constants/Constants';
+import DeleteConversationMenu from '../../Components/DeleteConversationMenu/DeleteConversationMenu';
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 const _console = _.clone(console);
@@ -27,8 +29,10 @@ export default class Home extends Component {
     conversations: [],
     user: null,
     selectedConversation: null,
+    conversationToDelete: null,
     showConversation: false,
     showNewConversation: false,
+    showDeleteConversationMenu: false,
     refreshing: false,
   };
 
@@ -192,10 +196,25 @@ export default class Home extends Component {
           from={convo.from} 
           time={time} 
           key={convo.from} 
-          updateSelectedConversation={this.updateSelectedConversation} 
+          updateSelectedConversation={this.updateSelectedConversation}
+          handleConversationTabLongPress={this.handleConversationTabLongPress}
         />
       );
     });
+  }
+
+  handleConversationTabLongPress = (from) => {
+    const { conversations } = this.state;
+    const conversationToDelete = conversations.find((convo) => convo.from === from);
+    this.setState({ 
+      conversationToDelete,
+      showDeleteConversationMenu: true,
+    });
+  }
+
+  toggleDeleteConversationMenu = () => {
+    const { showDeleteConversationMenu } = this.state;
+    this.setState({ showDeleteConversationMenu: !showDeleteConversationMenu });
   }
   
   renderMessages = () => {
@@ -272,12 +291,24 @@ export default class Home extends Component {
     );
   }
 
+  deleteConversation = async () => {
+    const { conversationToDelete, conversations, user } = this.state;
+    const toDeleteFrom = conversationToDelete.from;
+    const updatedConversations = conversations.filter((convo) => convo.from !== toDeleteFrom);
+    let storedMessages = await SecureStore.getItemAsync(user.email.replace('@', ''));
+    storedMessages = JSON.parse(storedMessages);
+    storedMessages.inbox = storedMessages.inbox.filter((msg) => msg.from !== toDeleteFrom);
+    storedMessages.sent = storedMessages.sent.filter((msg) => msg.to !== toDeleteFrom);
+    await SecureStore.setItemAsync(user.email.replace('@', ''), JSON.stringify(storedMessages));
+    this.setState({ conversations: updatedConversations, showDeleteConversationMenu: false, conversationToDelete: null });
+  }
+
   closeSelectedConversation = () => {
     this.setState({ selectedConversation: null, showConversation: false });
   }
 
   render() {
-    const { refreshing, user } = this.state;
+    const { refreshing, user, showDeleteConversationMenu } = this.state;
     // setTimeout(() => {
     //   this.getMessages(user);
     // }, 5000);
@@ -285,6 +316,15 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
+        <Modal 
+          visible={this.state.showDeleteConversationMenu} 
+          animationType="slide" transparent={true}
+        >
+          <DeleteConversationMenu 
+            toggleDeleteConversationMenu={this.toggleDeleteConversationMenu} 
+            deleteConversation={this.deleteConversation}  
+          />
+        </Modal>
         <ScrollView
           refreshControl= {
             <RefreshControl 
@@ -317,7 +357,10 @@ export default class Home extends Component {
             this.setState({ showNewConversation: false });
           }}
         >
-          <NewConversation handleNewConversation={this.handleNewConversation} toggleNewConversation={this.toggleNewConversation}/>
+          <NewConversation 
+            handleNewConversation={this.handleNewConversation} 
+            toggleNewConversation={this.toggleNewConversation}
+          />
         </Modal>
       </View>
     )
