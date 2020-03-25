@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     left: '50%',
     width: 300,
     height: 150,
-    marginTop: -200,
+    marginTop: -150,
     marginLeft: -150,
     borderRadius: 6,
     zIndex: 5,
@@ -49,15 +49,17 @@ const styles = StyleSheet.create({
   },
   header: {
     color: Constants.tertiaryBgColor,
-    fontSize: 24,
+    fontSize: 20,
   },  
   textConfirm: {
-    fontSize: 20,
+    fontSize: 16,
     color: Constants.primaryHeaderColor,
+    fontWeight: 'bold',
   },
   textCancel: {
     fontSize: 20,
     color: Constants.tertiaryBgColor,
+    fontWeight: 'bold',
   },
   confirmButton: {
     width: '40%',
