@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import * as Constants from '../../Constants/Constants';
 
 export default class Message extends Component {
@@ -22,10 +22,10 @@ export default class Message extends Component {
     const { content, timestamp, isSender } = this.props;
     const time = this.formatTimestamp(timestamp);
     return (
-      <View style={isSender ? styles.senderContainer: styles.container}>
+      <TouchableOpacity activeOpacity={0.75} style={isSender ? styles.senderContainer: styles.container} onLongPress={() => alert('Want to delete this?')}>
         <Text style={isSender ? styles.senderContent: styles.content}>{content}</Text>
         <Text style={isSender ? styles.senderTimestamp: styles.timestamp}>{time}</Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 }
