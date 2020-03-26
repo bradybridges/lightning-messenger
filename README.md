@@ -44,6 +44,7 @@ npm install
 1. To verify that it is setup correctly, run `npm start` in your terminal. Expo's metro bundler should open in your browser.
 
 ## Run The Application
+This application is currently in development, if you would like to serve it on your local machine, please contact me for api keys and final setup instructions. Android/IOS builds coming soon.
 
 To run the application install Expo on your smartphone or virtual device. If using a physical device, scan the QR code provided by Expo's metro bundler. If you are using a virtual device, open the terminal where the application is being served from, hit 'a' to open on your android device, or 'i' to open the application on an IOS simulator.
 
