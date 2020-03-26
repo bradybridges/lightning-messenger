@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, ActivityIndicator, StyleSheet, Dimensions, Modal } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
 import * as Font from 'expo-font';
 import 'firebase/firestore';
 import 'firebase/auth';
 import * as Constants from '../../Constants/Constants';
+import ConfirmDeleteAccount from '../../Components/ConfirmDeleteAccount/ConfirmDeleteAccount';
 
 export default class Settings extends Component {
   state = {
     user: null,
     loadingFonts: true,
+    showConfirmDeleteAccount: false,
+    loading: false,
   }
 
   componentDidMount = async () => {
@@ -22,19 +26,49 @@ export default class Settings extends Component {
     }
   }
 
+  handleDeleteAccount = async () => {
+    try {
+      const { replace } = this.props.navigation;
+      this.setState({ loading: true });
+      const { user } = this.state;
+      const email = user.email;
+      await SecureStore.deleteItemAsync(email.replace('@', ''));
+      const availableUserSnap = await firebase.firestore().collection('availableUsers').doc(email).delete();
+      const inboxSnap = await firebase.firestore().collection('users').doc(email).collection('inbox').get();
+      await inboxSnap.docs.forEach((msg) => msg.ref.delete());
+      const friendsSnap = await firebase.firestore().collection('users').doc(email).collection('friends').get();
+      await friendsSnap.docs.forEach((doc) => doc.ref.delete());
+      await user.delete();
+      await firebase.auth().signOut;
+      await this.setState({ loading: false, showConfirmDeleteAccount: false });
+      replace('Login');
+    }catch(error) {console.error({ error })}
+  }
+
+  toggleConfirmDeleteAccount = () => {
+    const { showConfirmDeleteAccount } = this.state;
+    this.setState({ showConfirmDeleteAccount: !showConfirmDeleteAccount });
+  }
+
   render() {
-    const { user, loadingFonts } = this.state;
+    const { user, loadingFonts, showConfirmDeleteAccount } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.profileContainer}>
-          { user && <Text style={styles.text}>{user.email}</Text> }
-          <View style={styles.friendContainer}>
-            <Text style={styles.text}>Friends: </Text>
-            <Text style={styles.text}>num friends</Text>
-          </View>     
+          { user && !loadingFonts && <Text style={styles.text}>{user.email}</Text> }
+          { !loadingFonts && (
+            <View style={styles.friendContainer}>
+              <Text style={styles.text}>Friends: </Text>
+              <Text style={styles.text}>num friends</Text>
+            </View>
+          )}
         </View>
+        {}
         <TouchableOpacity style={styles.button}><Text style={!loadingFonts ? styles.buttonText: ''}>Regenerate RSA Keys</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.button}><Text style={!loadingFonts ? styles.buttonText: ''}>Delete Account</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.button}><Text style={!loadingFonts ? styles.buttonText: ''} onPress={this.toggleConfirmDeleteAccount}>Delete Account</Text></TouchableOpacity>
+        <Modal visible={showConfirmDeleteAccount} onRequestClose={this.toggleConfirmDeleteAccount} animationType="slide">
+            <ConfirmDeleteAccount cancelDelete={this.toggleConfirmDeleteAccount} handleDeleteAccount={this.handleDeleteAccount} />
+        </Modal>
       </View>
     )
   }
