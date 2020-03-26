@@ -27,6 +27,12 @@ You must have node and npm installed on your local machine. This is used to inst
 brew install node
 ```
 
+You must also have expo-cli installed globally on your machine. To do this enter the command below.
+
+```bash
+npm install -g expo-cli
+```
+
 ## Setup
 
 1. Clone down this repo.
@@ -35,21 +41,22 @@ brew install node
 ```bash
 npm install
 ```
-1. To verify that it is setup correctly, run `npm start` in your terminal. Metro bundler should open in your browser.
+1. To verify that it is setup correctly, run `npm start` in your terminal. Expo's metro bundler should open in your browser.
 
 ## Run The Application
 
 To run the application install Expo on your smartphone or virtual device. If using a physical device, scan the QR code provided by Expo's metro bundler. If you are using a virtual device, open the terminal where the application is being served from, hit 'a' to open on your android device, or 'i' to open the application on an IOS simulator.
 
 ## Demo
-![basic-demo](https://user-images.githubusercontent.com/25031031/76831305-b67fe800-67ec-11ea-9feb-988af5409aa6.gif)
+![demo](https://user-images.githubusercontent.com/25031031/77705435-4a884700-6f85-11ea-8197-d10e02cb36a8.gif)
 
 
 ## Screenshots
-<img width="287" alt="login" src="https://user-images.githubusercontent.com/25031031/76831313-ba136f00-67ec-11ea-8158-3777e37d0131.png">
-<img width="286" alt="createaccount" src="https://user-images.githubusercontent.com/25031031/76831319-bc75c900-67ec-11ea-8248-62e1a3a07c62.png">
-<img width="288" alt="resetpassword" src="https://user-images.githubusercontent.com/25031031/76831336-c4356d80-67ec-11ea-8d8b-227cd177f30f.png">
-<img width="287" alt="home" src="https://user-images.githubusercontent.com/25031031/76831345-c697c780-67ec-11ea-98fd-2b262ed52b89.png">
-<img width="288" alt="conversation" src="https://user-images.githubusercontent.com/25031031/76831349-c8618b00-67ec-11ea-853d-d8104a58c8c5.png">
-<img width="287" alt="newmessage" src="https://user-images.githubusercontent.com/25031031/76831360-cdbed580-67ec-11ea-9689-f6439678c4d8.png">
+<img width="297" alt="home" src="https://user-images.githubusercontent.com/25031031/77705202-ad2d1300-6f84-11ea-80f7-7e1c6c01bb89.png">
+<img width="299" alt="conversation" src="https://user-images.githubusercontent.com/25031031/77705223-b74f1180-6f84-11ea-86ad-049a72fae0ad.png">
+<img width="290" alt="Login" src="https://user-images.githubusercontent.com/25031031/77705207-b0280380-6f84-11ea-81a4-edae81ea2094.png">
+<img width="293" alt="create" src="https://user-images.githubusercontent.com/25031031/77705208-b1593080-6f84-11ea-999a-95d23b98a1fd.png">
+<img width="297" alt="reset" src="https://user-images.githubusercontent.com/25031031/77705218-b4ecb780-6f84-11ea-922c-c2e5687dc349.png">
+<img width="296" alt="settings" src="https://user-images.githubusercontent.com/25031031/77705242-c2a23d00-6f84-11ea-8245-9da110a35b76.png">
+
 
