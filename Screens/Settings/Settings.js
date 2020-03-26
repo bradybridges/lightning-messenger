@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, TouchableOpacity, ActivityIndicator, StyleSheet, Dimensions, Modal } from 'react-native';
 import * as firebase from 'firebase';
+import * as Font from 'expo-font';
 import 'firebase/firestore';
 import 'firebase/auth';
 import * as Constants from '../../Constants/Constants';
@@ -8,17 +9,21 @@ import * as Constants from '../../Constants/Constants';
 export default class Settings extends Component {
   state = {
     user: null,
+    loadingFonts: true,
   }
 
   componentDidMount = async () => {
+    await Font.loadAsync({
+      'expo-regular': require('../../assets/fonts/Exo2-Regular.otf'),
+    });
     const user = await firebase.auth().currentUser;
     if(user) {
-      this.setState({ user });
+      this.setState({ user, loadingFonts: false });
     }
   }
 
   render() {
-    const { user } = this.state;
+    const { user, loadingFonts } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.profileContainer}>
@@ -26,10 +31,10 @@ export default class Settings extends Component {
           <View style={styles.friendContainer}>
             <Text style={styles.text}>Friends: </Text>
             <Text style={styles.text}>num friends</Text>
-          </View>
+          </View>     
         </View>
-        <TouchableOpacity style={styles.button}><Text style={styles.buttonText}>Regenerate RSA Keys</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.button}><Text style={styles.buttonText}>Delete Account</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.button}><Text style={!loadingFonts ? styles.buttonText: ''}>Regenerate RSA Keys</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.button}><Text style={!loadingFonts ? styles.buttonText: ''}>Delete Account</Text></TouchableOpacity>
       </View>
     )
   }
@@ -56,6 +61,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10,
     color: 'white',
+    fontFamily: 'exo-regular',
   },
   button: { 
     backgroundColor: Constants.primaryHeaderColor, 
@@ -73,5 +79,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 24,
     color: Constants.tertiaryBgColor,
+    fontFamily: 'exo-regular',
   }
 });

@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     width: '90%',
     textAlign: 'center',
+    fontFamily: 'exo-regular',
   },
   messagesContainer: {
     width: Dimensions.get('window').width,

@@ -14,6 +14,7 @@ import { Text,
 import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
+import * as Font from 'expo-font';
 import 'firebase/auth';
 import ApiKeys from '../../ApiKeys';
 const logo = require('../../assets/logo.png');
@@ -24,9 +25,15 @@ export default class Login extends Component {
     email: '',
     password: '',
     loading: false,
+    loadingFonts: true,
   }
 
   componentDidMount = async () => {
+    await Font.loadAsync({
+      'exo-regular': require('../../assets/fonts/Exo2-Regular.otf'),
+    });
+    this.setState({ loadingFonts: false });
+
     if(!firebase.apps.length) {
       await firebase.initializeApp(ApiKeys.FirebaseConfig);
     } 
@@ -99,11 +106,14 @@ export default class Login extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const { loading } = this.state;
+    const { loading, loadingFonts } = this.state;
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <Text style={styles.header}>Login</Text>
+        { !loadingFonts && (
+          <Text style={styles.header}>Login</Text>
+        
+        )}
         <KeyboardAvoidingView style={styles.loginContainer}>
           <TextInput
             style={styles.input}
@@ -118,11 +128,13 @@ export default class Login extends Component {
             onChangeText={this.handlePasswordChange}
             placeholder="Password"
           />
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={this.handleLogin}><Text style={styles.buttonText}>Login</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => this.handleNavigation('CreateAccount')}><Text style={styles.buttonText}>Join</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => this.handleNavigation('ResetPassword')}><Text style={styles.buttonText}>Reset Password</Text></TouchableOpacity>
-          </View>
+          {!loadingFonts && (
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.button} onPress={this.handleLogin}><Text style={styles.buttonText}>Login</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={() => this.handleNavigation('CreateAccount')}><Text style={styles.buttonText}>Join</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={() => this.handleNavigation('ResetPassword')}><Text style={styles.buttonText}>Reset Password</Text></TouchableOpacity>
+            </View>
+          )}
         </KeyboardAvoidingView>
         <ActivityIndicator 
           animating={loading} 
@@ -169,6 +181,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 40,
     marginVertical: Constants.baseMarginPadding,
+    fontFamily: 'exo-regular',
   },
   button: { 
     backgroundColor: Constants.primaryHeaderColor, 
@@ -184,6 +197,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 24,
     color: Constants.tertiaryBgColor,
+    fontFamily: 'exo-regular',
   }
 });
 

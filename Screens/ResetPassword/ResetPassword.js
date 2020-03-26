@@ -13,12 +13,21 @@ import {
 import * as firebase from 'firebase';
 import 'firebase/auth';
 import * as Constants from '../../Constants/Constants';
+import * as Font from 'expo-font';
 
 export default class ResetPassword extends Component {
 
   state = {
     email: '',
     loading: false,
+    loadingFonts: true,
+  }
+
+  componentDidMount = async () => {
+    await Font.loadAsync({
+      'exo-regular': require('../../assets/fonts/Exo2-Regular.otf'),
+    });
+    this.setState({ loadingFonts: false });
   }
 
   handleChange = (text) => {
@@ -58,32 +67,37 @@ export default class ResetPassword extends Component {
   }
 
   render() {
-    const { email } = this.state;
+    const { email, loadingFonts } = this.state;
     return (
       <KeyboardAvoidingView style={styles.container}>
-        <Text style={styles.header}>Reset Password</Text>
+        { !loadingFonts && <Text style={styles.header}>Reset Password</Text> }
         <TextInput 
           value={email} 
           onChangeText={this.handleChange} 
           placeholder='Email'
           style={styles.input}
         />
-        <TouchableOpacity 
-          style={styles.button} 
-          onPress={this.resetPassword}
-        >
-          <Text style={styles.buttonText}>
-            ResetPassword
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={this.cancelResetPassword}  
-        >
-          <Text style={styles.buttonText}>
-            Cancel
-          </Text>
-        </TouchableOpacity>
+        { !loadingFonts && (
+          <TouchableOpacity 
+            style={styles.button} 
+            onPress={this.resetPassword}
+          >
+            <Text style={styles.buttonText}>
+              Reset Password
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        { !loadingFonts && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={this.cancelResetPassword}  
+          >
+            <Text style={styles.buttonText}>
+              Cancel
+            </Text>
+          </TouchableOpacity> 
+        )}
       </KeyboardAvoidingView>
     )
   }
@@ -101,6 +115,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 40,
     marginVertical: Constants.baseMarginPadding,
+    fontFamily: 'exo-regular',
   },
   input: {
     width: Dimensions.get('window').width * .9,
@@ -127,6 +142,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 24,
     color: Constants.tertiaryBgColor,
+    fontFamily: 'exo-regular',
   }
 })
 
