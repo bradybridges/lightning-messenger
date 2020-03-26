@@ -13,7 +13,7 @@ export default createBottomTabNavigator(
       screen: Home,
       navigationOptions: {
         tabBarIcon: () => {
-            return <Icon name="home" size={25} color='green' />;
+            return <Icon name="home" size={25} color={Constants.tertiaryBgColor} />;
         },
       },
     },
@@ -21,7 +21,7 @@ export default createBottomTabNavigator(
       screen: Friends,
       navigationOptions: {
         tabBarIcon: () => {
-            return <Icon name="users" size={25} color='green' />;
+            return <Icon name="users" size={20} color={Constants.tertiaryBgColor} />;
         },
       },
      },
@@ -29,14 +29,15 @@ export default createBottomTabNavigator(
       screen: Settings,
       navigationOptions: {
         tabBarIcon: () => {
-            return <Icon name="cog" size={25} color='green' />;
+            return <Icon name="cog" size={25} color={Constants.tertiaryBgColor} />;
         },
       },
     },
   }, 
   {
     tabBarOptions: {
-      activeTintColor: 'green',
+      activeTintColor: Constants.tertiaryBgColor,
+      inactiveTintColor: 'white',
       activeBackgroundColor: Constants.primaryHeaderColor,
       inactiveBackgroundColor: Constants.primaryHeaderColor,
     }
