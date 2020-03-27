@@ -45,8 +45,6 @@ export default createBottomTabNavigator(
         borderTopWidth: 1,
         height: Dimensions.get('window').height * .075,
       },
-      tabStyle: {
-      }
     }
   }
 );
