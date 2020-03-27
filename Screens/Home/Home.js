@@ -236,14 +236,15 @@ export default class Home extends Component {
       const { selectedConversation, user } = this.state;
       return (
         <Conversation
-        from={selectedConversation.from}
-        messages={selectedConversation.messages}
-        user={user}
-        updateConversation={this.updateConversation}
-        closeSelectedConversation={this.closeSelectedConversation}
-      />
-    );
-  }
+          from={selectedConversation.from}
+          messages={selectedConversation.messages}
+          user={user}
+          updateConversation={this.updateConversation}
+          closeSelectedConversation={this.closeSelectedConversation}
+          deleteMessage={this.deleteMessage}
+        />
+      );
+    } 
   
   toggleNewConversation = () => {
     this.setState({ showNewConversation: !this.state.showNewConversation });
@@ -308,6 +309,22 @@ export default class Home extends Component {
     storedMessages.sent = storedMessages.sent.filter((msg) => msg.to !== toDeleteFrom);
     await SecureStore.setItemAsync(user.email.replace('@', ''), JSON.stringify(storedMessages));
     this.setState({ conversations: updatedConversations, showDeleteConversationMenu: false, conversationToDelete: null });
+  }
+
+  deleteMessage = async (from, contents, isSender) => {
+    const { conversations, user } = this.state;
+    const conversation = conversations.find((convo) => convo.from === from);
+    const messageIndex = conversation.messages.findIndex((message) => message.contents === contents);
+    conversation.messages.splice(messageIndex, 1);
+    this.setState({ conversations });
+    let savedMessages = await SecureStore.getItemAsync(user.email.replace('@', ''));
+    savedMessages = JSON.parse(savedMessages);
+    if(isSender) {
+      savedMessages.sent = savedMessages.sent.filter((msg) => msg.contents !== contents);
+    } else {
+      savedMessages.inbox = savedMessages.inbox.filter((msg) => msg.contents !== contents);
+    }
+    await SecureStore.setItemAsync(user.email.replace('@', ''), JSON.stringify(savedMessages));
   }
 
   closeSelectedConversation = () => {

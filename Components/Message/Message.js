@@ -3,6 +3,11 @@ import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-nati
 import * as Constants from '../../Constants/Constants';
 
 export default class Message extends Component {
+
+  state = {
+    showDeleteMessage: false,
+  }
+
   formatTimestamp = (timestamp) => {
     const date = new Date(timestamp.seconds * 1000);
     let hours = Number(date.getHours());
@@ -18,15 +23,41 @@ export default class Message extends Component {
     }
     return `${hours}:${minutes} ${label}`;
   }
-  render() {
-    const { content, timestamp, isSender } = this.props;
+
+  renderMessage = () => {
+    const { content, timestamp, isSender, deleteMessage } = this.props;
+    const { showDeleteMessage } = this.state;
     const time = this.formatTimestamp(timestamp);
+    if(!showDeleteMessage) {
+      return (
+          <TouchableOpacity activeOpacity={0.75} style={isSender ? styles.senderContainer: styles.container} onLongPress={this.toggleShowDeleteMessage}>
+            <Text style={isSender ? styles.senderContent: styles.content}>{content}</Text>
+            <Text style={isSender ? styles.senderTimestamp: styles.timestamp}>{time}</Text>
+          </TouchableOpacity>
+      );
+    }
     return (
-      <TouchableOpacity activeOpacity={0.75} style={isSender ? styles.senderContainer: styles.container} onLongPress={() => alert('Want to delete this?')}>
-        <Text style={isSender ? styles.senderContent: styles.content}>{content}</Text>
-        <Text style={isSender ? styles.senderTimestamp: styles.timestamp}>{time}</Text>
-      </TouchableOpacity>
+      <View style={isSender ? styles.senderContainer: styles.container}>
+        <TouchableOpacity onPress={() => deleteMessage(content, isSender ? true: false)}>
+          <Text>Delete</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this.toggleShowDeleteMessage}>
+          <Text>Cancel</Text>
+        </TouchableOpacity>
+      </View>  
     );
+  }
+    
+  toggleShowDeleteMessage = () => {
+    const { showDeleteMessage } = this.state;
+    this.setState({ showDeleteMessage: !showDeleteMessage });
+  }
+
+  render() {
+    // const { content, timestamp, isSender, handleDeleteMessage } = this.props;
+    // const { showDeleteMessage } = this.state;
+    // const time = this.formatTimestamp(timestamp);
+    return this.renderMessage();
   }
 }
 
