@@ -38,12 +38,20 @@ export default class Message extends Component {
     }
     return (
       <View style={isSender ? styles.senderContainer: styles.container}>
-        <TouchableOpacity onPress={() => deleteMessage(content, isSender ? true: false)}>
-          <Text>Delete</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.toggleShowDeleteMessage}>
-          <Text>Cancel</Text>
-        </TouchableOpacity>
+        <View style={styles.deleteContainer}>
+          <TouchableOpacity
+            onPress={() => deleteMessage(content, isSender ? true: false)}
+            style={styles.deleteBtn}
+          >
+            <Text style={isSender ? styles.senderContent: styles.content}>Delete</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={this.toggleShowDeleteMessage}
+            style={styles.deleteBtn}
+          >
+            <Text style={isSender ? styles.senderContent: styles.content}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>  
     );
   }
@@ -54,9 +62,6 @@ export default class Message extends Component {
   }
 
   render() {
-    // const { content, timestamp, isSender, handleDeleteMessage } = this.props;
-    // const { showDeleteMessage } = this.state;
-    // const time = this.formatTimestamp(timestamp);
     return this.renderMessage();
   }
 }
@@ -74,11 +79,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginLeft: 10,
   },
+  deleteContainer: {
+    width: '75%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: '100%',
+  },
+  deleteBtn: {
+    width: '50%',
+  },  
   content: {
     padding: 5,
     fontSize: 18,
     color: 'black',
     fontFamily: 'exo-regular',
+    textAlign: 'center',
   },
   timestamp: {
     alignSelf: 'flex-end',
@@ -105,6 +122,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
     fontFamily: 'exo-regular',
+    textAlign: 'center',
   },
   senderTimestamp: {
     alignSelf: 'flex-end',
