@@ -3,6 +3,11 @@ import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-nati
 import * as Constants from '../../Constants/Constants';
 
 export default class Message extends Component {
+
+  state = {
+    showDeleteMessage: false,
+  }
+
   formatTimestamp = (timestamp) => {
     const date = new Date(timestamp.seconds * 1000);
     let hours = Number(date.getHours());
@@ -18,15 +23,46 @@ export default class Message extends Component {
     }
     return `${hours}:${minutes} ${label}`;
   }
-  render() {
-    const { content, timestamp, isSender } = this.props;
+
+  renderMessage = () => {
+    const { content, timestamp, isSender, deleteMessage } = this.props;
+    const { showDeleteMessage } = this.state;
     const time = this.formatTimestamp(timestamp);
+    if(!showDeleteMessage) {
+      return (
+          <TouchableOpacity activeOpacity={0.75} style={isSender ? styles.senderContainer: styles.container} onLongPress={this.toggleShowDeleteMessage}>
+            <Text style={isSender ? styles.senderContent: styles.content}>{content}</Text>
+            <Text style={isSender ? styles.senderTimestamp: styles.timestamp}>{time}</Text>
+          </TouchableOpacity>
+      );
+    }
     return (
-      <TouchableOpacity activeOpacity={0.75} style={isSender ? styles.senderContainer: styles.container} onLongPress={() => alert('Want to delete this?')}>
-        <Text style={isSender ? styles.senderContent: styles.content}>{content}</Text>
-        <Text style={isSender ? styles.senderTimestamp: styles.timestamp}>{time}</Text>
-      </TouchableOpacity>
+      <View style={isSender ? styles.senderContainer: styles.container}>
+        <View style={styles.deleteContainer}>
+          <TouchableOpacity
+            onPress={() => deleteMessage(content, isSender ? true: false)}
+            style={styles.deleteBtn}
+          >
+            <Text style={isSender ? styles.senderContent: styles.content}>Delete</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={this.toggleShowDeleteMessage}
+            style={styles.deleteBtn}
+          >
+            <Text style={isSender ? styles.senderContent: styles.content}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </View>  
     );
+  }
+    
+  toggleShowDeleteMessage = () => {
+    const { showDeleteMessage } = this.state;
+    this.setState({ showDeleteMessage: !showDeleteMessage });
+  }
+
+  render() {
+    return this.renderMessage();
   }
 }
 
@@ -43,11 +79,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginLeft: 10,
   },
+  deleteContainer: {
+    width: '75%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: '100%',
+  },
+  deleteBtn: {
+    width: '50%',
+  },  
   content: {
     padding: 5,
     fontSize: 18,
     color: 'black',
     fontFamily: 'exo-regular',
+    textAlign: 'center',
   },
   timestamp: {
     alignSelf: 'flex-end',
@@ -74,6 +122,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
     fontFamily: 'exo-regular',
+    textAlign: 'center',
   },
   senderTimestamp: {
     alignSelf: 'flex-end',

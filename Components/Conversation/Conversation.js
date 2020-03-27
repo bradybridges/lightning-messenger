@@ -8,7 +8,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 export default class Conversation extends Component {
   renderMessages = () => {
-    const { messages } = this.props;
+    const { messages, deleteMessage } = this.props;
     return messages.map((message, i) => {
       return (
         <Message 
@@ -16,10 +16,17 @@ export default class Conversation extends Component {
           content={message.contents} 
           timestamp={message.timestamp}
           isSender={message.sender === true ? true: false}
+          deleteMessage={this.handleDeleteMessage}
         />
       );  
     });
   }
+
+  handleDeleteMessage = async (content, isSender) => {
+    const { deleteMessage, from } = this.props;
+    await deleteMessage(from, content, isSender);
+  }
+
   render() {
     const { from, messages, updateConversation, closeSelectedConversation } = this.props;
     const { email } = this.props.user;
