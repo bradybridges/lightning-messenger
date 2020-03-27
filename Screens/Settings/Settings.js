@@ -7,6 +7,7 @@ import 'firebase/firestore';
 import 'firebase/auth';
 import * as Constants from '../../Constants/Constants';
 import ConfirmDeleteAccount from '../../Components/ConfirmDeleteAccount/ConfirmDeleteAccount';
+import nacl from 'tweet-nacl-react-native-expo';
 
 export default class Settings extends Component {
   state = {
@@ -24,6 +25,34 @@ export default class Settings extends Component {
     if(user) {
       this.setState({ user, loadingFonts: false });
     }
+  }
+
+  handleKeyGeneration = async () => {
+    const { user } = this.state;
+    const { email } = user;
+    const keyPair = await nacl.box.keyPair();
+    const { publicKey, secretKey } = keyPair;
+    const publicEncoded = nacl.util.encodeBase64(publicKey);
+    const privateEncoded = nacl.util.encodeBase64(secretKey);
+    const newKeys =  { publicKey: publicEncoded, secretKey: privateEncoded };
+    this.updateLocallyStoredKeys(email, newKeys);
+    this.updateCloudPublicKey(email, publicEncoded);
+    alert('Successfully regenerated encryption keys');
+  }
+
+  updateLocallyStoredKeys = async (email, keys) => {
+    try {
+      let savedUser = await SecureStore.getItemAsync(email.replace('@', ''));
+      savedUser = JSON.parse(savedUser);
+      savedUser.keys = keys;
+      await SecureStore.setItemAsync(email.replace('@', ''), JSON.stringify(savedUser));
+    } catch(error) { console.error({ error })}
+  }
+
+  updateCloudPublicKey = async (email, publicKey) => {
+    try {
+      await firebase.firestore().collection('availableUsers').doc(email).set({ publicKey });
+    }catch(error) { console.error({ error })}
   }
 
   handleDeleteAccount = async () => {
@@ -64,8 +93,26 @@ export default class Settings extends Component {
           )}
         </View>
         {}
-        <TouchableOpacity style={styles.button}><Text style={!loadingFonts ? styles.buttonText: ''}>Regenerate RSA Keys</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.button}><Text style={!loadingFonts ? styles.buttonText: ''} onPress={this.toggleConfirmDeleteAccount}>Delete Account</Text></TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.button}
+        >
+          <Text 
+            style={!loadingFonts ? styles.buttonText: ''} 
+            onPress={this.handleKeyGeneration}
+          >
+            Regenerate RSA Keys
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.button}
+        >
+          <Text 
+            style={!loadingFonts ? styles.buttonText: ''} 
+            onPress={this.toggleConfirmDeleteAccount}
+          >
+            Delete Account
+          </Text>
+        </TouchableOpacity>
         <Modal visible={showConfirmDeleteAccount} onRequestClose={this.toggleConfirmDeleteAccount} animationType="slide">
             <ConfirmDeleteAccount cancelDelete={this.toggleConfirmDeleteAccount} handleDeleteAccount={this.handleDeleteAccount} />
         </Modal>
