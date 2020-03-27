@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     color: 'white',
+    fontFamily: 'exo-regular',
   },
 });
 

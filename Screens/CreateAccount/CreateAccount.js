@@ -13,6 +13,7 @@ import {
 import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
 import * as Constants from '../../Constants/Constants';
+import * as Font from 'expo-font';
 import nacl from 'tweet-nacl-react-native-expo';
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -23,6 +24,14 @@ export default class CreateAccount extends Component {
     password: "",
     passwordConfirm: "",
     loading: false,
+    loadingFonts: true,
+  }
+
+  componentDidMount = async () => {
+    await Font.loadAsync({
+      'exo-regular': require('../../assets/fonts/Exo2-Regular.otf'),
+    });
+    this.setState({ loadingFonts: false });
   }
 
   handleChange = (field, value) => {
@@ -88,10 +97,11 @@ export default class CreateAccount extends Component {
   }
 
   render() {
+    const { loadingFonts } = this.state;
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <Text style={styles.header}>Create Account</Text>
+        { !loadingFonts && <Text style={styles.header}>Create Account</Text>}
         <TextInput 
           style={styles.input} 
           onChangeText={(value) => this.handleChange("email", value)} 
@@ -112,14 +122,16 @@ export default class CreateAccount extends Component {
           placeholder='Confirm Password' 
           value={this.state.passwordConfirm}            
         />
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={this.handleCreateAccount}>
-            <Text style={styles.buttonText}>Create Account</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => navigate('Login')}>
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
+        { !loadingFonts && (
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={this.handleCreateAccount}>
+              <Text style={styles.buttonText}>Create Account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => navigate('Login')}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <ActivityIndicator 
           animating={this.state.loading} 
           size='large' 
@@ -142,6 +154,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 40,
     marginVertical: Constants.baseMarginPadding,
+    fontFamily: 'exo-regular',
   },
   text: {
     fontSize: 24,
@@ -176,6 +189,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 24,
     color: Constants.tertiaryBgColor,
+    fontFamily: 'exo-regular',
   }
 });
 

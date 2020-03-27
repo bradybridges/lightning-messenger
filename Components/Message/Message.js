@@ -47,12 +47,14 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 18,
     color: 'black',
+    fontFamily: 'exo-regular',
   },
   timestamp: {
     alignSelf: 'flex-end',
     marginRight: 20,
     color: 'black',
     fontSize: 12,
+    fontFamily: 'exo-regular',
   },
   senderContainer: {
     display: 'flex',
@@ -70,13 +72,15 @@ const styles = StyleSheet.create({
   senderContent: {
     padding: 5,
     fontSize: 18,
-    color: 'white'
+    color: 'white',
+    fontFamily: 'exo-regular',
   },
   senderTimestamp: {
     alignSelf: 'flex-end',
     marginRight: 20,
     color: 'white',
     fontSize: 12,
+    fontFamily: 'exo-regular',
   },
 });
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar } from 'react-native';
+import * as Font from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
 import Message from '../../Components/Message/Message';
 import Conversation from '../../Components/Conversation/Conversation';
@@ -34,10 +35,16 @@ export default class Home extends Component {
     showNewConversation: false,
     showDeleteConversationMenu: false,
     refreshing: false,
+    loadingFonts: true,
   };
 
 
   componentDidMount = async () => {
+    await Font.loadAsync({
+      'exo-regular': require('../../assets/fonts/Exo2-Regular.otf'),
+      'season': require('../../assets/fonts/SEASRN.ttf'),
+    });
+    this.setState({ loadingFonts: false });
     firebase.auth().onAuthStateChanged(async user => {
       if(user) {
         this.setState({ user });
