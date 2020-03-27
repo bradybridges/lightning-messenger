@@ -103,7 +103,7 @@ export default class Settings extends Component {
   }
 
   render() {
-    const { user, loadingFonts, showConfirmDeleteAccount } = this.state;
+    const { user, loadingFonts, showConfirmDeleteAccount, keysGenerated } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.profileContainer}>
@@ -116,7 +116,7 @@ export default class Settings extends Component {
           )}
         </View>
         {}
-        {this.state.keysGenerated && <Text>Successfully genereated new keys!</Text>}
+        { keysGenerated && <Text style={styles.successMsg}>Successfully generated new keys!</Text> }
         <TouchableOpacity 
           style={styles.button}
         >
@@ -163,6 +163,11 @@ const styles = StyleSheet.create({
     backgroundColor: Constants.primaryBgColor,
     paddingTop: 40,
   },
+  successMsg: {
+    color: Constants.tertiaryBgColor,
+    fontSize: 18,
+    marginVertical: 10,
+  },  
   profileContainer: {
     height: Dimensions.get('window').height * .2,
   },
