@@ -15,16 +15,22 @@ export default class Settings extends Component {
     loadingFonts: true,
     showConfirmDeleteAccount: false,
     loading: false,
+    keysGenerated: false,
   }
 
   componentDidMount = async () => {
     await Font.loadAsync({
       'expo-regular': require('../../assets/fonts/Exo2-Regular.otf'),
     });
-    const user = await firebase.auth().currentUser;
-    if(user) {
-      this.setState({ user, loadingFonts: false });
-    }
+
+    firebase.auth().onAuthStateChanged(async user => {
+      if(user) {
+        this.setState({ user, loadingFonts: false });
+      } else {
+        const { replace } = this.props.navigation;
+        replace('Login');
+      }
+    });
   }
 
   handleKeyGeneration = async () => {
@@ -35,9 +41,10 @@ export default class Settings extends Component {
     const publicEncoded = nacl.util.encodeBase64(publicKey);
     const privateEncoded = nacl.util.encodeBase64(secretKey);
     const newKeys =  { publicKey: publicEncoded, secretKey: privateEncoded };
-    this.updateLocallyStoredKeys(email, newKeys);
-    this.updateCloudPublicKey(email, publicEncoded);
-    alert('Successfully regenerated encryption keys');
+    await this.updateLocallyStoredKeys(email, newKeys);
+    await this.updateCloudPublicKey(email, publicEncoded);
+    this.setState({ keysGenerated: true });
+    this.newKeysMessageTimeout();
   }
 
   updateLocallyStoredKeys = async (email, keys) => {
@@ -79,6 +86,22 @@ export default class Settings extends Component {
     this.setState({ showConfirmDeleteAccount: !showConfirmDeleteAccount });
   }
 
+  handleClearData = async () => {
+    const { replace } = this.props.navigation;
+    const { user } = this.state;
+    let storedProfile = await SecureStore.getItemAsync(user.email.replace('@', ''));
+    storedProfile = JSON.parse(storedProfile);
+    const newProfile = { inbox: [], sent: [], keys: storedProfile.keys };
+    await SecureStore.setItemAsync(user.email.replace('@', ''), JSON.stringify(newProfile));
+    await firebase.auth().signOut();
+  }
+
+  newKeysMessageTimeout = () => {
+    setTimeout(() => {
+      this.setState({ keysGenerated: false });
+    }, 3000);
+  }
+
   render() {
     const { user, loadingFonts, showConfirmDeleteAccount } = this.state;
     return (
@@ -93,6 +116,7 @@ export default class Settings extends Component {
           )}
         </View>
         {}
+        {this.state.keysGenerated && <Text>Successfully genereated new keys!</Text>}
         <TouchableOpacity 
           style={styles.button}
         >
@@ -101,6 +125,16 @@ export default class Settings extends Component {
             onPress={this.handleKeyGeneration}
           >
             Regenerate RSA Keys
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.button}
+        >
+          <Text 
+            style={!loadingFonts ? styles.buttonText: ''} 
+            onPress={this.handleClearData}
+          >
+            Clear Data
           </Text>
         </TouchableOpacity>
         <TouchableOpacity 
