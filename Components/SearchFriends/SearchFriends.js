@@ -44,7 +44,7 @@ export default class SearchFriends extends Component {
       const { searchResult } = this.state;
       const { handleSendRequest } = this.props;
       await handleSendRequest(searchResult);
-      this.setState({ searchResult: null })
+      this.setState({ searchResult: null });
     } catch(error) { console.error({ error })}
   }
 
