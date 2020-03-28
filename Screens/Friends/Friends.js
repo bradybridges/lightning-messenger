@@ -196,6 +196,7 @@ const styles = StyleSheet.create({
     color: Constants.tertiaryBgColor,
     fontSize: 32,
     textAlign: 'center',
+    fontFamily: 'exo-regular',
   },
   addFriendContainer: {
     width: 150,
@@ -214,6 +215,7 @@ const styles = StyleSheet.create({
   addFriendText: {
     color: Constants.tertiaryBgColor,
     fontSize: 20,
+    fontFamily: 'exo-regular',
   },
   friendsContainer: {
     maxHeight: '50%',
@@ -231,6 +233,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     marginLeft: 40,
+    fontFamily: 'exo-regular'
   },
   sendMsgBtnContainer: {
     marginRight: 10,
@@ -245,6 +248,7 @@ const styles = StyleSheet.create({
     color: Constants.tertiaryBgColor,
     fontSize: 16,
     textAlign: 'center',
+    fontFamily: 'exo-regular',
   },
   requestsContainer: {
     width: Dimensions.get('window').width,
@@ -267,6 +271,7 @@ const styles = StyleSheet.create({
   requestText: {
     color: Constants.tertiaryBgColor,
     fontSize: 20,
+    fontFamily: 'exo-regular',
   },  
 })
 

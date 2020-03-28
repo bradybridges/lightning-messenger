@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
     color: Constants.tertiaryBgColor,
     fontSize: 18,
     marginVertical: 10,
+    fontFamily: 'exo-regular',
   },  
   profileContainer: {
     height: Dimensions.get('window').height * .2,
