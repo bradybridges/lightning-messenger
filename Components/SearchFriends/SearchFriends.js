@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
+import BackButton from '../BackButton/BackButton';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import * as Constants from '../../Constants/Constants';
@@ -28,7 +29,7 @@ export default class SearchFriends extends Component {
         this.setState({ searchResult: userSnap.id, search: '' });
         return;
       }
-      this.setState({ noUserFound: true, search: '' });
+      this.setState({ noUserFound: true, search: '', searchResult: null });
       this.noUserMessageTimeout();
     } catch(error) { console.error({ error })}
   }
@@ -68,6 +69,7 @@ export default class SearchFriends extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.formContainer}>
+          <Text style={styles.header}>Find Friends</Text>
           <TextInput 
             placeholder="Email" 
             value={search} 
@@ -79,7 +81,7 @@ export default class SearchFriends extends Component {
             style={styles.button}
           >
             <Text style={styles.buttonText}>
-              Search For Friends
+              Search For Friend
             </Text>
           </TouchableOpacity>
           <TouchableOpacity 
@@ -87,12 +89,12 @@ export default class SearchFriends extends Component {
             style={styles.button}
           >
             <Text style={styles.buttonText}>
-              Cancel
+              Close
             </Text>
           </TouchableOpacity>
         </View>
         {searchResult && this.renderResults()}
-        { noUserFound && <Text>No user found</Text> }
+        { noUserFound && <Text style={styles.text}>No user found!</Text> }
       </View>
     )
   }
@@ -106,12 +108,16 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  header: {
+    fontSize: 32,
+    color: Constants.tertiaryBgColor,
+  },  
   formContainer: {
     height: Dimensions.get('window').height * .4,
     width: '100%',
     display: 'flex',
     alignItems: 'center',
-    // padding: 20,
+    paddingVertical: 20,
     backgroundColor: Constants.primaryHeaderColor,
     justifyContent: 'space-evenly',
     borderBottomColor: Constants.tertiaryBgColor,
@@ -125,6 +131,11 @@ const styles = StyleSheet.create({
     height: 50,
     fontSize: 20,
     fontFamily: 'exo-regular',
+  },
+  text: {
+    fontSize: 32,
+    color: Constants.tertiaryBgColor,
+    marginVertical: 20,
   },
   button: {
     width: '75%',
