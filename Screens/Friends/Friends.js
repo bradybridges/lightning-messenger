@@ -59,9 +59,9 @@ export default class Friends extends Component {
   renderFriendRequests = () => {
     const { friendRequests } = this.state;
     if(friendRequests) {
-      return friendRequests.map((request) => {
+      return friendRequests.map((request, i) => {
         return (
-          <View style={styles.requestContainer}>
+          <View style={styles.requestContainer} key={`${request.from}${i}`}>
             <Text style={styles.requestText}>{request.from}</Text>
             <TouchableOpacity style={styles.sendMsgBtnContainer} onPress={() => this.acceptRequest(request.from)}><Text style={styles.sendMsgBtnText}>Accept</Text></TouchableOpacity>
             <TouchableOpacity style={styles.sendMsgBtnContainer} onPress={() => this.declineRequest(request.from)}><Text style={styles.sendMsgBtnText}>Decline</Text></TouchableOpacity>
@@ -92,8 +92,34 @@ export default class Friends extends Component {
   acceptRequest = async (email) => {
     try {
       await this.clearRequest(email);
+      await this.addUserToFriendInbox(email);
       this.clearRequestLocally(email);
+      this.addFriendLocally(email);
     } catch(error) { console.error({ error })}
+  }
+
+  addFriendLocally = (newFriend) => {
+    const { friends } = this.state;
+    const exists = friends.includes(newFriend);
+    if(!exists) {
+      friends.push(newFriend);
+      this.setState({ friends });
+    }
+  }
+
+  addUserToFriendInbox = async (email) => {
+    try {
+      const { user } = this.state;
+      const newFriend = { exists: true };
+      await firebase.firestore().collection('users').doc(email).collection('friends').doc(user.email).set(newFriend);
+    } catch(error) {console.error({ error })}
+  }
+
+  removeFriendLocally = (friend) => {
+    const { friends } = this.state;
+    const index = friends.findIndex((curFriend) => friend);
+    friends.splice(index, 1);
+    this.setState({ friends });
   }
   
   declineRequest = async (email) => {
@@ -101,6 +127,7 @@ export default class Friends extends Component {
       await this.clearRequest(email);
       await this.deleteFriend(email);
       this.clearRequestLocally(email);
+      this.removeFriendLocally(email);
     } catch(error) { console.error({ error })}
   }
 
@@ -135,7 +162,7 @@ export default class Friends extends Component {
       <View style={styles.container}>
         <View style={styles.friendsContainer}>
           <Text style={styles.text}> Friends </Text>
-          <ScrollView>
+          <ScrollView style={{height: '100%'}}>
             {!loading && this.renderFriends()}
           </ScrollView>
         </View>
@@ -153,7 +180,7 @@ export default class Friends extends Component {
           </Text>
         </TouchableOpacity>
         <Modal visible={showAddFriend} animationType="slide" onRequestClose={() => this.setState({ showAddFriend: false })}>
-          <SearchFriends handleSendRequest={this.handleSendRequest}/>
+          <SearchFriends handleSendRequest={this.handleSendRequest} toggleShowAddFriend={this.toggleShowAddFriend} />
         </Modal>
       </View>
     )
@@ -164,9 +191,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.primaryBgColor,
-    display: 'flex',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   text: {
     color: Constants.tertiaryBgColor,
@@ -191,6 +215,9 @@ const styles = StyleSheet.create({
     color: Constants.tertiaryBgColor,
     fontSize: 20,
   },
+  friendsContainer: {
+    maxHeight: '50%',
+  },
   friendContainer: {
     width: '90%',
     display: 'flex',
@@ -198,6 +225,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 10,
+    height: 50,
   },
   friendText: {
     color: 'white',
