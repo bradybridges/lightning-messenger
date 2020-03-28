@@ -55,9 +55,16 @@ To run the application install Expo on your smartphone or virtual device. If usi
 ## Screenshots
 <img width="297" alt="home" src="https://user-images.githubusercontent.com/25031031/77705202-ad2d1300-6f84-11ea-80f7-7e1c6c01bb89.png">
 <img width="299" alt="conversation" src="https://user-images.githubusercontent.com/25031031/77705223-b74f1180-6f84-11ea-86ad-049a72fae0ad.png">
+<img width="297" alt="friends" src="https://user-images.githubusercontent.com/25031031/77832931-20f32b00-70ff-11ea-8108-ea1dbb8ba486.png">
+<img width="295" alt="search-friends" src="https://user-images.githubusercontent.com/25031031/77832929-1afd4a00-70ff-11ea-8f94-e80384b1f948.png">
+<img width="296" alt="settings" src="https://user-images.githubusercontent.com/25031031/77832933-25b7df00-70ff-11ea-9f78-c301d18e7c6e.png">
 <img width="290" alt="Login" src="https://user-images.githubusercontent.com/25031031/77705207-b0280380-6f84-11ea-81a4-edae81ea2094.png">
 <img width="293" alt="create" src="https://user-images.githubusercontent.com/25031031/77705208-b1593080-6f84-11ea-999a-95d23b98a1fd.png">
 <img width="297" alt="reset" src="https://user-images.githubusercontent.com/25031031/77705218-b4ecb780-6f84-11ea-922c-c2e5687dc349.png">
-<img width="296" alt="settings" src="https://user-images.githubusercontent.com/25031031/77705242-c2a23d00-6f84-11ea-8245-9da110a35b76.png">
+
+
+
+
+
 
 
