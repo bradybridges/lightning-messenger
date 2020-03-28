@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, ScrollView, Modal, Clipboard } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, ScrollView, Modal, Clipboard, Dimensions } from 'react-native';
 import SearchFriends from '../../Components/SearchFriends/SearchFriends';
 import * as Constants from '../../Constants/Constants';
 import * as firebase from 'firebase';
@@ -13,19 +13,30 @@ export default class Friends extends Component {
     user: null,
     loading: true,
     showAddFriend: false,
+    friendRequests: null,
   };
 
   componentDidMount = async () => {
     const user = await firebase.auth().currentUser;
     const email = user.email;
     const friends = await this.getFriends(email);
-    this.setState({ user, friends, loading: false });
+    const friendRequests = await this.getFriendRequests(email);
+    this.setState({ user, friends, friendRequests, loading: false });
   }
 
   getFriends = async (email) => {
     const friendsSnap = await firebase.firestore().collection('users').doc(email).collection('friends').get();
     const friends = await friendsSnap.docs.map((doc) => doc.id);
     return friends;
+  }
+
+  getFriendRequests = async (email) => {
+    const friendRequestsSnap = await firebase.firestore().collection('users').doc(email).collection('friendRequests').get();
+    if(friendRequestsSnap.docs.length) {
+      const friendRequests = await friendRequestsSnap.docs.map((doc) => doc.data());
+      return friendRequests;
+    }
+    return null;
   }
 
   renderFriends = () => {
@@ -45,6 +56,21 @@ export default class Friends extends Component {
     });
   }
 
+  renderFriendRequests = () => {
+    const { friendRequests } = this.state;
+    if(friendRequests) {
+      return friendRequests.map((request) => {
+        return (
+          <View style={styles.requestContainer}>
+            <Text style={styles.requestText}>{request.from}</Text>
+            <TouchableOpacity style={styles.sendMsgBtnContainer} onPress={() => this.acceptRequest(request.from)}><Text style={styles.sendMsgBtnText}>Accept</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.sendMsgBtnContainer} onPress={() => this.declineRequest(request.from)}><Text style={styles.sendMsgBtnText}>Decline</Text></TouchableOpacity>
+          </View>
+        );
+      });
+    }
+  }
+
   toggleShowAddFriend = () => {
     const { showAddFriend } = this.state;
     this.setState({ showAddFriend: !showAddFriend });
@@ -59,17 +85,68 @@ export default class Friends extends Component {
     const { user } = this.state;
     const newRequest = { from: user.email };
     //encrypt newRequest
-    await firebase.firestore().collection('users').doc(to).collection('friendRequests').add(newRequest);
+    await firebase.firestore().collection('users').doc(to).collection('friendRequests').doc(user.email).set(newRequest);
+    await firebase.firestore().collection('users').doc(to).collection('friends').doc(user.email).set({ exists: true });
+  }
+
+  acceptRequest = async (email) => {
+    try {
+      await this.clearRequest(email);
+      this.clearRequestLocally(email);
+    } catch(error) { console.error({ error })}
+  }
+  
+  declineRequest = async (email) => {
+    try {
+      await this.clearRequest(email);
+      await this.deleteFriend(email);
+      this.clearRequestLocally(email);
+    } catch(error) { console.error({ error })}
+  }
+
+  clearRequest = async (email) => {
+    try {
+      const { user } = this.state;
+      const requestSnap = firebase.firestore().collection('users').doc(user.email).collection('friendRequests').doc(email).delete();
+    } catch(error) { console.error({ error })}
+  }
+
+  deleteFriend = async (email) => {
+    try {
+      const { user } = this.state;
+      const friend = await firebase.firestore().collection('users').doc(user.email).collection('friends').doc(email).delete();
+    } catch(error) { console.error({ error })}
+  }
+
+  clearRequestLocally = (email) => {
+    const { friendRequests } = this.state;
+    if(friendRequests.length === 1) {
+      this.setState({ friendRequests: null });
+      return;
+    }
+    const requestIndex = friendRequests.findIndex((request) => request === email);
+    friendRequests.splice(requestIndex, 1);
+    this.setState({ friendRequests });
   }
 
   render() {
-    const { loading, showAddFriend } = this.state;
+    const { loading, showAddFriend, friendRequests } = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.text}> Friends </Text>
+        <View style={styles.friendsContainer}>
+          <Text style={styles.text}> Friends </Text>
           <ScrollView>
             {!loading && this.renderFriends()}
           </ScrollView>
+        </View>
+        { friendRequests !== null && (
+          <View style={styles.requestsContainer}>
+            <Text style={styles.text}>Friend Requests</Text>
+            <ScrollView>
+              {this.renderFriendRequests()}
+            </ScrollView>
+          </View>
+        )}
         <TouchableOpacity style={styles.addFriendContainer} onPress={this.toggleShowAddFriend}>
           <Text style={styles.addFriendText}>
             Add Friend
@@ -88,11 +165,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Constants.primaryBgColor,
     display: 'flex',
-    alignItems: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   text: {
     color: Constants.tertiaryBgColor,
     fontSize: 32,
+    textAlign: 'center',
   },
   addFriendContainer: {
     width: 150,
@@ -139,5 +218,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
+  requestsContainer: {
+    width: Dimensions.get('window').width,
+    alignSelf: 'center',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  requestContainer: {
+    backgroundColor: Constants.primaryHeaderColor,
+    width: Dimensions.get('window').width * .95,
+    display: 'flex',
+    flexDirection: 'row',
+    height: 60,
+    borderRadius: 6,
+    marginTop: 10,
+    padding: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  requestText: {
+    color: Constants.tertiaryBgColor,
+    fontSize: 20,
+  },  
 })
 
