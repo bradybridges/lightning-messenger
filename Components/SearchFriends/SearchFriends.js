@@ -64,6 +64,7 @@ export default class SearchFriends extends Component {
 
   render() {
     const { searchResult, search, noUserFound } = this.state;
+    const { toggleShowAddFriend } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.formContainer}>
@@ -79,6 +80,14 @@ export default class SearchFriends extends Component {
           >
             <Text style={styles.buttonText}>
               Search For Friends
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={toggleShowAddFriend}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>
+              Cancel
             </Text>
           </TouchableOpacity>
         </View>
