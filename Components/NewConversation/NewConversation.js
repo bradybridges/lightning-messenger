@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    height: Dimensions.get('window').height * .1,
+    height: Dimensions.get('window').height * .075,
     backgroundColor: Constants.primaryHeaderColor,
     padding: Constants.baseMarginPadding,
     position: 'absolute',
