@@ -108,14 +108,13 @@ export default class Settings extends Component {
       <View style={styles.container}>
         <View style={styles.profileContainer}>
           { user && !loadingFonts && <Text style={styles.text}>{user.email}</Text> }
-          { !loadingFonts && (
+          {/* { !loadingFonts && (
             <View style={styles.friendContainer}>
               <Text style={styles.text}>Friends: </Text>
               <Text style={styles.text}>num friends</Text>
             </View>
-          )}
+          )} */}
         </View>
-        {}
         { keysGenerated && <Text style={styles.successMsg}>Successfully generated new keys!</Text> }
         <TouchableOpacity 
           style={styles.button}
