@@ -107,11 +107,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   formContainer: {
-    height: Dimensions.get('window').height * .3,
+    height: Dimensions.get('window').height * .4,
     width: '100%',
     display: 'flex',
     alignItems: 'center',
-    padding: 20,
+    // padding: 20,
     backgroundColor: Constants.primaryHeaderColor,
     justifyContent: 'space-evenly',
     borderBottomColor: Constants.tertiaryBgColor,
@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     height: 50,
     fontSize: 20,
+    fontFamily: 'exo-regular',
   },
   button: {
     width: '75%',
@@ -140,6 +141,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: Constants.tertiaryBgColor,
     fontSize: 24,
+    fontFamily: 'exo-regular',
   },
   resultContainer: {
     height: Dimensions.get('window').height * .2,
@@ -156,6 +158,7 @@ const styles = StyleSheet.create({
   resultText: {
     color: Constants.tertiaryBgColor,
     fontSize: 24,
+    fontFamily: 'exo-regular',
   },
   sendReqBtn: {
     fontSize: 20,
@@ -172,6 +175,7 @@ const styles = StyleSheet.create({
   sendReqBtnText: {
     fontSize: 20,
     color: Constants.tertiaryBgColor,
+    fontFamily: 'exo-regular',
   },
 })
 
