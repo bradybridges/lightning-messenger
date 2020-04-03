@@ -35,25 +35,26 @@ export default class Message extends Component {
             <Text style={isSender ? styles.senderTimestamp: styles.timestamp}>{time}</Text>
           </TouchableOpacity>
       );
+    } else {
+      return (
+        <View style={isSender ? styles.senderContainer: styles.container}>
+          <View style={styles.deleteContainer}>
+            <TouchableOpacity
+              onPress={() => deleteMessage(content, isSender ? true: false)}
+              style={styles.deleteBtn}
+            >
+              <Text style={isSender ? styles.senderContent: styles.content}>Delete</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={this.toggleShowDeleteMessage}
+              style={styles.deleteBtn}
+            >
+              <Text style={isSender ? styles.senderContent: styles.content}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>  
+      );
     }
-    return (
-      <View style={isSender ? styles.senderContainer: styles.container}>
-        <View style={styles.deleteContainer}>
-          <TouchableOpacity
-            onPress={() => deleteMessage(content, isSender ? true: false)}
-            style={styles.deleteBtn}
-          >
-            <Text style={isSender ? styles.senderContent: styles.content}>Delete</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={this.toggleShowDeleteMessage}
-            style={styles.deleteBtn}
-          >
-            <Text style={isSender ? styles.senderContent: styles.content}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
-      </View>  
-    );
   }
     
   toggleShowDeleteMessage = () => {
@@ -85,7 +86,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: '100%',
   },
   deleteBtn: {
     width: '50%',

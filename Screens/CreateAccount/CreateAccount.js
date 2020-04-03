@@ -8,7 +8,9 @@ import {
   Dimensions, 
   Image, 
   AsyncStorage,
-  ActivityIndicator, 
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform, 
 } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
@@ -100,61 +102,65 @@ export default class CreateAccount extends Component {
     const { loadingFonts } = this.state;
     const { navigate } = this.props.navigation;
     return (
-      <View style={styles.container}>
-        { !loadingFonts && <Text style={styles.header}>Create Account</Text>}
-        <TextInput 
-          style={styles.input} 
-          onChangeText={(value) => this.handleChange("email", value)} 
-          placeholder="Email" 
-          value={this.state.email}
-        />
-        <TextInput 
-          secureTextEntry={true} 
-          style={styles.input} 
-          onChangeText={(value) => this.handleChange("password", value)}
-          placeholder='Password' 
-          value={this.state.password}
-        />
-        <TextInput 
-          secureTextEntry={true} 
-          style={styles.input} 
-          onChangeText={(value) => this.handleChange("passwordConfirm", value)} 
-          placeholder='Confirm Password' 
-          value={this.state.passwordConfirm}            
-        />
-        { !loadingFonts && (
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={this.handleCreateAccount}>
-              <Text style={styles.buttonText}>Create Account</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigate('Login')}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+      <KeyboardAvoidingView
+        behavior={Platform.OS == 'ios' ? 'padding' : 'height' }
+        style={styles.container}
+      >
+        <View style={styles.inner}>
+          { !loadingFonts && <Text style={styles.header}>Create Account</Text>}
+          <View style={styles.inputContainer}>
+            <TextInput 
+              style={styles.input} 
+              onChangeText={(value) => this.handleChange("email", value)} 
+              placeholder="Email" 
+              value={this.state.email}
+            />
+            <TextInput 
+              secureTextEntry={true} 
+              style={styles.input} 
+              onChangeText={(value) => this.handleChange("password", value)}
+              placeholder='Password' 
+              value={this.state.password}
+            />
           </View>
-        )}
-        <ActivityIndicator 
-          animating={this.state.loading} 
-          size='large' 
-          color={Constants.tertiaryBgColor}        
-          style={{ position: 'absolute', top: '30%' }}   
-        />
-      </View>
+          { !loadingFonts && (
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.button} onPress={this.handleCreateAccount}>
+                <Text style={styles.buttonText}>Create Account</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={() => navigate('Login')}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          <ActivityIndicator 
+            animating={this.state.loading} 
+            size='large' 
+            color={Constants.tertiaryBgColor}        
+            style={{ position: 'absolute', top: '30%' }}   
+          />
+        </View>
+      </KeyboardAvoidingView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1
+  },
+  inner: {
+    padding: 24,
     flex: 1,
+    justifyContent: "space-around",
     backgroundColor: Constants.primaryBgColor,
-    alignItems: 'center',
-    paddingTop: Constants.baseMarginPadding,
   },
   header: {
     color: 'white',
     fontSize: 40,
     marginVertical: Constants.baseMarginPadding,
     fontFamily: 'exo-regular',
+    textAlign: 'center',
   },
   text: {
     fontSize: 24,
@@ -170,10 +176,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: Constants.baseMarginPadding,
   },
-  buttonContainer: {
-    width: Dimensions.get('window').width * .8,
-    display: 'flex',
-    // justifyContent: 'space-evenly',
+  inputContainer: {
+    marginVertical: Constants.baseMarginPadding,
   },
   button: { 
     backgroundColor: Constants.primaryHeaderColor, 

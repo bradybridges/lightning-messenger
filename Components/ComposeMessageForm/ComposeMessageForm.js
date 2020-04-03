@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, Image, TouchableOpacity, StyleSheet, Dimensions, AsyncStorage } from 'react-native';
+import { Text, TextInput, View, Image, TouchableOpacity, StyleSheet, Dimensions, AsyncStorage, Keyboard } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
@@ -10,6 +10,7 @@ import nacl from 'tweet-nacl-react-native-expo';
 export default class ComposeMessageForm extends Component {
   state = {
     message: '',
+    focused: false,
   }
 
   handleChange = (message) => {
@@ -72,7 +73,8 @@ export default class ComposeMessageForm extends Component {
       };
       const encryptedMessage = await this.encryptMessage(newMessage);
       await firebase.firestore().collection('users').doc(to).collection('inbox').add(encryptedMessage);
-      this.setState({message: '' });
+      Keyboard.dismiss();
+      this.setState({message: '', focused: false });
       updateConversation(to, { contents: message, timestamp: { seconds: sentSeconds }, sender: true });
       await this.saveSentMessage(sentMessage);
     } catch(error) { console.log(error); }
@@ -89,9 +91,17 @@ export default class ComposeMessageForm extends Component {
   }
   
   render() {
+    const { focused } = this.state;
     return (
-      <View style={styles.container}>
-        <TextInput style={styles.input} onChangeText={this.handleChange} value={this.state.message} placeholder="Send Encrypted Message"/>
+      <View style={focused ? styles.keyboardContainer : styles.container}>
+        <TextInput 
+          style={styles.input} 
+          onChangeText={this.handleChange} 
+          value={this.state.message} 
+          placeholder="Send Encrypted Message"          
+          onFocus={() => this.setState({ focused: true })}
+          onBlur={() => this.setState({ focused: false })}
+        />
         <TouchableOpacity style={styles.sendBtnContainer} onPress={this.sendMessage}>
           <Image source={lock} style={{width: 40, height: 40}}/>
         </TouchableOpacity>
@@ -109,6 +119,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: 60,
     top: Dimensions.get('window').height - 90,
+    zIndex: 5,
+    borderRadius: 6,
+  },
+  keyboardContainer: {
+    backgroundColor: 'white',
+    width: Dimensions.get('window').width * .9,
+    display: 'flex',
+    flexDirection: 'row',
+    position: 'absolute',
+    height: 60,
+    top: Dimensions.get('window').height * .45,
     zIndex: 5,
     borderRadius: 6,
   },

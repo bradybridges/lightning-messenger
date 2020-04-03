@@ -108,40 +108,34 @@ export default class Settings extends Component {
       <View style={styles.container}>
         <View style={styles.profileContainer}>
           { user && !loadingFonts && <Text style={styles.text}>{user.email}</Text> }
-          {/* { !loadingFonts && (
-            <View style={styles.friendContainer}>
-              <Text style={styles.text}>Friends: </Text>
-              <Text style={styles.text}>num friends</Text>
-            </View>
-          )} */}
         </View>
         { keysGenerated && <Text style={styles.successMsg}>Successfully generated new keys!</Text> }
         <TouchableOpacity 
           style={styles.button}
+          onPress={this.handleKeyGeneration}
         >
           <Text 
             style={!loadingFonts ? styles.buttonText: ''} 
-            onPress={this.handleKeyGeneration}
           >
             Regenerate RSA Keys
           </Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.button}
+          onPress={this.handleClearData}
         >
           <Text 
             style={!loadingFonts ? styles.buttonText: ''} 
-            onPress={this.handleClearData}
           >
             Clear Data
           </Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.button}
+          onPress={this.toggleConfirmDeleteAccount}
         >
           <Text 
             style={!loadingFonts ? styles.buttonText: ''} 
-            onPress={this.toggleConfirmDeleteAccount}
           >
             Delete Account
           </Text>

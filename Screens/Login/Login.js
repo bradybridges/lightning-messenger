@@ -10,6 +10,7 @@ import { Text,
   Image,
   ActivityIndicator,
   StatusBar,
+  Platform,
 } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
@@ -45,7 +46,7 @@ export default class Login extends Component {
   }
 
   handleEmailChange = (email) => {
-    this.setState({ email: email.toLowerCase() });
+    this.setState({ email });
   }
 
   handlePasswordChange = (password) => {
@@ -56,7 +57,7 @@ export default class Login extends Component {
     this.setState({ loading: true });
     const { email, password } = this.state;
     if(this.handleInputCheck(email, password)) {
-      await firebase.auth().signInWithEmailAndPassword(email, password)
+      await firebase.auth().signInWithEmailAndPassword(email.toLowerCase(), password)
         .catch((error) => {
           this.setState({ error, loading: false });
           return this.returnErrorMessage(error.code);
@@ -108,26 +109,27 @@ export default class Login extends Component {
     const { navigate } = this.props.navigation;
     const { loading, loadingFonts } = this.state;
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        { !loadingFonts && (
+      <KeyboardAvoidingView
+        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <View style={styles.inner}>
           <Text style={styles.header}>Login</Text>
-        
-        )}
-        <KeyboardAvoidingView style={styles.loginContainer}>
-          <TextInput
-            style={styles.input}
-            value={this.state.email}
-            onChangeText={this.handleEmailChange}
-            placeholder="Email"
-          />
-          <TextInput
-            style={styles.input}
-            secureTextEntry={true}
-            value={this.state.password}
-            onChangeText={this.handlePasswordChange}
-            placeholder="Password"
-          />
+          <View style={styles.loginContainer}>
+            <TextInput
+              style={styles.input}
+              value={this.state.email}
+              onChangeText={this.handleEmailChange}
+              placeholder="Email"
+            />
+            <TextInput
+              style={styles.input}
+              secureTextEntry={true}
+              value={this.state.password}
+              onChangeText={this.handlePasswordChange}
+              placeholder="Password"
+            />
+          </View>
           {!loadingFonts && (
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.button} onPress={this.handleLogin}><Text style={styles.buttonText}>Login</Text></TouchableOpacity>
@@ -135,25 +137,24 @@ export default class Login extends Component {
               <TouchableOpacity style={styles.button} onPress={() => this.handleNavigation('ResetPassword')}><Text style={styles.buttonText}>Reset Password</Text></TouchableOpacity>
             </View>
           )}
-        </KeyboardAvoidingView>
-        <ActivityIndicator 
-          animating={loading} 
-          size="large" 
-          color={Constants.tertiaryBgColor}
-          style={{ position: 'absolute', top: '30%', zIndex: 5 }}
-        />
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#14272E',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: Constants.midMarginPadding,
+    backgroundColor: '#14272E',
+  },
+  inner: {
+    padding: 24,
+    flex: 1,
+    justifyContent: "space-around"
+  },
+  loginContainer: {
+    marginVertical: Constants.baseMarginPadding,
   },
   input: {
     width: Dimensions.get('window').width * .9,
@@ -165,23 +166,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginVertical: Constants.baseMarginPadding,
   },
-  label: {
-    color: 'white',
-    fontSize: 24,
-  },
-  loginContainer: {
-    height: 400,
-    display: 'flex',
-    alignItems: 'center',
-  },
-  buttonContainer: {
-    width: Dimensions.get('window').width * .8,
-  },  
   header: {
     color: 'white',
     fontSize: 40,
-    marginVertical: Constants.baseMarginPadding,
     fontFamily: 'exo-regular',
+    textAlign: 'center',
   },
   button: { 
     backgroundColor: Constants.primaryHeaderColor, 

@@ -17,7 +17,7 @@ export default class NewConversation extends Component {
     const { handleNewConversation } = this.props;
     if(!to) return;
     try {
-      const user = await firebase.firestore().collection('availableUsers').doc(to).get();
+      const user = await firebase.firestore().collection('availableUsers').doc(to.toLowerCase()).get();
       if(!user.exists) {
         alert('No user found with that email!');
         this.setState({ to: '' });
@@ -37,10 +37,9 @@ export default class NewConversation extends Component {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <BackButton close={this.closeNewConversation} />
-          {/* <Text style={styles.titleText}>New Conversation</Text> */}
         </View>
         <Text style={styles.headerText}>To</Text>
-        <TextInput style={styles.input} value={this.state.to} onChangeText={(value) => this.setState({to: value.toLowerCase() })} placeholder="Email" />
+        <TextInput style={styles.input} value={this.state.to} onChangeText={(value) => this.setState({to: value })} placeholder="Email" />
         <TouchableOpacity style={styles.button} onPress={this.handleNewConversation}>
           <Text style={styles.text}>Start Conversation</Text>
         </TouchableOpacity>
