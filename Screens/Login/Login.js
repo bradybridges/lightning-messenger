@@ -46,7 +46,7 @@ export default class Login extends Component {
   }
 
   handleEmailChange = (email) => {
-    this.setState({ email: email.toLowerCase() });
+    this.setState({ email });
   }
 
   handlePasswordChange = (password) => {
@@ -57,7 +57,7 @@ export default class Login extends Component {
     this.setState({ loading: true });
     const { email, password } = this.state;
     if(this.handleInputCheck(email, password)) {
-      await firebase.auth().signInWithEmailAndPassword(email, password)
+      await firebase.auth().signInWithEmailAndPassword(email.toLowerCase(), password)
         .catch((error) => {
           this.setState({ error, loading: false });
           return this.returnErrorMessage(error.code);
