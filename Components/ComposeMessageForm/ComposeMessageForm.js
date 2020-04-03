@@ -51,7 +51,7 @@ export default class ComposeMessageForm extends Component {
         return user.data().publicKey;
       }
       return false;
-    } catch(error) { console.error({ error })}
+    } catch(error) { return false }
   }
 
   sendMessage = async () => {
@@ -72,6 +72,11 @@ export default class ComposeMessageForm extends Component {
         sent: { seconds: sentSeconds },
       };
       const encryptedMessage = await this.encryptMessage(newMessage);
+      if(!encryptedMessage) {
+        alert('Could not send message, user not found!');
+        this.setState({ message: '' });
+        return;
+      }
       await firebase.firestore().collection('users').doc(to).collection('inbox').add(encryptedMessage);
       Keyboard.dismiss();
       this.setState({message: '', focused: false });
