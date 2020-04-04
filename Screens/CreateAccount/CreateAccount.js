@@ -45,10 +45,11 @@ export default class CreateAccount extends Component {
       this.setState({ loading: true });
       const { email, password, passwordConfirm } = this.state;
       if(this.validateInputs(email, password, passwordConfirm)) {
-        const user = await firebase.auth().createUserWithEmailAndPassword(email.toLowerCase(), password);
-        const publicKey = await this.handleKeyGeneration(email);
-        await firebase.firestore().collection('users').doc(email).collection('friends').doc('brady@gmail.com').set({ exists: true });
-        await firebase.firestore().collection('availableUsers').doc(email).set({ publicKey });
+        const lowercaseEmail = email.toLowerCase();
+        const user = await firebase.auth().createUserWithEmailAndPassword(lowercaseEmail, password);
+        const publicKey = await this.handleKeyGeneration(lowercaseEmail);
+        // await firebase.firestore().collection('users').doc(lowercaseEmail).collection('friends').doc('brady@gmail.com').set({ exists: true });
+        await firebase.firestore().collection('availableUsers').doc(lowercaseEmail).set({ publicKey });
         this.props.navigation.goBack();
       }
       this.setState({ loading: false });
@@ -117,6 +118,13 @@ export default class CreateAccount extends Component {
               onChangeText={(value) => this.handleChange("password", value)}
               placeholder='Password' 
               value={this.state.password}
+            />
+            <TextInput 
+              secureTextEntry={true} 
+              style={styles.input} 
+              onChangeText={(value) => this.handleChange("passwordConfirm", value)}
+              placeholder='Password Confirm' 
+              value={this.state.passwordConfirm}
             />
           </View>
           { !loadingFonts && (
