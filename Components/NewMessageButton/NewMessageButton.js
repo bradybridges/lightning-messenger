@@ -13,8 +13,8 @@ const NewMessageButton = ({ toggleNewConversation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     position: 'absolute',
     bottom: 15,
     right: 15,
@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   image: {
-    width: 35, 
-    height: 35,
+    width: 30, 
+    height: 30,
   },
 });
 
