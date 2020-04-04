@@ -36,6 +36,7 @@ export default class Home extends Component {
     showDeleteConversationMenu: false,
     refreshing: false,
     loadingFonts: true,
+    updating: false,
   };
 
 
@@ -58,6 +59,7 @@ export default class Home extends Component {
 
   getMessages = async (user) => {  
     try{
+      this.setState({ updating: true });
       const inboxSnap = await firebase.firestore().collection('users').doc(user.email).collection('inbox').get();
       const inbox = await inboxSnap.docs.map((doc) => doc.data());
       if(inbox.length > 0) {
@@ -70,14 +72,10 @@ export default class Home extends Component {
         const conversations = await this.buildConversations(builtMessages);
         this.setState({ conversations });
       }
-      if(this.state.refreshing) {
-        this.setState({ refreshing: false });
-      }
+      this.setState({ updating: false });
     } catch(error) {
-      if(this.state.refreshing) {
-        this.setState({ refreshing: false });
-      }
-      console.log({error});
+        this.setState({ updating: false });
+        console.log({error});
     }
   };
 
@@ -332,11 +330,13 @@ export default class Home extends Component {
   }
 
   render() {
-    const { refreshing, user, showDeleteConversationMenu } = this.state;
-    // setTimeout(() => {
-    //   this.getMessages(user);
-    // }, 5000);
+    const { refreshing, updating, user, showDeleteConversationMenu, selectedConversation } = this.state;
     const { navigate } = this.props.navigation;
+    if(!selectedConversation && !refreshing && !updating ) {
+      setTimeout(async () => {
+        await this.getMessages(user);
+      }, 15000);
+    }
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
