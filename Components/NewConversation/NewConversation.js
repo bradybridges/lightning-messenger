@@ -17,13 +17,14 @@ export default class NewConversation extends Component {
     const { handleNewConversation } = this.props;
     if(!to) return;
     try {
-      const user = await firebase.firestore().collection('availableUsers').doc(to.toLowerCase()).get();
+      const lowercaseTo = to.toLowerCase();
+      const user = await firebase.firestore().collection('availableUsers').doc(lowercaseTo).get();
       if(!user.exists) {
         alert('No user found with that email!');
         this.setState({ to: '' });
         return;
       }
-      handleNewConversation(to);
+      handleNewConversation(lowercaseTo);
     } catch(err) {console.error({ err })}
   }
 
