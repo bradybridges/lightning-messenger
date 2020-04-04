@@ -114,7 +114,7 @@ export default class Login extends Component {
         style={styles.container}
       >
         <View style={styles.inner}>
-          <Text style={styles.header}>Login</Text>
+          {!loadingFonts && <Text style={styles.header}>Login</Text>}          
           <View style={styles.loginContainer}>
             <TextInput
               style={styles.input}
@@ -137,6 +137,12 @@ export default class Login extends Component {
               <TouchableOpacity style={styles.button} onPress={() => this.handleNavigation('ResetPassword')}><Text style={styles.buttonText}>Reset Password</Text></TouchableOpacity>
             </View>
           )}
+          <ActivityIndicator 
+            animating={loading} 
+            size="large" 
+            color={Constants.tertiaryBgColor}
+            style={{ position: 'absolute', top: '35%', left: '50%', zIndex: 5 }}
+          />
         </View>
       </KeyboardAvoidingView>
     );

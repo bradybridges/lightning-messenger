@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, ScrollView, Modal, Clipboard, Dimensions } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, ScrollView, Modal, Clipboard, Dimensions, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
 import SearchFriends from '../../Components/SearchFriends/SearchFriends';
 import * as Constants from '../../Constants/Constants';
 import * as firebase from 'firebase';
@@ -13,7 +13,9 @@ export default class Friends extends Component {
     user: null,
     loading: true,
     showAddFriend: false,
+    showConfirmDeleteFriend: false,
     friendRequests: null,
+    selectedFriend: null,
   };
 
   componentDidMount = async () => {
@@ -44,16 +46,25 @@ export default class Friends extends Component {
     
     return friends.map((friend, i) => {
       return (
-        <View style={styles.friendContainer} key={`${friend}${i}`}>
-          <Text style={styles.friendText}>{friend}</Text>
-          <TouchableOpacity style={styles.sendMsgBtnContainer}>
-            <Text style={styles.sendMsgBtnText} onPress={() => this.copyText(friend)}>
-              Copy
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableWithoutFeedback style={styles.friendContainer} key={`${friend}${i}`} onLongPress={() => this.handleDeleteFriend(friend)}>
+          <View style={styles.friendContainer}>
+            <Text style={styles.friendText}>{friend}</Text>
+            <TouchableOpacity 
+              style={styles.sendMsgBtnContainer}
+              onPress={() => this.copyText(friend)}
+            >
+              <Text style={styles.sendMsgBtnText}>
+                Copy
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
       );
     });
+  }
+
+  handleDeleteFriend = async (friend) => {
+    this.setState({ selectedFriend: friend, showConfirmDeleteFriend: true });
   }
 
   renderFriendRequests = () => {
@@ -140,8 +151,10 @@ export default class Friends extends Component {
 
   deleteFriend = async (email) => {
     try {
-      const { user } = this.state;
+      const { user, friends } = this.state;
       const friend = await firebase.firestore().collection('users').doc(user.email).collection('friends').doc(email).delete();
+      const updatedFriends = friends.filter((friend) => friend !== email);
+      this.setState({ friends: updatedFriends, selectedFriend: null, showConfirmDeleteFriend: false });
     } catch(error) { console.error({ error })}
   }
 
@@ -157,7 +170,7 @@ export default class Friends extends Component {
   }
 
   render() {
-    const { loading, showAddFriend, friendRequests } = this.state;
+    const { loading, showAddFriend, friendRequests, showConfirmDeleteFriend, selectedFriend } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.friendsContainer}>
@@ -182,6 +195,19 @@ export default class Friends extends Component {
         <Modal visible={showAddFriend} animationType="slide" onRequestClose={() => this.setState({ showAddFriend: false })}>
           <SearchFriends handleSendRequest={this.handleSendRequest} toggleShowAddFriend={this.toggleShowAddFriend} />
         </Modal>
+        <Modal visible={showConfirmDeleteFriend} animationType="slide" onRequestClose={() => this.setState({ showConfirmDeleteFriend: false })}>
+          <View style={styles.deleteFriendContainer}>
+            <Text style={styles.text}>Are you sure you want to delete {selectedFriend}?</Text>
+            <TouchableOpacity style={styles.button} onPress={() => this.deleteFriend(selectedFriend)}><Text style={styles.buttonText}>Yes</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.button}onPress={() => this.setState({ showConfirmDeleteFriend: false })}><Text style={styles.buttonText}>No</Text></TouchableOpacity>
+          </View>
+        </Modal>
+        <ActivityIndicator 
+          animating={loading} 
+          size="large" 
+          color={Constants.tertiaryBgColor}
+          style={{ position: 'absolute', top: '30%', right: '50%', zIndex: 5 }}
+        />
       </View>
     )
   }
@@ -192,6 +218,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Constants.primaryBgColor,
   },
+  deleteFriendContainer: {
+    backgroundColor: Constants.primaryBgColor,
+    flex: 1,
+    padding: 20,
+  },  
   text: {
     color: Constants.tertiaryBgColor,
     fontSize: 32,
@@ -272,6 +303,22 @@ const styles = StyleSheet.create({
     color: Constants.tertiaryBgColor,
     fontSize: 20,
     fontFamily: 'exo-regular',
-  },  
+  }, 
+  button: { 
+    backgroundColor: Constants.primaryHeaderColor, 
+    height: 50, 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    borderRadius: 4,
+    marginTop: Constants.baseMarginPadding,
+    borderColor: Constants.tertiaryBgColor,
+    borderWidth: 1,
+  },
+  buttonText: {
+    fontSize: 24,
+    color: Constants.tertiaryBgColor,
+    fontFamily: 'exo-regular',
+  } 
 })
 

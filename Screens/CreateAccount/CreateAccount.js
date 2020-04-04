@@ -37,10 +37,6 @@ export default class CreateAccount extends Component {
   }
 
   handleChange = (field, value) => {
-    if(field === 'email') {
-      this.setState({ email: value.toLowerCase() });
-      return;
-    }
     this.setState({ [field]: value });
   }
 
@@ -49,7 +45,7 @@ export default class CreateAccount extends Component {
       this.setState({ loading: true });
       const { email, password, passwordConfirm } = this.state;
       if(this.validateInputs(email, password, passwordConfirm)) {
-        const user = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const user = await firebase.auth().createUserWithEmailAndPassword(email.toLowerCase(), password);
         const publicKey = await this.handleKeyGeneration(email);
         await firebase.firestore().collection('users').doc(email).collection('friends').doc('brady@gmail.com').set({ exists: true });
         await firebase.firestore().collection('availableUsers').doc(email).set({ publicKey });
@@ -137,7 +133,7 @@ export default class CreateAccount extends Component {
             animating={this.state.loading} 
             size='large' 
             color={Constants.tertiaryBgColor}        
-            style={{ position: 'absolute', top: '30%' }}   
+            style={{ position: 'absolute', top: '30%', right: '50%' }}   
           />
         </View>
       </KeyboardAvoidingView>
