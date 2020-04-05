@@ -44,7 +44,6 @@ export default class Home extends Component {
   componentDidMount = async () => {
     await Font.loadAsync({
       'exo-regular': require('../../assets/fonts/Exo2-Regular.otf'),
-      'season': require('../../assets/fonts/SEASRN.ttf'),
     });
     this.setState({ loadingFonts: false });
     firebase.auth().onAuthStateChanged(async user => {
