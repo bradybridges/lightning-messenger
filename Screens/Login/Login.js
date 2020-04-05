@@ -22,6 +22,10 @@ const logo = require('../../assets/logo.png');
 
 
 export default class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.is_mounted = false;
+  }
   state = {
     email: '',
     password: '',
@@ -30,19 +34,26 @@ export default class Login extends Component {
   }
 
   componentDidMount = async () => {
-    await Font.loadAsync({
-      'exo-regular': require('../../assets/fonts/Exo2-Regular.otf'),
-    });
-    this.setState({ loadingFonts: false });
+    this.is_mounted = true;
+    if(this.is_mounted) {
+      await Font.loadAsync({
+        'exo-regular': require('../../assets/fonts/Exo2-Regular.otf'),
+      });
+      this.setState({ loadingFonts: false });
+  
+      if(!firebase.apps.length) {
+        await firebase.initializeApp(ApiKeys.FirebaseConfig);
+      } 
+      firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          this.props.navigation.replace('Home');
+        }
+      });
+    }
+  }
 
-    if(!firebase.apps.length) {
-      await firebase.initializeApp(ApiKeys.FirebaseConfig);
-    } 
-    firebase.auth().onAuthStateChanged(user => {
-      if(user) {
-        this.props.navigation.replace('Home');
-      }
-    });
+  componentWillUnmount = () => {
+    this.is_mounted = false;
   }
 
   handleEmailChange = (email) => {
@@ -54,16 +65,16 @@ export default class Login extends Component {
   }
 
   handleLogin = async () => {
-    this.setState({ loading: true });
+    await this.setState({ loading: true });
     const { email, password } = this.state;
     if(this.handleInputCheck(email, password)) {
       await firebase.auth().signInWithEmailAndPassword(email.toLowerCase(), password)
+        .then(() => this.setState({ loading: false }))
         .catch((error) => {
           this.setState({ error, loading: false });
           return this.returnErrorMessage(error.code);
         });
     }
-    this.setState({loading: false });
   }
 
   handleInputCheck = (email, password) => {

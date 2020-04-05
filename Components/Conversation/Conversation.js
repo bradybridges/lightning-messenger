@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: Dimensions.get('window').height * .075,
+    height: getStatusBarHeight(true) + 50,
     backgroundColor: Constants.primaryHeaderColor,
     padding: Constants.baseMarginPadding,
     position: 'absolute',

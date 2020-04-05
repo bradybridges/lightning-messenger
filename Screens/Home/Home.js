@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar, ActivityIndicator } from 'react-native';
 import * as Font from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
 import Message from '../../Components/Message/Message';
@@ -36,6 +36,7 @@ export default class Home extends Component {
     showDeleteConversationMenu: false,
     refreshing: false,
     loadingFonts: true,
+    loadingMessages: true,
     updating: false,
   };
 
@@ -48,8 +49,9 @@ export default class Home extends Component {
     this.setState({ loadingFonts: false });
     firebase.auth().onAuthStateChanged(async user => {
       if(user) {
-        this.setState({ user });
+        this.setState({ user })
         await this.getMessages(user);
+        this.setState({ loadingMessages: false });
       } else {
         const { replace } = this.props.navigation;
         replace('Login');
@@ -330,7 +332,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const { refreshing, updating, user, showDeleteConversationMenu, selectedConversation } = this.state;
+    const { loadingMessages, refreshing, updating, user, showDeleteConversationMenu, selectedConversation } = this.state;
     const { navigate } = this.props.navigation;
     if(!selectedConversation && !refreshing && !updating ) {
       setTimeout(async () => {
@@ -340,6 +342,12 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
+        <ActivityIndicator 
+          animating={loadingMessages} 
+          size="large" 
+          color={Constants.tertiaryBgColor}
+          style={{ position: 'absolute', top: '35%', left: '47.5%', zIndex: 5 }}
+        />
         <Modal 
           visible={this.state.showDeleteConversationMenu} 
           animationType="slide" transparent={true}

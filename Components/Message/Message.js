@@ -24,6 +24,12 @@ export default class Message extends Component {
     return `${hours}:${minutes} ${label}`;
   }
 
+  handleDeleteMessage = async () => {
+    const { content, isSender, deleteMessage } = this.props;
+    await deleteMessage(content, isSender);
+    this.setState({ showDeleteMessage: false });
+  }
+
   renderMessage = () => {
     const { content, timestamp, isSender, deleteMessage } = this.props;
     const { showDeleteMessage } = this.state;
@@ -40,7 +46,7 @@ export default class Message extends Component {
         <View style={isSender ? styles.senderContainer: styles.container}>
           <View style={styles.deleteContainer}>
             <TouchableOpacity
-              onPress={() => deleteMessage(content, isSender ? true: false)}
+              onPress={this.handleDeleteMessage}
               style={styles.deleteBtn}
             >
               <Text style={isSender ? styles.senderContent: styles.content}>Delete</Text>
