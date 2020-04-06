@@ -47,7 +47,8 @@ export default class Home extends Component {
     });
     this.setState({ loadingFonts: false });
     firebase.auth().onAuthStateChanged(async user => {
-      if(user) {
+      if(user.email) {
+        
         this.setState({ user })
         await this.getMessages(user);
         this.setState({ loadingMessages: false });
@@ -61,12 +62,14 @@ export default class Home extends Component {
   getMessages = async (user) => {  
     try{
       this.setState({ updating: true });
-      const inboxSnap = await firebase.firestore().collection('users').doc(user.email).collection('inbox').get();
+      const { email } = user;
+      const inboxSnap = await firebase.firestore().collection('users').doc(email).collection('inbox').get();
       const inbox = await inboxSnap.docs.map((doc) => doc.data());
       if(inbox.length > 0) {
         const messages = await this.decryptMessages(inbox);
         await this.saveNewMessages(messages);
         await this.deleteInbox(inboxSnap);
+        await this.regenerateKeys(email);
       }
       const builtMessages = await this.buildMessages();
       if((builtMessages.length > 0 && this.state.conversations.length === 0) || inbox.length) {
@@ -79,6 +82,24 @@ export default class Home extends Component {
         console.log({error});
     }
   };
+
+  regenerateKeys = async (email) => {
+      const publicKey = await this.handleKeyGeneration(email);
+      await firebase.firestore().collection('availableUsers').doc(email).set({ publicKey });
+  }
+
+  handleKeyGeneration = async (email) => {
+    const keyPair = await nacl.box.keyPair();
+    const { publicKey, secretKey } = keyPair;
+    const publicEncoded = nacl.util.encodeBase64(publicKey);
+    const privateEncoded = nacl.util.encodeBase64(secretKey);
+    const keys = { publicKey: publicEncoded, secretKey: privateEncoded };
+    const stringySaved = await SecureStore.getItemAsync(email.replace('@', ''));
+    const savedProfile = JSON.parse(stringySaved);
+    savedProfile.keys = keys;
+    await SecureStore.setItemAsync(email.replace('@', ''), JSON.stringify(savedProfile));
+    return publicEncoded;
+  }
 
   decryptMessages = async (messages) => {
     try{
@@ -172,12 +193,12 @@ export default class Home extends Component {
     try {
       const { user } = this.state;
       const { email } = user;
-      const stringySavedMessages = await SecureStore.getItemAsync(user.email.replace('@', ''));
+      const stringySavedMessages = await SecureStore.getItemAsync(email.replace('@', ''));
       if(stringySavedMessages !== null) {
         const savedMessages = JSON.parse(stringySavedMessages);
         const savedInbox = savedMessages.inbox;
         savedMessages.inbox = [...savedInbox, ...messages];
-        await SecureStore.setItemAsync(user.email.replace('@', ''), JSON.stringify(savedMessages));
+        await SecureStore.setItemAsync(email.replace('@', ''), JSON.stringify(savedMessages));
       } 
     } catch(err) {console.error({ err })}
   }
