@@ -303,20 +303,29 @@ export default class Home extends Component {
   }
 
   handleNewConversation = (receiver) => {
-    let conversations = this.state.conversations.map((convo) => convo);
-    const newConversation = {
-      from: receiver,
-      messages: [],
-    }
-    conversations.push(newConversation);
-    this.setState(
-      { 
-        conversations, 
-        selectedConversation: newConversation, 
-        showConversation: true, 
+    const conversations = this.state.conversations.map((convo) => convo);
+    const existingConvo = conversations.find((convo) => convo.from === receiver);
+    if(existingConvo) {
+      this.setState({
+        selectedConversation: existingConvo,
+        showConversation: true,
         showNewConversation: false,
+      })
+    } else {
+      const newConversation = {
+        from: receiver,
+        messages: [],
       }
-    );
+      conversations.unshift(newConversation);
+      this.setState(
+        { 
+          conversations, 
+          selectedConversation: newConversation, 
+          showConversation: true, 
+          showNewConversation: false,
+        }
+      );
+    }
   }
 
   deleteConversation = async () => {
