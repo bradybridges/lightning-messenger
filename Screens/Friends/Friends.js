@@ -21,10 +21,9 @@ export default class Friends extends Component {
   componentDidMount = async () => {
     const user = await firebase.auth().currentUser;
     const email = user.email;
-    // const friends = await this.getFriends(email);
-    // const friendRequests = await this.getFriendRequests(email);
-    // this.setState({ user, friends, friendRequests, loading: false });
-    this.setState({ loading: false });
+    const friends = await this.getFriends(email);
+    const friendRequests = await this.getFriendRequests(email);
+    this.setState({ user, friends, friendRequests, loading: false });
   }
 
   getFriends = async (email) => {
