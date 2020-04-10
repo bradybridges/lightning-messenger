@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar, ActivityIndicator } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar, ActivityIndicator, Dimensions } from 'react-native';
 import * as Font from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
 import Message from '../../Components/Message/Message';
@@ -361,7 +361,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const { loadingMessages, refreshing, updating, user, showDeleteConversationMenu, selectedConversation } = this.state;
+    const { loadingMessages, refreshing, updating, user, showDeleteConversationMenu, selectedConversation, conversations, loadingFonts } = this.state;
     const { navigate } = this.props.navigation;
     if(!selectedConversation && !refreshing && !updating ) {
       setTimeout(async () => {
@@ -386,19 +386,26 @@ export default class Home extends Component {
             deleteConversation={this.deleteConversation}  
           />
         </Modal>
-        <ScrollView
-          refreshControl= {
-            <RefreshControl 
-              refreshing={refreshing} 
-              onRefresh={() => this.getMessages(user)} 
-              title='Refresh Messages'
-              colors={[Constants.primaryBgColor, Constants.primaryHeaderColor]}
-              progressBackgroundColor={Constants.tertiaryBgColor}
-            />
-          }
-        >
-            {this.state.user && this.renderConversationTabs()}
-        </ScrollView>
+        { conversations.length > 0 && (
+          <ScrollView
+            refreshControl= {
+              <RefreshControl 
+                refreshing={refreshing} 
+                onRefresh={() => this.getMessages(user)} 
+                title='Refresh Messages'
+                colors={[Constants.primaryBgColor, Constants.primaryHeaderColor]}
+                progressBackgroundColor={Constants.tertiaryBgColor}
+              />
+            }
+          >
+              {this.state.user && this.renderConversationTabs()}
+          </ScrollView>
+        )}
+        { (conversations.length === 0 && !loadingFonts) && (
+          <View style={styles.noMessagesContainer}>
+            <Text style={styles.noMessagesText}>No Messages :/</Text>
+          </View>
+        )}
         <NewMessageButton toggleNewConversation={this.toggleNewConversation}/>
         <Modal
           animationType="slide"
@@ -433,5 +440,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     backgroundColor: constants.primaryBgColor,
+  },
+  noMessagesContainer: {
+    height: Dimensions.get('window').height * .4,
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  noMessagesText: {
+    fontSize: 32,
+    textAlign: 'center',
+    fontFamily: 'exo-regular',
+    color: Constants.tertiaryBgColor,
   },
 });
