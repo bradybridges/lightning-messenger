@@ -21,9 +21,10 @@ export default class Friends extends Component {
   componentDidMount = async () => {
     const user = await firebase.auth().currentUser;
     const email = user.email;
-    const friends = await this.getFriends(email);
-    const friendRequests = await this.getFriendRequests(email);
-    this.setState({ user, friends, friendRequests, loading: false });
+    // const friends = await this.getFriends(email);
+    // const friendRequests = await this.getFriendRequests(email);
+    // this.setState({ user, friends, friendRequests, loading: false });
+    this.setState({ loading: false });
   }
 
   getFriends = async (email) => {
@@ -170,15 +171,24 @@ export default class Friends extends Component {
   }
 
   render() {
-    const { loading, showAddFriend, friendRequests, showConfirmDeleteFriend, selectedFriend } = this.state;
+    const { loading, showAddFriend, friendRequests, showConfirmDeleteFriend, selectedFriend, friends } = this.state;
+    console.log(friends);
     return (
       <View style={styles.container}>
-        <View style={styles.friendsContainer}>
-          <Text style={styles.text}> Friends </Text>
-          <ScrollView style={{height: '100%'}}>
-            {!loading && this.renderFriends()}
-          </ScrollView>
-        </View>
+        {(friends.length > 0 && !loading) && (
+          <View style={styles.friendsContainer}>
+            <Text style={styles.text}> Friends </Text>
+            <ScrollView style={{height: '100%'}}>
+              {!loading && this.renderFriends()}
+            </ScrollView>
+          </View>
+        )}
+        {(friends.length === 0 && !loading) && (
+          <View style={styles.noFriendsContainer}>
+            <Text style={styles.text}> Friends </Text>
+            <Text style={styles.noFriendsText}>No Friends Yet :/</Text>
+          </View>
+        )}
         { friendRequests !== null && (
           <View style={styles.requestsContainer}>
             <Text style={styles.text}>Friend Requests</Text>
@@ -228,6 +238,19 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign: 'center',
     fontFamily: 'exo-regular',
+  },
+  noFriendsContainer: {
+    height: Dimensions.get('window').height * .3,
+    display: 'flex',
+    justifyContent: 'space-between',
+    paddingVertical: 20,
+  },
+  noFriendsText: {
+    color: Constants.tertiaryBgColor,
+    fontSize: 32,
+    textAlign: 'center',
+    fontFamily: 'exo-regular',
+    marginTop: 40,
   },
   addFriendContainer: {
     width: 150,
