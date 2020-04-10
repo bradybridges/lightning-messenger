@@ -170,15 +170,24 @@ export default class Friends extends Component {
   }
 
   render() {
-    const { loading, showAddFriend, friendRequests, showConfirmDeleteFriend, selectedFriend } = this.state;
+    const { loading, showAddFriend, friendRequests, showConfirmDeleteFriend, selectedFriend, friends } = this.state;
+    console.log(friends);
     return (
       <View style={styles.container}>
-        <View style={styles.friendsContainer}>
-          <Text style={styles.text}> Friends </Text>
-          <ScrollView style={{height: '100%'}}>
-            {!loading && this.renderFriends()}
-          </ScrollView>
-        </View>
+        {(friends.length > 0 && !loading) && (
+          <View style={styles.friendsContainer}>
+            <Text style={styles.text}> Friends </Text>
+            <ScrollView style={{height: '100%'}}>
+              {!loading && this.renderFriends()}
+            </ScrollView>
+          </View>
+        )}
+        {(friends.length === 0 && !loading) && (
+          <View style={styles.friendsContainer}>
+            <Text style={styles.text}> Friends </Text>
+            <Text style={styles.noFriendsText}>No Friends Yet :/</Text>
+          </View>
+        )}
         { friendRequests !== null && (
           <View style={styles.requestsContainer}>
             <Text style={styles.text}>Friend Requests</Text>
@@ -228,6 +237,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign: 'center',
     fontFamily: 'exo-regular',
+  },
+  noFriendsText: {
+    color: Constants.tertiaryBgColor,
+    fontSize: 32,
+    textAlign: 'center',
+    fontFamily: 'exo-regular',
+    marginTop: 40,
   },
   addFriendContainer: {
     width: 150,
