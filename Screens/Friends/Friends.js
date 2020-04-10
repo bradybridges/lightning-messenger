@@ -171,7 +171,6 @@ export default class Friends extends Component {
 
   render() {
     const { loading, showAddFriend, friendRequests, showConfirmDeleteFriend, selectedFriend, friends } = this.state;
-    console.log(friends);
     return (
       <View style={styles.container}>
         {(friends.length > 0 && !loading) && (
