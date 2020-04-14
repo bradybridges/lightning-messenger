@@ -201,7 +201,7 @@ export default class Friends extends Component {
           </Text>
         </TouchableOpacity>
         <Modal visible={showAddFriend} animationType="slide" onRequestClose={() => this.setState({ showAddFriend: false })}>
-          <SearchFriends handleSendRequest={this.handleSendRequest} toggleShowAddFriend={this.toggleShowAddFriend} />
+          <SearchFriends handleSendRequest={this.handleSendRequest} toggleShowAddFriend={this.toggleShowAddFriend} friends={friends}/>
         </Modal>
         <Modal visible={showConfirmDeleteFriend} animationType="slide" onRequestClose={() => this.setState({ showConfirmDeleteFriend: false })}>
           <View style={styles.deleteFriendContainer}>
