@@ -19,9 +19,15 @@ export default class SearchFriends extends Component {
   handleSearch = async () => {
     try {
       const { search } = this.state;
+      const { friends } = this.props;
       const lowerCaseSearch = search.toLowerCase();
       if(search === '') {
         alert('Please enter an email address');
+        return;
+      }
+      if(friends.includes(lowerCaseSearch)) {
+        this.setState({ search: '' });
+        alert(`You and ${lowerCaseSearch} are already friends!`);
         return;
       }
       const userSnap = await firebase.firestore().collection('availableUsers').doc(lowerCaseSearch).get();
