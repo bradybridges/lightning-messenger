@@ -125,12 +125,16 @@ export default class Friends extends Component {
   }
 
   handleSendRequest = async (to) => {
-    const { user } = this.state;
+    const { user, pendingRequests } = this.state;
     const newRequest = { from: user.email };
-    //encrypt newRequest
     await firebase.firestore().collection('users').doc(to).collection('friendRequests').doc(user.email).set(newRequest);
     await firebase.firestore().collection('users').doc(to).collection('friends').doc(user.email).set({ exists: true });
     await firebase.firestore().collection('users').doc(user.email).collection('pendingRequests').doc(to).set({exists: true});
+    if(pendingRequests !== null) {
+      this.setState({ pendingRequests: [to, ...pendingRequests] });
+    } else {
+      this.setState({ pendingRequests: [to] });
+    }
   }
 
   acceptRequest = async (email) => {
