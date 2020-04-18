@@ -103,7 +103,6 @@ export default class Friends extends Component {
     const { pendingRequests } = this.state;
     console.l
     if(pendingRequests) {
-      console.log('rendering pending requests...');
       return pendingRequests.map((req, i) => {
         return (
           <View style={styles.requestContainer} key={`${req}${i}`}>
@@ -131,7 +130,7 @@ export default class Friends extends Component {
     //encrypt newRequest
     await firebase.firestore().collection('users').doc(to).collection('friendRequests').doc(user.email).set(newRequest);
     await firebase.firestore().collection('users').doc(to).collection('friends').doc(user.email).set({ exists: true });
-    await firebase.firestore().collection('users').doc(user.email).collection('pendingRequests').doc(newRequest.from).set();
+    await firebase.firestore().collection('users').doc(user.email).collection('pendingRequests').doc(to).set({exists: true});
   }
 
   acceptRequest = async (email) => {
