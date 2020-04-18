@@ -401,7 +401,7 @@ export default class Home extends Component {
               {this.state.user && this.renderConversationTabs()}
           </ScrollView>
         )}
-        { (conversations.length === 0 && !loadingFonts) && (
+        { (conversations.length === 0 && !loadingFonts && !loadingMessages) && (
           <View style={styles.noMessagesContainer}>
             <Text style={styles.noMessagesText}>No Messages :/</Text>
           </View>

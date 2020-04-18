@@ -15,6 +15,7 @@ export default class Friends extends Component {
     showAddFriend: false,
     showConfirmDeleteFriend: false,
     friendRequests: null,
+    pendingRequests: null,
     selectedFriend: null,
   };
 
@@ -23,7 +24,14 @@ export default class Friends extends Component {
     const email = user.email;
     const friends = await this.getFriends(email);
     const friendRequests = await this.getFriendRequests(email);
-    this.setState({ user, friends, friendRequests, loading: false });
+    const pendingRequests = await this.getPendingRequests(email);
+    this.setState({ 
+      user, 
+      friends, 
+      friendRequests, 
+      pendingRequests, 
+      loading: false 
+    });
   }
 
   getFriends = async (email) => {
@@ -37,6 +45,15 @@ export default class Friends extends Component {
     if(friendRequestsSnap.docs.length) {
       const friendRequests = await friendRequestsSnap.docs.map((doc) => doc.data());
       return friendRequests;
+    }
+    return null;
+  }
+
+  getPendingRequests = async (email) => {
+    const pendingRequestsSnap = await firebase.firestore().collection('users').doc(email).collection('pendingRequests').get();
+    if(pendingRequestsSnap.docs.length) {
+      const pendingRequests = await pendingRequestsSnap.docs.map((doc) => doc.id);
+      return pendingRequests;
     }
     return null;
   }
@@ -82,6 +99,21 @@ export default class Friends extends Component {
     }
   }
 
+  renderPendingRequests = () => {
+    const { pendingRequests } = this.state;
+    console.l
+    if(pendingRequests) {
+      return pendingRequests.map((req, i) => {
+        return (
+          <View style={styles.requestContainer} key={`${req}${i}`}>
+            <Text style={styles.requestText}>{req}</Text>
+            <Text style={styles.requestText}>Pending...</Text>
+          </View>
+        );
+      });
+    }
+  }
+
   toggleShowAddFriend = () => {
     const { showAddFriend } = this.state;
     this.setState({ showAddFriend: !showAddFriend });
@@ -93,17 +125,23 @@ export default class Friends extends Component {
   }
 
   handleSendRequest = async (to) => {
-    const { user } = this.state;
+    const { user, pendingRequests } = this.state;
     const newRequest = { from: user.email };
-    //encrypt newRequest
     await firebase.firestore().collection('users').doc(to).collection('friendRequests').doc(user.email).set(newRequest);
     await firebase.firestore().collection('users').doc(to).collection('friends').doc(user.email).set({ exists: true });
+    await firebase.firestore().collection('users').doc(user.email).collection('pendingRequests').doc(to).set({exists: true});
+    if(pendingRequests !== null) {
+      this.setState({ pendingRequests: [to, ...pendingRequests] });
+    } else {
+      this.setState({ pendingRequests: [to] });
+    }
   }
 
   acceptRequest = async (email) => {
     try {
       await this.clearRequest(email);
-      await this.addUserToFriendInbox(email);
+      await this.syncCloudFriends(email);
+      await this.removePendingRequest(email);
       this.clearRequestLocally(email);
       this.addFriendLocally(email);
     } catch(error) { console.error({ error })}
@@ -118,7 +156,14 @@ export default class Friends extends Component {
     }
   }
 
-  addUserToFriendInbox = async (email) => {
+  removePendingRequest = async (email) => {
+    try {
+      const { user } = this.state;
+      await firebase.firestore().collection('users').doc(email).collection('pendingRequests').doc(user.email).delete();
+    } catch(error) {console.error({ error })}
+  }
+
+  syncCloudFriends = async (email) => {
     try {
       const { user } = this.state;
       const newFriend = { exists: true };
@@ -137,6 +182,7 @@ export default class Friends extends Component {
     try {
       await this.clearRequest(email);
       await this.deleteFriend(email);
+      await this.removePendingRequest(email);
       this.clearRequestLocally(email);
       this.removeFriendLocally(email);
     } catch(error) { console.error({ error })}
@@ -145,7 +191,7 @@ export default class Friends extends Component {
   clearRequest = async (email) => {
     try {
       const { user } = this.state;
-      const requestSnap = firebase.firestore().collection('users').doc(user.email).collection('friendRequests').doc(email).delete();
+      const requestSnap = await firebase.firestore().collection('users').doc(user.email).collection('friendRequests').doc(email).delete();
     } catch(error) { console.error({ error })}
   }
 
@@ -170,7 +216,7 @@ export default class Friends extends Component {
   }
 
   render() {
-    const { loading, showAddFriend, friendRequests, showConfirmDeleteFriend, selectedFriend, friends } = this.state;
+    const { loading, showAddFriend, friendRequests, pendingRequests, showConfirmDeleteFriend, selectedFriend, friends } = this.state;
     return (
       <View style={styles.container}>
         {(friends.length > 0 && !loading) && (
@@ -187,11 +233,12 @@ export default class Friends extends Component {
             <Text style={styles.noFriendsText}>No Friends Yet :/</Text>
           </View>
         )}
-        { friendRequests !== null && (
+        { (friendRequests !== null || pendingRequests !== null) && (
           <View style={styles.requestsContainer}>
             <Text style={styles.text}>Friend Requests</Text>
             <ScrollView>
-              {this.renderFriendRequests()}
+              {friendRequests !== null && this.renderFriendRequests()}
+              {pendingRequests !== null && this.renderPendingRequests()}
             </ScrollView>
           </View>
         )}
@@ -201,7 +248,7 @@ export default class Friends extends Component {
           </Text>
         </TouchableOpacity>
         <Modal visible={showAddFriend} animationType="slide" onRequestClose={() => this.setState({ showAddFriend: false })}>
-          <SearchFriends handleSendRequest={this.handleSendRequest} toggleShowAddFriend={this.toggleShowAddFriend} />
+          <SearchFriends handleSendRequest={this.handleSendRequest} toggleShowAddFriend={this.toggleShowAddFriend} friends={friends}/>
         </Modal>
         <Modal visible={showConfirmDeleteFriend} animationType="slide" onRequestClose={() => this.setState({ showConfirmDeleteFriend: false })}>
           <View style={styles.deleteFriendContainer}>
