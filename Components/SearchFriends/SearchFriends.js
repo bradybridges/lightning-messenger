@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     paddingVertical: 20,
-    backgroundColor: Constants.primaryHeaderColor,
+    backgroundColor: Constants.primaryBgColor,
     justifyContent: 'space-evenly',
     borderBottomColor: Constants.tertiaryBgColor,
     borderBottomWidth: 1,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '75%',
-    backgroundColor: Constants.primaryBgColor,
+    backgroundColor: Constants.primaryHeaderColor,
     borderColor: Constants.tertiaryBgColor,
     borderWidth: 1,
     height: 50,
