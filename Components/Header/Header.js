@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import {
-  Text, View, Dimensions, StyleSheet, StatusBar,
+  Dimensions,
+  StyleSheet,
+  StatusBar,
+  Text,
+  View,
 } from 'react-native';
 
 export default class Header extends Component {
