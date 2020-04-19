@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, Image, TouchableOpacity, StyleSheet, Dimensions, AsyncStorage, Keyboard } from 'react-native';
+import { 
+  Text,
+  TextInput,
+  View,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  AsyncStorage,
+  Keyboard,
+} from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
@@ -15,6 +25,16 @@ export default class ComposeMessageForm extends Component {
 
   handleChange = (message) => {
     this.setState({ message });
+  }
+  
+  getPublicKey = async (email) => {
+    try {
+      const user = await firebase.firestore().collection('availableUsers').doc(email).get();
+      if(user.exists) {
+        return user.data().publicKey;
+      }
+      return false;
+    } catch(error) { return false }
   }
 
   encryptMessage = async (newMessage) => {
@@ -42,16 +62,6 @@ export default class ComposeMessageForm extends Component {
         publicKey: profile.keys.publicKey,
       }
     } catch(error) {console.error({ error })}
-  }
-
-  getPublicKey = async (email) => {
-    try {
-      const user = await firebase.firestore().collection('availableUsers').doc(email).get();
-      if(user.exists) {
-        return user.data().publicKey;
-      }
-      return false;
-    } catch(error) { return false }
   }
 
   sendMessage = async () => {
