@@ -1,11 +1,17 @@
 import React from 'react';
 import {
-  TouchableOpacity, Text, StyleSheet, Dimensions,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Dimensions,
 } from 'react-native';
 import * as Constants from '../../Constants/Constants';
 
 const ConversationTab = ({
-  from, time, updateSelectedConversation, handleConversationTabLongPress,
+  from,
+  time,
+  updateSelectedConversation,
+  handleConversationTabLongPress,
 }) => (
   <TouchableOpacity style={styles.container} onPress={() => updateSelectedConversation(from)} onLongPress={() => handleConversationTabLongPress(from)}>
     <Text style={styles.text}>{from}</Text>
