@@ -1,6 +1,9 @@
 import React from 'react';
 import {
-  TouchableOpacity, Text, Image, StyleSheet, Dimensions,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
 } from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/auth';
@@ -10,7 +13,6 @@ const logoutIcon = require('../../assets/logout.png');
 const SignoutIconButton = () => (
   <TouchableOpacity style={styles.container} onPress={() => firebase.auth().signOut()}>
     <Image style={styles.img} source={logoutIcon} />
-    {/* <Text style={styles.text}>Logout</Text> */}
   </TouchableOpacity>
 );
 
@@ -30,6 +32,5 @@ const styles = StyleSheet.create({
 
   },
 });
-
 
 export default SignoutIconButton;

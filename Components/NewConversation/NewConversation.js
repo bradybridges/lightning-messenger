@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  Dimensions,
+  TouchableOpacity
+} from 'react-native';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import BackButton from '../BackButton/BackButton';

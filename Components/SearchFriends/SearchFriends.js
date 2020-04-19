@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Dimensions,
+  StyleSheet
+} from 'react-native';
 import BackButton from '../BackButton/BackButton';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
@@ -194,5 +201,4 @@ const styles = StyleSheet.create({
     color: Constants.tertiaryBgColor,
     fontFamily: 'exo-regular',
   },
-})
-
+});

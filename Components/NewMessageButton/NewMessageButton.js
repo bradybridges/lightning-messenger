@@ -1,6 +1,8 @@
 import React from 'react';
 import {
-  Text, TouchableOpacity, Image, StyleSheet,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
 } from 'react-native';
 import * as Constants from '../../Constants/Constants';
 
@@ -32,6 +34,5 @@ const styles = StyleSheet.create({
     height: 30,
   },
 });
-
 
 export default NewMessageButton;
