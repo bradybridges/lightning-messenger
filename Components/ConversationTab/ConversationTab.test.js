@@ -7,11 +7,11 @@ describe('ConversationTab', () => {
   const mockUpdateSelectedConversation = jest.fn();
   beforeEach(() => {
     wrapper = shallow(
-      <ConversationTab 
+      <ConversationTab
         from="sender"
         time="12:00 PM"
         updateSelectedConversation={mockUpdateSelectedConversation}
-      />
+      />,
     );
   });
 
@@ -21,6 +21,6 @@ describe('ConversationTab', () => {
 
   it('when pressed the conversation tab should call updateSelectedConversation', () => {
     wrapper.simulate('press');
-    expect(mockUpdateSelectedConversation).toHaveBeenCalledWith("sender");
+    expect(mockUpdateSelectedConversation).toHaveBeenCalledWith('sender');
   });
 });

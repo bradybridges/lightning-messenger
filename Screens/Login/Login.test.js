@@ -6,13 +6,13 @@ describe('Login', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<Login navigation={jest.fn()}/>);
+    wrapper = shallow(<Login navigation={jest.fn()} />);
   });
 
   it('should match snapshot', () => {
     expect(wrapper).toMatchSnapshot();
   });
-  
+
   it('should have properties of email, password and loading in state', () => {
     expect(wrapper.state()).toEqual({ email: '', password: '', loading: false });
   });

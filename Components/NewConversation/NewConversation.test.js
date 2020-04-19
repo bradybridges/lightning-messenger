@@ -9,10 +9,11 @@ describe('NewConversation', () => {
 
   beforeEach(() => {
     wrapper = shallow(
-      <NewConversation 
+      <NewConversation
         handleNewConversation={mockHandleNewConversation}
         toggleNewConversation={mockToggleNewConversaton}
-      />);
+      />,
+    );
   });
 
   it('should match the snapshot', () => {

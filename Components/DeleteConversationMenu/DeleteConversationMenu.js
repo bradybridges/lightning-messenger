@@ -1,26 +1,26 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View, Text, TouchableOpacity, StyleSheet,
+} from 'react-native';
 import * as Constants from '../../Constants/Constants';
 
-const DeleteConversationMenu = ({ deleteConversation, toggleDeleteConversationMenu }) => {
-  return (
-    <View style={styles.deleteConversationContainer}>
-      <Text style={styles.header}>Delete Conversation?</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.confirmButton} onPress={deleteConversation}>
-          <Text style={styles.textConfirm}>
-            Yes
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.cancelButton} onPress={toggleDeleteConversationMenu}>
-          <Text style={styles.textCancel}>
-            No
-          </Text>
-        </TouchableOpacity>
-      </View>
+const DeleteConversationMenu = ({ deleteConversation, toggleDeleteConversationMenu }) => (
+  <View style={styles.deleteConversationContainer}>
+    <Text style={styles.header}>Delete Conversation?</Text>
+    <View style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.confirmButton} onPress={deleteConversation}>
+        <Text style={styles.textConfirm}>
+          Yes
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.cancelButton} onPress={toggleDeleteConversationMenu}>
+        <Text style={styles.textCancel}>
+          No
+        </Text>
+      </TouchableOpacity>
     </View>
-  )
-}
+  </View>
+);
 
 const styles = StyleSheet.create({
   deleteConversationContainer: {
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   header: {
     color: Constants.tertiaryBgColor,
     fontSize: 20,
-  },  
+  },
   textConfirm: {
     fontSize: 16,
     color: Constants.primaryHeaderColor,
@@ -80,8 +80,7 @@ const styles = StyleSheet.create({
     borderColor: Constants.tertiaryBgColor,
     borderWidth: 1,
   },
-})
+});
 
 
 export default DeleteConversationMenu;
-

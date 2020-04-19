@@ -1,14 +1,19 @@
 import React from 'react';
-import { TouchableOpacity, Image, StyleSheet, Dimensions, StatusBar } from 'react-native';
+import {
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+  StatusBar,
+} from 'react-native';
+
 const backIcon = require('../../assets/back-arrow-white.png');
 
-const BackButton = ({ close }) => {
-  return (
-    <TouchableOpacity style={styles.container} onPress={close}>
-      <Image style={styles.image} source={backIcon} />
-    </TouchableOpacity>
-  );
-}
+const BackButton = ({ close }) => (
+  <TouchableOpacity style={styles.container} onPress={close}>
+    <Image style={styles.image} source={backIcon} />
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -20,9 +25,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 30,
-    height: 30,    
-  }
+    height: 30,
+  },
 });
-
 
 export default BackButton;

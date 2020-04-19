@@ -1,15 +1,16 @@
 import React from 'react';
-import { Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  Text, TouchableOpacity, Image, StyleSheet,
+} from 'react-native';
 import * as Constants from '../../Constants/Constants';
+
 const add = require('../../assets/add.png');
 
-const NewMessageButton = ({ toggleNewConversation }) => {
-  return (
-    <TouchableOpacity style={styles.container} onPress={() => toggleNewConversation()}>
-       <Image source={add} style={styles.image} />
-    </TouchableOpacity>
-  );
-}
+const NewMessageButton = ({ toggleNewConversation }) => (
+  <TouchableOpacity style={styles.container} onPress={() => toggleNewConversation()}>
+    <Image source={add} style={styles.image} />
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -27,10 +28,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   image: {
-    width: 30, 
+    width: 30,
     height: 30,
   },
 });
 
 
-export default NewMessageButton
+export default NewMessageButton;

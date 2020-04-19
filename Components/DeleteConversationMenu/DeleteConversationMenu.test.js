@@ -5,8 +5,8 @@ import DeleteConversationMenu from './DeleteConversationMenu';
 describe('deleteConversationMenu', () => {
   const mockDeleteConversation = jest.fn();
   const mockToggleDeleteConversationMenu = jest.fn();
-  const wrapper = shallow(<DeleteConversationMenu 
-    deleteConversation={mockDeleteConversation} 
+  const wrapper = shallow(<DeleteConversationMenu
+    deleteConversation={mockDeleteConversation}
     toggleDeleteConversationMenu={mockToggleDeleteConversationMenu}
   />);
 
