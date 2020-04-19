@@ -1,6 +1,9 @@
 import React from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
 import * as Constants from '../../Constants/Constants';
 
@@ -81,6 +84,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
 });
-
 
 export default DeleteConversationMenu;
