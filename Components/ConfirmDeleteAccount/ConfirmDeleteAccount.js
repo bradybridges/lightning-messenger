@@ -1,6 +1,10 @@
 import React from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, Dimensions,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
 } from 'react-native';
 import * as Constants from '../../Constants/Constants';
 
@@ -59,6 +63,5 @@ const styles = StyleSheet.create({
     fontFamily: 'exo-regular',
   },
 });
-
 
 export default ConfirmDeleteAccount;
