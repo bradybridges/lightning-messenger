@@ -1,5 +1,18 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar, ActivityIndicator, Dimensions } from 'react-native';
+import {
+  Text,
+  View,
+  Button,
+  StyleSheet,
+  YellowBox,
+  Modal,
+  ScrollView,
+  AsyncStorage,
+  RefreshControl,
+  StatusBar,
+  ActivityIndicator,
+  Dimensions
+} from 'react-native';
 import * as Font from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
 import Message from '../../Components/Message/Message';

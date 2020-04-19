@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Text,  
+import { 
+  Text,  
   View, 
   TextInput, 
   Button, 
@@ -206,4 +207,3 @@ const styles = StyleSheet.create({
     fontFamily: 'exo-regular',
   }
 });
-

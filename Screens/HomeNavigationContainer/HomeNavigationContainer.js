@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Text, View, Dimensions } from 'react-native';
+import React from 'react';
+import { Dimensions } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Home from '../Home/Home';
