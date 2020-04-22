@@ -61,7 +61,6 @@ export default class CreateAccount extends Component {
         alert('An account cannot be created under that email');
       }else {
         alert('There was a problem creating your account, please try again later');
-        console.log(error.code);
       }
     }
   }
