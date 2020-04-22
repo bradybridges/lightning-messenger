@@ -31,7 +31,7 @@ export default class Login extends Component {
     password: '',
     loading: false,
     loadingFonts: true,
-    error: 'there was an error',
+    error: null,
   }
 
   componentDidMount = async () => {
