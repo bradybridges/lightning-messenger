@@ -17,6 +17,7 @@ export default class Friends extends Component {
     friendRequests: null,
     pendingRequests: null,
     selectedFriend: null,
+    error: null,
   };
 
   componentDidMount = async () => {
@@ -101,7 +102,6 @@ export default class Friends extends Component {
 
   renderPendingRequests = () => {
     const { pendingRequests } = this.state;
-    console.l
     if(pendingRequests) {
       return pendingRequests.map((req, i) => {
         return (
@@ -125,16 +125,18 @@ export default class Friends extends Component {
   }
 
   handleSendRequest = async (to) => {
-    const { user, pendingRequests } = this.state;
-    const newRequest = { from: user.email };
-    await firebase.firestore().collection('users').doc(to).collection('friendRequests').doc(user.email).set(newRequest);
-    await firebase.firestore().collection('users').doc(to).collection('friends').doc(user.email).set({ exists: true });
-    await firebase.firestore().collection('users').doc(user.email).collection('pendingRequests').doc(to).set({exists: true});
-    if(pendingRequests !== null) {
-      this.setState({ pendingRequests: [to, ...pendingRequests] });
-    } else {
-      this.setState({ pendingRequests: [to] });
-    }
+    try {
+      const { user, pendingRequests } = this.state;
+      const newRequest = { from: user.email };
+      await firebase.firestore().collection('users').doc(to).collection('friendRequests').doc(user.email).set(newRequest);
+      await firebase.firestore().collection('users').doc(to).collection('friends').doc(user.email).set({ exists: true });
+      await firebase.firestore().collection('users').doc(user.email).collection('pendingRequests').doc(to).set({exists: true});
+      if(pendingRequests !== null) {
+        this.setState({ pendingRequests: [to, ...pendingRequests] });
+      } else {
+        this.setState({ pendingRequests: [to] });
+      }
+    } catch(error) { this.setState({ error: 'There was a problem sending friend request' }) }
   }
 
   acceptRequest = async (email) => {
@@ -144,7 +146,7 @@ export default class Friends extends Component {
       await this.removePendingRequest(email);
       this.clearRequestLocally(email);
       this.addFriendLocally(email);
-    } catch(error) { console.error({ error })}
+    } catch(error) { this.setState({ error: 'An error occurred when accepting request' }) }
   }
 
   addFriendLocally = (newFriend) => {
@@ -160,7 +162,7 @@ export default class Friends extends Component {
     try {
       const { user } = this.state;
       await firebase.firestore().collection('users').doc(email).collection('pendingRequests').doc(user.email).delete();
-    } catch(error) {console.error({ error })}
+    } catch(error) { this.setState({ error: 'Problem removing request from the cloud' }) }
   }
 
   syncCloudFriends = async (email) => {
@@ -168,7 +170,7 @@ export default class Friends extends Component {
       const { user } = this.state;
       const newFriend = { exists: true };
       await firebase.firestore().collection('users').doc(email).collection('friends').doc(user.email).set(newFriend);
-    } catch(error) {console.error({ error })}
+    } catch(error) { this.setState({ error: 'There was a problem saving new friend' }) }
   }
 
   removeFriendLocally = (friend) => {
@@ -185,14 +187,14 @@ export default class Friends extends Component {
       await this.removePendingRequest(email);
       this.clearRequestLocally(email);
       this.removeFriendLocally(email);
-    } catch(error) { console.error({ error })}
+    } catch(error) { this.setState({ error: 'A problem occurred when declining request' }) }
   }
 
   clearRequest = async (email) => {
     try {
       const { user } = this.state;
       const requestSnap = await firebase.firestore().collection('users').doc(user.email).collection('friendRequests').doc(email).delete();
-    } catch(error) { console.error({ error })}
+    } catch(error) { this.setState({ error: 'Could not delete friend request' }) }
   }
 
   deleteFriend = async (email) => {
@@ -201,7 +203,7 @@ export default class Friends extends Component {
       const friend = await firebase.firestore().collection('users').doc(user.email).collection('friends').doc(email).delete();
       const updatedFriends = friends.filter((friend) => friend !== email);
       this.setState({ friends: updatedFriends, selectedFriend: null, showConfirmDeleteFriend: false });
-    } catch(error) { console.error({ error })}
+    } catch(error) { this.setState({ error: 'Could not delete friend' }) }
   }
 
   clearRequestLocally = (email) => {
@@ -215,10 +217,22 @@ export default class Friends extends Component {
     this.setState({ friendRequests });
   }
 
+  errorTimeout = () => {
+    setTimeout(() => {
+      this.setState({ error: null });
+    }, 5000)
+  }
+
   render() {
-    const { loading, showAddFriend, friendRequests, pendingRequests, showConfirmDeleteFriend, selectedFriend, friends } = this.state;
+    const { loading, showAddFriend, friendRequests, pendingRequests, showConfirmDeleteFriend, selectedFriend, friends, error } = this.state;
+
+    if(error) {
+      this.errorTimeout();
+    }
+
     return (
       <View style={styles.container}>
+        { error && <Text style={styles.error}>{error}</Text>}
         {(friends.length > 0 && !loading) && (
           <View style={styles.friendsContainer}>
             <Text style={styles.text}> Friends </Text>
@@ -387,6 +401,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: Constants.tertiaryBgColor,
     fontFamily: 'exo-regular',
-  } 
-})
+  },
+  error: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+});
 

@@ -38,6 +38,7 @@ export default class Home extends Component {
     loadingFonts: true,
     loadingMessages: true,
     updating: false,
+    error: null,
   };
 
 
@@ -78,8 +79,7 @@ export default class Home extends Component {
       }
       this.setState({ updating: false });
     } catch(error) {
-        this.setState({ updating: false });
-        console.log({error});
+        this.setState({ updating: false, error: 'There was a problem retrieving new messages' });
     }
   };
 
@@ -125,7 +125,7 @@ export default class Home extends Component {
         });
         return decryptedMessages;
       }
-    } catch(error) {console.log({ error })}
+    } catch(error) { this.setState({ error: 'There was a problem decrypting your new message(s)'}) }
   }
   
   buildMessages = async () => {
@@ -144,7 +144,7 @@ export default class Home extends Component {
         const msgs = [...inbox, ...sent];
         return this.sortMessages(msgs);
       }
-    } catch(err) {console.log({ err })}
+    } catch(err) { this.setState({ error: 'There was a problem displaying your messages, please restart the application' })}
   }
   
   buildConversations = (messages) => {
@@ -200,7 +200,7 @@ export default class Home extends Component {
         savedMessages.inbox = [...savedInbox, ...messages];
         await SecureStore.setItemAsync(email.replace('@', ''), JSON.stringify(savedMessages));
       } 
-    } catch(err) {console.error({ err })}
+    } catch(err) { this.setState({ error: 'There was a problem when trying to save a new message' }) }
   }
 
   deleteInbox = (inboxSnap) => {
@@ -360,17 +360,30 @@ export default class Home extends Component {
     this.setState({ selectedConversation: null, showConversation: false });
   }
 
+  errorTimeout = () => {
+    setTimeout(() => {
+      this.setState({ error: null });
+    }, 5000);
+  }
+
   render() {
-    const { loadingMessages, refreshing, updating, user, showDeleteConversationMenu, selectedConversation, conversations, loadingFonts } = this.state;
+    const { loadingMessages, refreshing, updating, user, showDeleteConversationMenu, selectedConversation, conversations, loadingFonts, error } = this.state;
     const { navigate } = this.props.navigation;
+    
     if(!selectedConversation && !refreshing && !updating ) {
       setTimeout(async () => {
         await this.getMessages(user);
       }, 15000);
     }
+
+    if(error) {
+      this.errorTimeout();
+    }
+
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
+        { error && <Text style={styles.error}>{error}</Text> }
         <ActivityIndicator 
           animating={loadingMessages} 
           size="large" 
@@ -453,4 +466,9 @@ const styles = StyleSheet.create({
     fontFamily: 'exo-regular',
     color: Constants.tertiaryBgColor,
   },
+  error: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
+  },  
 });

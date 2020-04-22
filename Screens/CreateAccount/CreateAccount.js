@@ -54,14 +54,6 @@ export default class CreateAccount extends Component {
       this.setState({ loading: false });
     } catch(error) {
       this.setState({ loading: false, email: '', password: '', passwordConfirm: '' });
-      // if(error.code === 'auth/invalid-email') {
-      //   alert('Please enter a valid email address');
-      // } else if(error.code === 'auth/email-already-in-use') {
-      //   alert('An account cannot be created under that email');
-      // }else {
-      //   console.log(error.code)
-      //   alert('There was a problem creating your account, please try again later');
-      // }
       switch(error.code) {
         case 'auth/invalid-email':
           alert('Please enter a valid email address');
