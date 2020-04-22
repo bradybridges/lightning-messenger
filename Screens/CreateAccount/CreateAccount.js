@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { 
   Text,
-   View, 
+  View, 
   TextInput, 
   StyleSheet, 
   TouchableOpacity, 
@@ -27,6 +27,7 @@ export default class CreateAccount extends Component {
     passwordConfirm: "",
     loading: false,
     loadingFonts: true,
+    error: null,
   }
 
   componentDidMount = async () => {
@@ -48,19 +49,20 @@ export default class CreateAccount extends Component {
         const lowercaseEmail = email.toLowerCase();
         const user = await firebase.auth().createUserWithEmailAndPassword(lowercaseEmail, password);
         const publicKey = await this.handleKeyGeneration(lowercaseEmail);
-        // await firebase.firestore().collection('users').doc(lowercaseEmail).collection('friends').doc('brady@gmail.com').set({ exists: true });
         await firebase.firestore().collection('availableUsers').doc(lowercaseEmail).set({ publicKey });
         this.props.navigation.goBack();
       }
       this.setState({ loading: false });
     } catch(error) {
-      this.setState({ loading: false });
+      this.setState({ loading: false, email: '', password: '', passwordConfirm: '' });
       if(error.code === 'auth/invalid-email') {
-        this.setState({ email: '', password: '', passwordConfirm: '' });
         alert('Please enter a valid email address');
-        return;
+      } else if(error.code === 'auth/email-already-in-use') {
+        alert('An account cannot be created under that email');
+      }else {
+        alert('There was a problem creating your account, please try again later');
+        console.log(error.code);
       }
-      console.error({ error });
     }
   }
 
