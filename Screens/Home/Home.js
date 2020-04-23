@@ -48,8 +48,7 @@ export default class Home extends Component {
     });
     this.setState({ loadingFonts: false });
     firebase.auth().onAuthStateChanged(async user => {
-      if(user.email) {
-        
+      if(user) { 
         this.setState({ user })
         await this.getMessages(user);
         this.setState({ loadingMessages: false });
@@ -441,6 +440,7 @@ export default class Home extends Component {
           <NewConversation 
             handleNewConversation={this.handleNewConversation} 
             toggleNewConversation={this.toggleNewConversation}
+            email={ user !== null ? user.email : null }
           />
         </Modal>
       </View>
