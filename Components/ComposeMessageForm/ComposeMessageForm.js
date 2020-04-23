@@ -26,7 +26,7 @@ export default class ComposeMessageForm extends Component {
       const secretKey = nacl.util.decodeBase64(secretKeyEncoded);
       let publicKey = await this.getPublicKey(to);
       if(!publicKey) {
-        console.log('no public key found...');
+        alert('Could not encrypt message, sending canceled')
         return;
       }
       publicKey = nacl.util.decodeBase64(publicKey);
@@ -41,7 +41,7 @@ export default class ComposeMessageForm extends Component {
         nonce: nacl.util.encodeBase64(nonce),
         publicKey: profile.keys.publicKey,
       }
-    } catch(error) {console.error({ error })}
+    } catch(error) { alert('There was a problem encrypting your message') }
   }
 
   getPublicKey = async (email) => {
@@ -82,7 +82,7 @@ export default class ComposeMessageForm extends Component {
       this.setState({message: '', focused: false });
       updateConversation(to, { contents: message, timestamp: { seconds: sentSeconds }, sender: true });
       await this.saveSentMessage(sentMessage);
-    } catch(error) { console.log(error); }
+    } catch(error) { alert('Could not send message, try again later') }
   }
 
   saveSentMessage = async (newMessage) => {
@@ -92,7 +92,7 @@ export default class ComposeMessageForm extends Component {
       const savedMessages = JSON.parse(stringySavedMessages);
       savedMessages.sent.push(newMessage);
       await SecureStore.setItemAsync(from.replace('@', ''), JSON.stringify(savedMessages));
-    } catch(err) {console.error({ err })}   
+    } catch(err) { alert('There was a problem saving your sent message') }   
   }
   
   render() {

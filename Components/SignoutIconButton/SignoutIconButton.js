@@ -8,7 +8,6 @@ const SignoutIconButton = () => {
   return (
     <TouchableOpacity style={styles.container} onPress={() => firebase.auth().signOut()}>
       <Image style={styles.img} source={logoutIcon} />
-      {/* <Text style={styles.text}>Logout</Text> */}
     </TouchableOpacity>
   );
 }
@@ -24,9 +23,6 @@ const styles = StyleSheet.create({
   img: {
     width: 30,
     height: 30,
-  },
-  text: {
-
   },
 });
 
