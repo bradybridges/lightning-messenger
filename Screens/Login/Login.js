@@ -32,6 +32,7 @@ export default class Login extends Component {
     password: '',
     loading: false,
     loadingFonts: true,
+    error: null,
   }
 
   componentDidMount = async () => {
@@ -73,8 +74,9 @@ export default class Login extends Component {
         .then(() => this.setState({ loading: false }))
         .catch((error) => {
           this.setState({ error, loading: false });
-          return this.returnErrorMessage(error.code);
         });
+    } else {
+      this.setState({ loading: false });
     }
   }
 
@@ -117,9 +119,18 @@ export default class Login extends Component {
     navigate(screen);
   }
 
+  errorTimeout = () => {
+    setTimeout(() => {
+      this.setState({ error: null });
+    }, 6000);
+  }
+
   render() {
     const { navigate } = this.props.navigation;
-    const { loading, loadingFonts } = this.state;
+    const { loading, loadingFonts, error } = this.state;
+    if(error) {
+      this.errorTimeout();
+    }
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
@@ -128,6 +139,7 @@ export default class Login extends Component {
         <View style={styles.inner}>
           {!loadingFonts && <Text style={styles.header}>Login</Text>}          
           <View style={styles.loginContainer}>
+            { (error && !loadingFonts) && <Text style={styles.error}>Something went wrong...</Text> }
             <TextInput
               style={styles.input}
               value={this.state.email}
@@ -205,5 +217,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: Constants.tertiaryBgColor,
     fontFamily: 'exo-regular',
-  }
+  },
+  error: {
+    color: 'red',
+    fontFamily: 'exo-regular',
+    fontSize: 16,
+    textAlign: 'center',
+  },
 });

@@ -10,11 +10,13 @@ import 'firebase/auth';
 
 const logoutIcon = require('../../assets/logout.png');
 
-const SignoutIconButton = () => (
-  <TouchableOpacity style={styles.container} onPress={() => firebase.auth().signOut()}>
-    <Image style={styles.img} source={logoutIcon} />
-  </TouchableOpacity>
-);
+const SignoutIconButton = () => {
+  return (
+    <TouchableOpacity style={styles.container} onPress={() => firebase.auth().signOut()}>
+      <Image style={styles.img} source={logoutIcon} />
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -27,9 +29,6 @@ const styles = StyleSheet.create({
   img: {
     width: 30,
     height: 30,
-  },
-  text: {
-
   },
 });
 

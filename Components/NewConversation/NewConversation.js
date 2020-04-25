@@ -21,18 +21,25 @@ export default class NewConversation extends Component {
 
   handleNewConversation = async () => {
     const { to } = this.state;
-    const { handleNewConversation } = this.props;
+    const { handleNewConversation, email } = this.props;
     if(!to) return;
     try {
       const lowercaseTo = to.toLowerCase();
+      
+      if(lowercaseTo === email) {
+        alert('You cant send messages to yourself');
+        return;
+      }
+
       const user = await firebase.firestore().collection('availableUsers').doc(lowercaseTo).get();
       if(!user.exists) {
         alert('No user found with that email!');
         this.setState({ to: '' });
         return;
       }
+
       handleNewConversation(lowercaseTo);
-    } catch(err) {console.error({ err })}
+    } catch(err) { alert('There was a problem starting the converstion') }
   }
 
   closeNewConversation = () => {

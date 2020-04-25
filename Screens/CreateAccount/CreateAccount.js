@@ -49,19 +49,26 @@ export default class CreateAccount extends Component {
         const lowercaseEmail = email.toLowerCase();
         const user = await firebase.auth().createUserWithEmailAndPassword(lowercaseEmail, password);
         const publicKey = await this.handleKeyGeneration(lowercaseEmail);
-        // await firebase.firestore().collection('users').doc(lowercaseEmail).collection('friends').doc('brady@gmail.com').set({ exists: true });
         await firebase.firestore().collection('availableUsers').doc(lowercaseEmail).set({ publicKey });
         this.props.navigation.goBack();
       }
       this.setState({ loading: false });
     } catch(error) {
-      this.setState({ loading: false });
-      if(error.code === 'auth/invalid-email') {
-        this.setState({ email: '', password: '', passwordConfirm: '' });
-        alert('Please enter a valid email address');
-        return;
+      this.setState({ loading: false, email: '', password: '', passwordConfirm: '' });
+      switch(error.code) {
+        case 'auth/invalid-email':
+          alert('Please enter a valid email address');
+          break;
+        case 'auth/email-already-in-use':
+          alert('An account cannot be created with that email');
+          break;
+        case 'auth/weak-password':
+          alert('Please choose a stronger password');
+          break;
+        default:
+          alert('There was a problem creating your account, please try again later');
+          break;
       }
-      console.error({ error });
     }
   }
 

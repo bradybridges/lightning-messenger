@@ -24,6 +24,7 @@ export default class Settings extends Component {
     showConfirmDeleteAccount: false,
     loading: false,
     keysGenerated: false,
+    error: null,
   }
 
   componentDidMount = async () => {
@@ -61,13 +62,13 @@ export default class Settings extends Component {
       savedUser = JSON.parse(savedUser);
       savedUser.keys = keys;
       await SecureStore.setItemAsync(email.replace('@', ''), JSON.stringify(savedUser));
-    } catch(error) { console.error({ error })}
+    } catch(error) { this.setState({ error: 'There was a problem updating your keys' }) }
   }
 
   updateCloudPublicKey = async (email, publicKey) => {
     try {
       await firebase.firestore().collection('availableUsers').doc(email).set({ publicKey });
-    }catch(error) { console.error({ error })}
+    }catch(error) { this.setState({ error: 'There was a problem updating your keys, please try again later' }) }
   }
 
   handleDeleteAccount = async () => {
@@ -86,7 +87,7 @@ export default class Settings extends Component {
       await firebase.auth().signOut;
       await this.setState({ loading: false, showConfirmDeleteAccount: false });
       replace('Login');
-    }catch(error) {console.error({ error })}
+    }catch(error) { this.setState({ error: 'There was a problem deleting your account' })}
   }
 
   toggleConfirmDeleteAccount = () => {
@@ -95,13 +96,15 @@ export default class Settings extends Component {
   }
 
   handleClearData = async () => {
-    const { replace } = this.props.navigation;
-    const { user } = this.state;
-    let storedProfile = await SecureStore.getItemAsync(user.email.replace('@', ''));
-    storedProfile = JSON.parse(storedProfile);
-    const newProfile = { inbox: [], sent: [], keys: storedProfile.keys };
-    await SecureStore.setItemAsync(user.email.replace('@', ''), JSON.stringify(newProfile));
-    await firebase.auth().signOut();
+    try {
+      const { replace } = this.props.navigation;
+      const { user } = this.state;
+      let storedProfile = await SecureStore.getItemAsync(user.email.replace('@', ''));
+      storedProfile = JSON.parse(storedProfile);
+      const newProfile = { inbox: [], sent: [], keys: storedProfile.keys };
+      await SecureStore.setItemAsync(user.email.replace('@', ''), JSON.stringify(newProfile));
+      await firebase.auth().signOut();
+    } catch(error) { this.setState({ error: 'There was a problem clearing your data' }) }
   }
 
   newKeysMessageTimeout = () => {
@@ -110,12 +113,19 @@ export default class Settings extends Component {
     }, 3000);
   }
 
+  errorTimeout = () => {
+    setTimeout(() => {
+      this.setState({ error: null });
+    }, 5000);
+  }
+
   render() {
-    const { user, loadingFonts, showConfirmDeleteAccount, keysGenerated } = this.state;
+    const { user, loadingFonts, showConfirmDeleteAccount, keysGenerated, error } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.profileContainer}>
           { user && !loadingFonts && <Text style={styles.text}>{user.email}</Text> }
+          { (error && !loadingFonts) && <Text style={styles.error}>{error}</Text> }
         </View>
         { keysGenerated && <Text style={styles.successMsg}>Successfully generated new keys!</Text> }
         <TouchableOpacity 
@@ -202,5 +212,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: Constants.tertiaryBgColor,
     fontFamily: 'exo-regular',
+  },
+  error: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
   }
 });

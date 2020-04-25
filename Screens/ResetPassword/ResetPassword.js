@@ -21,6 +21,7 @@ export default class ResetPassword extends Component {
     email: '',
     loading: false,
     loadingFonts: true,
+    error: null,
   }
 
   componentDidMount = async () => {
@@ -48,15 +49,14 @@ export default class ResetPassword extends Component {
       this.setState({ loading: false, email: '' });
       navigate('Login');
     } catch(error) {
-      this.setState({ email: '' });
+      this.setState({ email: '', error });
       if(error.code === 'auth/user-not-found') {
-        alert('Unable reset password for given email');
-        return;
+        alert('Unable reset password, did you spell your email correctly?');
       } else if(error.code === 'auth/invalid-email') {
         alert('Please enter a valid email address');
-        return;
+      } else {
+        alert('Something went wrong, please try again later');
       }
-      console.error({ error });
     }
   }
 

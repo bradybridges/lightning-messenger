@@ -44,7 +44,7 @@ export default class SearchFriends extends Component {
       }
       this.setState({ noUserFound: true, search: '', searchResult: null });
       this.noUserMessageTimeout();
-    } catch(error) { console.error({ error })}
+    } catch(error) { alert('Something went wrong with the search, please try again') }
   }
 
   noUserMessageTimeout = () => {
@@ -59,7 +59,7 @@ export default class SearchFriends extends Component {
       const { handleSendRequest } = this.props;
       await handleSendRequest(searchResult);
       this.setState({ searchResult: null });
-    } catch(error) { console.error({ error })}
+    } catch(error) { alert('Error sending request') }
   }
 
   renderResults = () => {
