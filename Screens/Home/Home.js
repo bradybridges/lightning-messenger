@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar, ActivityIndicator, Dimensions } from 'react-native';
+import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar, ActivityIndicator, Dimensions, Vibration } from 'react-native';
 import * as Font from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
 import Message from '../../Components/Message/Message';
@@ -70,6 +70,7 @@ export default class Home extends Component {
         await this.saveNewMessages(messages);
         await this.deleteInbox(inboxSnap);
         await this.regenerateKeys(email);
+        this.vibrate();
       }
       const builtMessages = await this.buildMessages();
       if((builtMessages.length > 0 && this.state.conversations.length === 0) || inbox.length) {
@@ -363,6 +364,10 @@ export default class Home extends Component {
     setTimeout(() => {
       this.setState({ error: null });
     }, 5000);
+  }
+
+  vibrate = (pattern = [100, 100, 100, 100, 500, 500]) => {
+    Vibration.vibrate(pattern);
   }
 
   render() {
