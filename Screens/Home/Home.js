@@ -41,6 +41,7 @@ console.warn = message => {
 export default class Home extends Component {
   state = {
     conversations: [],
+    newMessages: [],
     user: null,
     selectedConversation: null,
     conversationToDelete: null,
@@ -72,7 +73,20 @@ export default class Home extends Component {
     });
   }
 
-  getMessages = async (user) => {  
+  updateNewMessageCount = async (messages) => {
+    const newMessages = this.state.newMessages.map((msg) => msg);
+    messages.forEach((msg) => {
+      const existingCounter = newMessages.find((counter) => counter.from === msg.from);
+      if(existingCounter) {
+        existingCounter.count++;
+      } else {
+        newMessages.push({ from: msg.from, count: 1 });
+      }
+    });
+    await this.setState({ newMessages });
+  }
+
+  getMessages = async (user) => {
     try{
       this.setState({ updating: true });
       const { email } = user;
@@ -80,6 +94,7 @@ export default class Home extends Component {
       const inbox = await inboxSnap.docs.map((doc) => doc.data());
       if(inbox.length > 0) {
         const messages = await this.decryptMessages(inbox);
+        await this.updateNewMessageCount(messages);
         await this.saveNewMessages(messages);
         await this.deleteInbox(inboxSnap);
         await this.regenerateKeys(email);
@@ -220,10 +235,10 @@ export default class Home extends Component {
     inboxSnap.docs.forEach((msg) => msg.ref.delete());
   }
 
-  
   renderConversationTabs = () => {
-    const { conversations } = this.state;
+    const { conversations, newMessages } = this.state;
     return conversations.map((convo) => {
+      const newMessagesCount = this.getConvoNewMessageCount(convo.from, newMessages);
       let time;
       if(convo.messages.length) {
         const timestamp = convo.messages[convo.messages.length - 1].timestamp;
@@ -238,11 +253,21 @@ export default class Home extends Component {
           key={convo.from} 
           updateSelectedConversation={this.updateSelectedConversation}
           handleConversationTabLongPress={this.handleConversationTabLongPress}
+          newMessageCount={newMessagesCount}
         />
       );
     });
   }
 
+  
+  getConvoNewMessageCount = (friend, newMessages) => {
+    const index = newMessages.findIndex((newMessage) => newMessage.from == friend);
+    if(index > -1) {
+      return newMessages[index].count;
+    }
+    return 0;
+  }
+  
   handleConversationTabLongPress = (from) => {
     const { conversations } = this.state;
     const conversationToDelete = conversations.find((convo) => convo.from === from);
@@ -251,7 +276,7 @@ export default class Home extends Component {
       showDeleteConversationMenu: true,
     });
   }
-
+  
   toggleDeleteConversationMenu = () => {
     const { showDeleteConversationMenu } = this.state;
     this.setState({ showDeleteConversationMenu: !showDeleteConversationMenu });
@@ -278,46 +303,62 @@ export default class Home extends Component {
         />
       );
     } 
-  
-  toggleNewConversation = () => {
-    this.setState({ showNewConversation: !this.state.showNewConversation });
-  }
-  
-  updateConversation = (from, newMessage) => {
-    const conversations = this.state.conversations.map((convo) => convo);
-    const conversation = conversations.find((convo) => convo.from === from);
-    if(!conversation) {
-      return;
+    
+    toggleNewConversation = () => {
+      this.setState({ showNewConversation: !this.state.showNewConversation });
     }
-    conversation.messages.push(newMessage);
-    this.setState({ conversations });
-  }
-
-  formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp.seconds * 1000);
-    let hours = Number(date.getHours());
-    const label = (hours >= 12) ? 'PM': 'AM';
-    let minutes = Number(date.getMinutes());
-    if(hours > 12) {
-      hours = hours - 12;
-    } else if(hours === 0) {
-      hours = 12;
+    
+    updateConversation = (from, newMessage) => {
+      const conversations = this.state.conversations.map((convo) => convo);
+      const conversation = conversations.find((convo) => convo.from === from);
+      if(!conversation) {
+        return;
+      }
+      conversation.messages.push(newMessage);
+      this.setState({ conversations });
     }
-    if(minutes < 10) {
-      minutes = `0${minutes}`;
+    
+    formatTimestamp = (timestamp) => {
+      const date = new Date(timestamp.seconds * 1000);
+      let hours = Number(date.getHours());
+      const label = (hours >= 12) ? 'PM': 'AM';
+      let minutes = Number(date.getMinutes());
+      if(hours > 12) {
+        hours = hours - 12;
+      } else if(hours === 0) {
+        hours = 12;
+      }
+      if(minutes < 10) {
+        minutes = `0${minutes}`;
+      }
+      return `${hours}:${minutes} ${label}`;
     }
-    return `${hours}:${minutes} ${label}`;
-  }
+    
+    updateSelectedConversation = (from) => {
+      const {conversations} = this.state;
+      const conversation = conversations.find((convo) => convo.from === from);
+      const updatedNewMessages = this.clearNewMessageCount(from);
+      if(updatedNewMessages) {
+        this.setState({ newMessages: updatedNewMessages, selectedConversation: conversation, showConversation: true});
+        return;
+      }
+      this.setState({ selectedConversation: conversation, showConversation: true });
+    }
+    
+    clearNewMessageCount = (friend) => {
+      const newMessages = this.state.newMessages.map((count) => count);
+      const friendCounter = newMessages.find((counter) => counter.from == friend);
 
-  updateSelectedConversation = (from) => {
-    const {conversations} = this.state;
-    const conversation = conversations.find((convo) => convo.from === from);
-    this.setState({ selectedConversation: conversation, showConversation: true });
-  }
+      if(friendCounter) {
+        return newMessages.filter((counter) => counter.from != friend);
+      }
 
-  handleNewConversation = (receiver) => {
-    const conversations = this.state.conversations.map((convo) => convo);
-    const existingConvo = conversations.find((convo) => convo.from === receiver);
+      return null;
+    }
+
+    handleNewConversation = (receiver) => {
+      const conversations = this.state.conversations.map((convo) => convo);
+      const existingConvo = conversations.find((convo) => convo.from === receiver);
     if(existingConvo) {
       this.setState({
         selectedConversation: existingConvo,
