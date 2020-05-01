@@ -96,9 +96,9 @@ export default class Home extends Component {
         const messages = await this.decryptMessages(inbox);
         await this.updateNewMessageCount(messages);
         await this.saveNewMessages(messages);
-        // await this.deleteInbox(inboxSnap);
-        // await this.regenerateKeys(email);
-        // this.vibrate();
+        await this.deleteInbox(inboxSnap);
+        await this.regenerateKeys(email);
+        this.vibrate();
       }
       const builtMessages = await this.buildMessages();
       if((builtMessages.length > 0 && this.state.conversations.length === 0) || inbox.length) {
@@ -239,7 +239,6 @@ export default class Home extends Component {
     const { conversations, newMessages } = this.state;
     return conversations.map((convo) => {
       const newMessagesCount = this.getConvoNewMessageCount(convo.from, newMessages);
-      console.log(newMessagesCount, convo.from);
       let time;
       if(convo.messages.length) {
         const timestamp = convo.messages[convo.messages.length - 1].timestamp;
@@ -264,10 +263,8 @@ export default class Home extends Component {
   getConvoNewMessageCount = (friend, newMessages) => {
     const index = newMessages.findIndex((newMessage) => newMessage.from == friend);
     if(index > -1) {
-      console.log('captured count', newMessages[index].count);
       return newMessages[index].count;
     }
-    console.log('message count was not found!!!');
     return 0;
   }
   
@@ -431,11 +428,11 @@ export default class Home extends Component {
     const { loadingMessages, refreshing, updating, user, showDeleteConversationMenu, selectedConversation, conversations, loadingFonts, error } = this.state;
     const { navigate } = this.props.navigation;
     
-    // if(!selectedConversation && !refreshing && !updating ) {
-    //   setTimeout(async () => {
-    //     await this.getMessages(user);
-    //   }, 15000);
-    // }
+    if(!selectedConversation && !refreshing && !updating ) {
+      setTimeout(async () => {
+        await this.getMessages(user);
+      }, 15000);
+    }
 
     if(error) {
       this.errorTimeout();
