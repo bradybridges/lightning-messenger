@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
+import NotificationBadge from '../NotificationBadge/NotificationBadge';
 import * as Constants from '../../Constants/Constants';
 
 const ConversationTab = ({
@@ -12,10 +13,12 @@ const ConversationTab = ({
   time,
   updateSelectedConversation,
   handleConversationTabLongPress,
+  newMessageCount,
 }) => (
   <TouchableOpacity style={styles.container} onPress={() => updateSelectedConversation(from)} onLongPress={() => handleConversationTabLongPress(from)}>
     <Text style={styles.text}>{from}</Text>
-    <Text style={styles.text}>{time}</Text>
+    { newMessageCount === 0 && <Text style={styles.text}>{time}</Text> }
+    { newMessageCount > 0 && <NotificationBadge newMessageCount={newMessageCount} /> }
   </TouchableOpacity>
 );
 
