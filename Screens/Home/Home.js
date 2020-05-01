@@ -1,5 +1,19 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, YellowBox, Modal, ScrollView, AsyncStorage, RefreshControl, StatusBar, ActivityIndicator, Dimensions, Vibration } from 'react-native';
+import {
+  Text,
+  View,
+  Button,
+  StyleSheet,
+  YellowBox,
+  Modal,
+  ScrollView,
+  AsyncStorage,
+  RefreshControl,
+  StatusBar,
+  ActivityIndicator,
+  Dimensions,
+  Vibration,
+} from 'react-native';
 import * as Font from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
 import Message from '../../Components/Message/Message';
@@ -16,7 +30,6 @@ import _ from 'lodash';
 import nacl from 'tweet-nacl-react-native-expo';
 import * as Constants from '../../Constants/Constants';
 import DeleteConversationMenu from '../../Components/DeleteConversationMenu/DeleteConversationMenu';
-
 YellowBox.ignoreWarnings(['Setting a timer']);
 const _console = _.clone(console);
 console.warn = message => {

@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, ScrollView, Modal, Clipboard, Dimensions, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Modal,
+  Clipboard,
+  Dimensions,
+  ActivityIndicator,
+  TouchableWithoutFeedback
+} from 'react-native';
 import SearchFriends from '../../Components/SearchFriends/SearchFriends';
 import * as Constants from '../../Constants/Constants';
 import * as firebase from 'firebase';

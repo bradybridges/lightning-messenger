@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, ActivityIndicator, StyleSheet, Dimensions, Modal } from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  Dimensions,
+  Modal
+} from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as firebase from 'firebase';
 import * as Font from 'expo-font';

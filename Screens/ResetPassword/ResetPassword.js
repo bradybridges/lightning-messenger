@@ -144,5 +144,4 @@ const styles = StyleSheet.create({
     color: Constants.tertiaryBgColor,
     fontFamily: 'exo-regular',
   }
-})
-
+});

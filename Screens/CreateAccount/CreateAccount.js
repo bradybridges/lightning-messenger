@@ -21,6 +21,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 
 export default class CreateAccount extends Component {
+  
   state = {
     email: "",
     password: "",
@@ -207,4 +208,3 @@ const styles = StyleSheet.create({
     fontFamily: 'exo-regular',
   }
 });
-

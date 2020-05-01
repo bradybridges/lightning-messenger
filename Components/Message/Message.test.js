@@ -4,14 +4,14 @@ import Message from './Message';
 
 describe('Message', () => {
   let wrapper;
-  const mockDate = { seconds: "1581565040"}
+  const mockDate = { seconds: '1581565040' };
 
   beforeEach(() => {
     wrapper = shallow(
-      <Message 
-        content="test message" 
+      <Message
+        content="test message"
         timestamp={mockDate}
-      />
+      />,
     );
   });
 

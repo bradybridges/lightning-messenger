@@ -9,8 +9,7 @@ npm-debug.*
 *.orig.*
 web-build/
 web-report/
-
-# macOS
 .DS_Store
 ApiKeys.js
 mockMessages.js
+.eslintrc.json

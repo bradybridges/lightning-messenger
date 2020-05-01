@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { 
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+  ScrollView
+} from 'react-native';
 import Message from '../Message/Message';
 import ComposeMessageForm from '../ComposeMessageForm/ComposeMessageForm';
 import BackButton from '../BackButton/BackButton';
@@ -79,5 +85,5 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height * .8,
   }
-})
+});
 
