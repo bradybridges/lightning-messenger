@@ -90,9 +90,16 @@ export default class Home extends Component {
   getMessages = async (user) => {
     try{
       this.setState({ updating: true });
+
+      if(!user) {
+        this.setState({ updating: false });
+        return;
+      }
+
       const { email } = user;
       const inboxSnap = await firebase.firestore().collection('users').doc(email).collection('inbox').get();
       const inbox = await inboxSnap.docs.map((doc) => doc.data());
+
       if(inbox.length > 0) {
         const messages = await this.decryptMessages(inbox);
         await this.updateNewMessageCount(messages);
@@ -101,15 +108,18 @@ export default class Home extends Component {
         await this.regenerateKeys(email);
         this.vibrate();
       }
+
       const builtMessages = await this.buildMessages();
+
       if((builtMessages.length > 0 && this.state.conversations.length === 0) || inbox.length) {
         const conversations = await this.buildConversations(builtMessages);
         this.setState({ conversations });
       }
+      
       this.setState({ updating: false });
     } catch(error) {
-        // this.setState({ updating: false, error: 'There was a problem retrieving new messages' });
-        // console.log(error); 
+        this.setState({ updating: false, error: 'There was a problem retrieving new messages' });
+        console.log(error); 
     }
   };
 
