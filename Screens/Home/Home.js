@@ -64,6 +64,7 @@ export default class Home extends Component {
     firebase.auth().onAuthStateChanged(async user => {
       if(user) { 
         this.setState({ user })
+        await this.verifyLocalInfrastructure(user);
         await this.getMessages(user);
         this.setState({ loadingMessages: false });
       } else {
@@ -107,7 +108,8 @@ export default class Home extends Component {
       }
       this.setState({ updating: false });
     } catch(error) {
-        this.setState({ updating: false, error: 'There was a problem retrieving new messages' });
+        // this.setState({ updating: false, error: 'There was a problem retrieving new messages' });
+        // console.log(error); 
     }
   };
 
@@ -127,6 +129,27 @@ export default class Home extends Component {
     savedProfile.keys = keys;
     await SecureStore.setItemAsync(email.replace('@', ''), JSON.stringify(savedProfile));
     return publicEncoded;
+  }
+
+  verifyLocalInfrastructure = async (user) => {
+    try {
+      if(!user) return;
+      const { email } = user;
+      const savedMessages = await SecureStore.getItemAsync(email.replace('@', ''));
+      if(savedMessages === null) {
+        await this.setupLocalStorage(email);
+      }
+    } catch(err) { this.setState({ error: 'No locally stored data found, failed to restore required data' }) }
+  }
+
+  setupLocalStorage = async (email) => {
+    const blankMessagesObj = {
+      inbox: [],
+      sent: [],
+    };
+    const stringyMessagesObj = JSON.stringify(blankMessagesObj);
+    await SecureStore.setItemAsync(email.replace('@', ''), stringyMessagesObj);
+    await this.regenerateKeys(email);
   }
 
   decryptMessages = async (messages) => {
@@ -172,7 +195,10 @@ export default class Home extends Component {
         const msgs = [...inbox, ...sent];
         return this.sortMessages(msgs);
       }
-    } catch(err) { this.setState({ error: 'There was a problem displaying your messages, please restart the application' })}
+    } catch(err) { 
+      this.setState({ error: 'There was a problem displaying your messages, please restart the application' });
+      console.log(err);
+    }
   }
   
   buildConversations = (messages) => {
