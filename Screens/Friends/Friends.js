@@ -352,11 +352,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
     height: 50,
+    alignSelf: 'center',
   },
   friendText: {
     color: 'white',
     fontSize: 20,
-    marginLeft: 40,
     fontFamily: 'exo-regular'
   },
   sendMsgBtnContainer: {
