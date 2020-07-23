@@ -1,6 +1,6 @@
 # Crypto Tracker
 
-Download the beta Apk for Android and test it out! [Lightning Messenger APK](https://drive.google.com/open?id=1B6iV5vn7mhFlb4uIxIt0M3-vrgR6Y2FY)
+Download this app from the Google Play Store! [Lightning Messenger Beta](https://drive.google.com/open?id=1B6iV5vn7mhFlb4uIxIt0M3-vrgR6Y2FY)
 
 ## Table of contents
 * [Objective](#Objective)
@@ -11,13 +11,14 @@ Download the beta Apk for Android and test it out! [Lightning Messenger APK](htt
 * [Screenshots](#Screenshots) 
 
 ## Objective
+
+  As a developer with curiousity revolving around secure transmission of user data, I wanted to develop an application that takes advantage of encryption, RSA keys, and diffie-hellman type approaches to encrypting data. The objective of this application is to provide an end-to-end encrypted messaging application that allows a user to communicate securely with friends.
   
-  As a developer with curiousity revolving around secure transmission of user data, I wanted to develop an application that takes advantage of encryption, RSA keys, and diffie-hellman type approaches to encrypting data. The objective of this application is to provide an end-to-end encrypted messaging application that allows a user to communicate securely with friends. 
 ## Tools Used
 
 - React Native
 - Expo
-- Google Cloud/ Firebase
+- Google Cloud/Firebase
 - Jest
 - Enzyme
 
